@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -30,7 +31,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
     <span style="display: flex; align-items: center; gap: 6px; color: var(--av-ink3, #9aa3af); font-weight: 600;">{{led}}AO VIVO</span>
     <b style="font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: 0.04em;">23:01</b>
     <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="30" hint-size="30px,30px"></x-import>
-      <a href="G4-Equipe-Mobile.dc.html" aria-label="Equipe e acessos" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 10px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Mobile.dc.html" aria-label="Equipe e acessos" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 10px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
   </header>
 
   <div style="position: relative; flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 8px 14px 0; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
@@ -47,7 +48,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l10 10-10 10L2 12z M2 12h20 M12 2v20" stroke-width="1.6" stroke-linejoin="round" style="stroke: var(--av-plat, var(--av-plat, #d9dee6));"></path></svg>
           <span style="width: 70px; height: 1px; background: linear-gradient(90deg, rgba(var(--av-plat-rgb, 217,222,230), 0.6) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 100%);"></span>
         </div>
-        <div style="font-style: italic; font-size: 15px; color: var(--av-greet, #8b94a1); margin: 2px 0 8px;">“Olá, Otto. Onde vamos hoje?”</div>
+        <div style="font-style: italic; font-size: 15px; color: var(--av-greet, #8b94a1); margin: 2px 0 8px;">“Olá, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import>. Onde vamos hoje?”</div>
       </div>
 
     </sc-if>
@@ -302,7 +303,7 @@ class Component extends DCLogic {
       status: s.conversa ? 'CONVERSA ATIVA · OUVINDO · TOQUE EM CONVERSA PARA ENCERRAR' : s.listening ? 'OUVINDO… TOQUE DE NOVO PARA ENVIAR' : s.note ? s.note.toUpperCase() : att ? 'ANEXO PRONTO · DESCREVA E ENVIE' : 'ATALHOS · UM TOQUE ENVIA',
       statusTone: s.conversa || s.listening ? 'var(--av-accent, #409cff)' : s.note ? 'var(--av-warn, #f0a63a)' : 'var(--av-ink4, #7d8796)',
       showStatus: !!(s.conversa || s.listening || s.note || att),
-      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : 'rgba(var(--av-card-rgb, 15,19,26), 0.9)', line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.09)', k: m.role === 'user' ? 'OTTO' : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
+      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : 'rgba(var(--av-card-rgb, 15,19,26), 0.9)', line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.09)', k: m.role === 'user' ? (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto').toUpperCase() : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
       chips: atalhos.map((a) => ({ l: a.l, onClick: () => this.ask(a.q, a.id) })),
       faq: [
         { short: 'GERADOR', n: '2 · GERADOR', s: 'Gerador Onan MDKDP — ligar · desligar · alarmes', eq: 'Onan MDKDP · 280,7 h', chip: 'PRONTO', href: 'F4-FAQ-Gerador.dc.html', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)' },

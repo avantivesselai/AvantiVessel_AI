@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -149,7 +150,7 @@ class Component extends DCLogic {
       countLabel: 'NA TELA INICIAL · ' + list.length + ' DE 8',
       bankLabel: 'BANCO · ' + bank.length + ' DISPONÍVEIS · TOQUE EM + PARA ADICIONAR',
       bank: bank.map((b) => ({ l: b.l, add: () => this.add(b) })),
-      subtitle: s.note || 'abaixo do chat · perfil de Otto · igual no web', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      subtitle: s.note || 'abaixo do chat · perfil de ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' · igual no web', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
       editL: s.editL, editQ: s.editQ,
       onEditL: (e) => this.setState({ editL: e.target.value }), onEditQ: (e) => this.setState({ editQ: e.target.value }),
       onEditKey: (e) => { if (e.key === 'Enter') this.saveEdit(); if (e.key === 'Escape') this.setState({ editing: -1 }); },

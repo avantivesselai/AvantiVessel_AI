@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Avanti Vessel AI — Início (web) · SOS</title>
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -31,11 +32,11 @@ button { font: inherit; }
   <span style="color: var(--av-ink3, #9aa3af); font-weight: 600;">REG. 3813927725 · CASCO 51BR153</span>
   <b style="font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: 0.04em;">23:01</b>
   <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="34" hint-size="34px,34px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
 </header>
   <main style="flex-grow: 1; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 40px 22px; background: radial-gradient(ellipse 55% 60% at 50% 0%, rgba(var(--av-accent-rgb, 64,156,255), 0.06) 0%, rgba(var(--av-bg-rgb, 5,7,11), 0) 60%);">
     <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 8px 30px 10px;"><svg viewBox="0 0 590 100" width="614" height="104" role="img" aria-label="AVANTI" style="display: block;"><defs><linearGradient id="wmS1SOSW104" x1="0" y1="0" x2="0" y2="1"><stop offset="0.12" style="stop-color: var(--av-wm-top, var(--av-wm-top, #ffffff));"></stop><stop offset="0.46" style="stop-color: var(--av-plat, var(--av-plat, #d9dee6));"></stop><stop offset="0.96" style="stop-color: var(--av-wm-bot, var(--av-wm-bot, #5d6673));"></stop></linearGradient></defs><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M112 0 L140 0 L168 67 L196 0 L223 0 L179 100 L156 100 Z M219 100 L265 0 L288 0 L334 100 L308 100 L277 27 L255 76 L277 76 L277 100 Z M348 0 L373 0 L421 58.6 L421 0 L447 0 L447 100 L421 100 L421 94.6 L373 39.4 L373 100 L348 100 Z M459 0 L551 0 L551 26 L518 26 L518 100 L491 100 L491 26 L459 26 Z M563 0 L590 0 L590 100 L563 100 Z" fill="url(#wmS1SOSW104)"></path></svg><div style="display: flex; align-items: baseline; gap: 0.34em; padding-left: 0.34em; font-size: 44px;"><span style="font-family: Montserrat, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: 0.34em; line-height: 1; color: var(--av-ink, #e9edf2); white-space: nowrap;">VESSEL</span><svg viewBox="0 0 156 100" width="48" height="31" role="img" aria-label="AI" style="display: block;"><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M129 0 L156 0 L156 100 L129 100 Z" style="fill: var(--av-accent, var(--av-accent, #409cff));"></path></svg></div></div>
-    <div style="font-style: italic; font-size: 22px; color: var(--av-greet, #8b94a1); margin: 10px 0 28px; font-weight: 400;">“Olá, Otto. Onde vamos hoje?”</div>
+    <div style="font-style: italic; font-size: 22px; color: var(--av-greet, #8b94a1); margin: 10px 0 28px; font-weight: 400;">“Olá, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import>. Onde vamos hoje?”</div>
 
     <div style="display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr)); gap: 14px; width: 1250px;">
       <sc-for list="{{buttons}}" as="b" hint-placeholder-count="5">

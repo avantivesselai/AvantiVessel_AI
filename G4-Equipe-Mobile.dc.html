@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -140,7 +141,7 @@ class Component extends DCLogic {
     const dg = v.replace(/\D/g, ''); if (dg.length < 8 || dg.length > 15) return this.toast('Telefone inválido — use DDD e número', 'var(--av-warn, #f0a63a)');
     const eq = Object.assign({}, this.state.eq); eq.fones = Object.assign({}, eq.fones, { [id]: v });
     this.save(eq); this.setState({ fone: null }); this.toast('Telefone salvo · ' + v);
-    if (window.AvantiBrain) window.AvantiBrain.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Contato atualizado em Equipe: ' + id + ' · telefone cadastrado por Otto.', who: 'Otto', src: 'app · equipe' });
+    if (window.AvantiBrain) window.AvantiBrain.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Contato atualizado em Equipe: ' + id + ' · telefone cadastrado por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + '.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
   }
   convidar() {
     const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim(); const func = (this.funcRef.current ? this.funcRef.current.value : '').trim();
@@ -148,7 +149,7 @@ class Component extends DCLogic {
     const B = window.AvantiBrain; const n = B ? B.now() : { d: 'hoje' };
     const eq = Object.assign({}, this.state.eq); eq.convites = (eq.convites || []).concat([{ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d }]);
     this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite PENDENTE · ' + nome);
-    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' — pendente de confirmação.', who: 'Otto', src: 'app · equipe' });
+    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' — pendente de confirmação.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
   }
   renderVals() {
     const s = this.state; const fones = (s.eq && s.eq.fones) || {}; const convites = (s.eq && s.eq.convites) || [];
@@ -161,9 +162,9 @@ class Component extends DCLogic {
       nomeRef: this.nomeRef, funcRef: this.funcRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
       foneRef: this.foneRef, saveFone: () => this.saveFone(), onFoneKey: (e) => { if (e.key === 'Enter') this.saveFone(); if (e.key === 'Escape') this.setState({ fone: null }); },
       people: [
-        Object.assign({ n: 'Otto Licks', ini: 'OL', role: 'proprietário · perfil ativo', s: s.atalhos + ' atalhos na tela inicial · alertas das 09:00 · recebe SOS, anomalias e vencimentos', tone: 'var(--av-accent, #409cff)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' }, fone('Otto')),
-        Object.assign({ n: 'Giovanni', ini: 'G', role: 'função a bordo · A CONFIRMAR', s: 'Acionado pelo SOS e pelo modo navegação ("Chamar Giovanni") · alertas das 09:00 desde 14/08', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)' }, fone('Giovanni')),
-        Object.assign({ n: 'Lucas', ini: 'L', role: 'técnico · 3 tarefas na agenda', s: 'D-4 tensões Quick VRS / SBC NRG+ · D-24 revisão do sistema · D-33 isolador galvânico', tone: 'var(--av-warn, #f0a63a)', line: 'var(--av-line, #1d2229)' }, fone('Lucas'))
+        Object.assign({ n: 'Otto Licks', ini: 'OL', role: 'proprietário' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'otto' ? ' · perfil ativo' : ''), s: s.atalhos + ' atalhos na tela inicial · alertas das 09:00 · recebe SOS, anomalias e vencimentos', tone: 'var(--av-accent, #409cff)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' }, fone('Otto')),
+        Object.assign({ n: 'Giovanni', ini: 'G', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'giovanni' ? ' · perfil ativo' : ''), s: 'Acionado pelo SOS e pelo modo navegação ("Chamar Giovanni") · alertas das 09:00 desde 14/08', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)' }, fone('Giovanni')),
+        Object.assign({ n: 'Lucas', ini: 'L', role: 'técnico · 3 tarefas na agenda' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'lucas' ? ' · perfil ativo' : ''), s: 'D-4 tensões Quick VRS / SBC NRG+ · D-24 revisão do sistema · D-33 isolador galvânico', tone: 'var(--av-warn, #f0a63a)', line: 'var(--av-line, #1d2229)' }, fone('Lucas'))
       ],
       vendors: [
         { id: 'Eduardo', n: 'Eduardo · Marina Express', role: 'casco', s: 'inspeção 12/08 · próxima 12/11', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },

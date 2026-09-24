@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · Avanti Vessel AI</title>
+<meta name="theme-color" content="#05070b">
+<meta name="referrer" content="no-referrer">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./assets/favicon_64.png">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Avanti">
+<script src="./avanti-auth.js"></script>
+<script>
+/* Já logado → segue direto para o destino. */
+(function () {
+  var A = window.AvantiAuth; if (!A) return;
+  var s = null; try { s = sessionStorage.getItem('avanti.sessao.v1') || localStorage.getItem('avanti.sessao.v1'); } catch (e) {}
+  if (s && A.usuario()) location.replace(A.destinoSeguro(new URLSearchParams(location.search).get('next')));
+})();
+</script>
+<script src="./avanti-theme.js"></script>
+<script src="./avanti-app.js"></script>
+<style>
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+.bg { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(var(--av-plat-rgb, 217,222,230), 0.12) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 62%); }
+.top { position: relative; display: flex; justify-content: flex-end; padding: max(14px, env(safe-area-inset-top, 0px)) 16px 0; }
+main { position: relative; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 16px 16px 28px; box-sizing: border-box; }
+.card { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 22px; }
+.brand { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.brand img { width: 164px; height: auto; filter: var(--av-logo-filter, none); }
+.brand h1 { margin: 0; font-size: 13px; letter-spacing: 0.32em; font-weight: 700; color: var(--av-ink2, #aeb6c2); }
+.brand p { margin: 0; font-size: 12.5px; color: var(--av-ink4, #7d8796); letter-spacing: 0.04em; }
+form { display: flex; flex-direction: column; gap: 14px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 20px; padding: 20px; box-shadow: 0 18px 50px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.45 * var(--av-shadow-k, 1))); }
+label { display: flex; flex-direction: column; gap: 7px; font-size: 11.5px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-ink3, #9aa3af); }
+.field { position: relative; display: flex; }
+input[type=text], input[type=password] { width: 100%; box-sizing: border-box; min-height: 50px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-row, #12161e); color: var(--av-ink, #e9edf2); font-family: inherit; font-weight: 500; font-size: 16px; line-height: 1.2; letter-spacing: 0.01em; outline: none; transition: border-color .2s, box-shadow .2s; }
+input:focus { border-color: var(--av-accent, #409cff); box-shadow: 0 0 0 4px rgba(var(--av-accent-rgb, 64,156,255), 0.16); }
+input::placeholder { color: var(--av-ph, #4c5666); }
+.field input { padding-right: 64px; }
+.eye { position: absolute; right: 4px; top: 3px; bottom: 3px; min-width: 56px; border: 0; border-radius: 11px; background: transparent; color: var(--av-ink3, #9aa3af); font-family: inherit; font-weight: 700; font-size: 11px; letter-spacing: 0.12em; cursor: pointer; }
+.eye:focus-visible { outline: 2px solid var(--av-accent, #409cff); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { min-height: 38px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--av-line, #1d2229); background: transparent; color: var(--av-ink2, #aeb6c2); font-family: inherit; font-weight: 700; font-size: 12px; letter-spacing: 0.1em; cursor: pointer; }
+.chip[aria-pressed=true] { border-color: var(--av-accent, #409cff); color: var(--av-accent, #409cff); background: rgba(var(--av-accent-rgb, 64,156,255), 0.12); }
+.keep { flex-direction: row; align-items: center; gap: 10px; letter-spacing: 0.02em; font-weight: 500; font-size: 14px; color: var(--av-ink2, #aeb6c2); min-height: 40px; cursor: pointer; }
+.keep input { width: 20px; height: 20px; margin: 0; accent-color: var(--av-accent, #409cff); }
+button.go { min-height: 52px; border: 0; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-family: inherit; font-weight: 800; font-size: 14px; letter-spacing: 0.2em; cursor: pointer; transition: filter .2s, opacity .2s; }
+button.go:hover { filter: brightness(1.08); }
+button.go:disabled { opacity: 0.55; cursor: progress; }
+.msg { min-height: 20px; margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--av-crit, #ff3b30); }
+.msg.info { color: var(--av-ink4, #7d8796); }
+.note { margin: 0; font-size: 12px; line-height: 1.5; color: var(--av-ink4, #7d8796); text-align: center; }
+</style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="top"><avanti-theme-toggle size="40"></avanti-theme-toggle></div>
+  <main>
+    <div class="card">
+      <div class="brand">
+        <img src="assets/logo_white.png" alt="Avanti Vessel">
+        <h1>AVANTI VESSEL AI</h1>
+        <p>Azimut Atlantis 51 · acesso da equipe</p>
+      </div>
+      <form id="f" novalidate>
+        <div class="chips" role="group" aria-label="Escolher usuário">
+          <button type="button" class="chip" data-u="Otto" aria-pressed="false">OTTO</button>
+          <button type="button" class="chip" data-u="Lucas" aria-pressed="false">LUCAS</button>
+          <button type="button" class="chip" data-u="Giovanni" aria-pressed="false">GIOVANNI</button>
+        </div>
+        <label>USUÁRIO
+          <input id="u" type="text" name="username" autocomplete="username" autocapitalize="words" spellcheck="false" maxlength="40" placeholder="Otto, Lucas ou Giovanni" required>
+        </label>
+        <label>SENHA
+          <span class="field">
+            <input id="p" type="password" name="password" autocomplete="current-password" maxlength="128" placeholder="Senha" required>
+            <button type="button" class="eye" id="eye" aria-label="Mostrar senha" aria-pressed="false">VER</button>
+          </span>
+        </label>
+        <label class="keep"><input id="k" type="checkbox" checked> Manter conectado neste aparelho</label>
+        <p class="msg" id="m" role="alert" aria-live="assertive"></p>
+        <button class="go" id="go" type="submit">ENTRAR</button>
+      </form>
+      <p class="note">Com “manter conectado”, o acesso vale 30 dias neste aparelho. Sem ele, até fechar o navegador (máx. 12 h).</p>
+    </div>
+  </main>
+  <avanti-rodape></avanti-rodape>
+<script>
+(function () {
+  var A = window.AvantiAuth;
+  var f = document.getElementById('f'), u = document.getElementById('u'), p = document.getElementById('p'), k = document.getElementById('k');
+  var m = document.getElementById('m'), go = document.getElementById('go'), eye = document.getElementById('eye');
+  var chips = [].slice.call(document.querySelectorAll('.chip'));
+  var timer = 0;
+  function msg(t, info) { m.textContent = t || ''; m.className = info ? 'msg info' : 'msg'; }
+  function marcar() { var v = u.value.trim().toLowerCase(); chips.forEach(function (c) { c.setAttribute('aria-pressed', c.getAttribute('data-u').toLowerCase() === v ? 'true' : 'false'); }); }
+  function travado(ate) {
+    clearInterval(timer);
+    var tick = function () {
+      var s = Math.ceil((ate - Date.now()) / 1000);
+      if (s <= 0) { clearInterval(timer); go.disabled = false; msg(''); return; }
+      go.disabled = true; msg('Muitas tentativas. Tente de novo em ' + s + ' s.');
+    };
+    tick(); timer = setInterval(tick, 1000);
+  }
+  chips.forEach(function (c) { c.addEventListener('click', function () { u.value = c.getAttribute('data-u'); marcar(); p.focus(); }); });
+  u.addEventListener('input', marcar);
+  eye.addEventListener('click', function () {
+    var ver = p.type === 'password'; p.type = ver ? 'text' : 'password';
+    eye.textContent = ver ? 'OCULTAR' : 'VER'; eye.setAttribute('aria-pressed', ver ? 'true' : 'false'); eye.setAttribute('aria-label', ver ? 'Ocultar senha' : 'Mostrar senha');
+  });
+  if (!A) { msg('Não foi possível carregar o acesso. Recarregue a página.'); go.disabled = true; return; }
+  var ate = A.bloqueadoAte(); if (ate) travado(ate);
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (go.disabled) return;
+    if (!u.value.trim() || !p.value) { msg('Informe usuário e senha.'); (u.value.trim() ? p : u).focus(); return; }
+    go.disabled = true; msg('Verificando…', true);
+    A.entrar(u.value, p.value, k.checked).then(function (r) {
+      if (r.ok) {
+        msg('Bem-vindo, ' + r.usuario.nome + '.', true);
+        location.replace(A.destinoSeguro(new URLSearchParams(location.search).get('next')));
+        return;
+      }
+      p.value = ''; go.disabled = false;
+      if (r.motivo === 'bloqueado') travado(r.ate);
+      else if (r.motivo === 'navegador') msg('Este navegador não permite o login seguro. Abra pelo endereço https:// em um navegador atual.');
+      else { msg('Usuário ou senha incorretos.'); p.focus(); }
+    });
+  });
+  marcar();
+})();
+</script>
+</body>
+</html>

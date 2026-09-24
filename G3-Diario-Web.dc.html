@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Console · Diário de bordo (web)</title>
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -45,7 +46,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
       </span>
       <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
     </div>
   </header>
 
@@ -149,7 +150,7 @@ class Component extends DCLogic {
     const B = window.AvantiBrain; if (!B) return;
     text = (text || (this.inputRef.current ? this.inputRef.current.value : '')).trim();
     if (!text) return this.toast('Escreva, fale ou fotografe o que registrar', 'var(--av-warn, #f0a63a)');
-    B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: 'Otto', src: src || 'console · texto' });
+    B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: src || 'console · texto' });
     if (this.inputRef.current) this.inputRef.current.value = '';
     this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Linha nova no diário — nada se apaga');
   }
@@ -157,7 +158,7 @@ class Component extends DCLogic {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
     const B = window.AvantiBrain; if (!B) return;
     const txt = this.inputRef.current ? this.inputRef.current.value.trim() : '';
-    B.addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: 'Foto anexada: ' + f.name + (txt ? ' — ' + txt : '') + ' · identificação A CONFIRMAR.', who: 'Otto', src: 'console · foto' });
+    B.addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: 'Foto anexada: ' + f.name + (txt ? ' — ' + txt : '') + ' · identificação A CONFIRMAR.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · foto' });
     if (this.inputRef.current) this.inputRef.current.value = '';
     this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Foto anexada ao diário como A CONFIRMAR');
   }

@@ -3,6 +3,7 @@
    2) No site publicado (janela de topo): ajusta a prancheta à janela —
       celular = ocupa a largura da tela (rola se precisar); computador/tablet = cabe inteira, centralizada.
    3) Registra o service worker só em *.github.io (abre offline depois da 1ª visita).
+   4) Põe o rodapé (versão · usuário · crédito) logo abaixo da prancheta — definido em avanti-auth.js.
    Dentro do editor (iframe) só faz o passo 1. */
 (function () {
   if (window.__avantiApp) return; window.__avantiApp = true;
@@ -67,7 +68,7 @@
     window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
   }
 
-  var raf = 0;
+  var raf = 0, rodape = null;
   function art() {
     var c = d.querySelectorAll('[style*="width: 1440px"],[style*="width: 390px"],[style*="width: 2380px"]');
     for (var i = 0; i < c.length; i++) {
@@ -84,6 +85,8 @@
     var de = d.documentElement;
     var vw = de.clientWidth || window.innerWidth, vh = de.clientHeight || window.innerHeight;
     var phone = W <= 430 && vw < 600;
+    var rh = rodape && rodape.isConnected ? rodape.offsetHeight : 0;
+    if (!phone) vh = Math.max(200, vh - rh); // no computador o rodapé fica visível sob a prancheta
     var z = phone ? vw / W : Math.min(vw / W, vh / H);
     z = Math.max(0.25, Math.min(z, 2));
     if (Math.abs(z - 1) < 0.005) z = 1;
@@ -98,6 +101,9 @@
   window.addEventListener('resize', schedule);
   window.addEventListener('orientationchange', schedule);
   function start() {
+    if (!/Manual-/.test(location.pathname) && !d.querySelector('deck-stage') && window.customElements && customElements.get('avanti-rodape') && !d.querySelector('avanti-rodape')) {
+      rodape = d.createElement('avanti-rodape'); d.body.appendChild(rodape);
+    }
     schedule();
     if (window.MutationObserver) new MutationObserver(schedule).observe(d.body, { childList: true, subtree: true });
   }

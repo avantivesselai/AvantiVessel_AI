@@ -1,8 +1,8 @@
 /* Avanti Vessel AI — service worker (rede primeiro; cache só como reserva offline). */
-const CACHE = 'avanti-site-v1';
+const CACHE = 'avanti-site-v1.1.0';
 const CORE = [
   './', './index.html', './Main.dc.html', './H2-Home-Mobile.dc.html', './S2-SOS-Mobile.dc.html', './S1-SOS-Web.dc.html',
-  './support.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './manifest.webmanifest',
+  './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './manifest.webmanifest',
   './assets/logo_white.png', './assets/icon-192.png', './assets/favicon_64.png',
   'https://unpkg.com/react@18.3.1/umd/react.production.min.js',
   'https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js'

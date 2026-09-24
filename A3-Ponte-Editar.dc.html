@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -110,7 +111,7 @@ class Component extends DCLogic {
     const ICON_OF = { 'Porão': 6, 'Baterias': 7, 'Gerador': 7, 'Climatização': 4, 'Estabilizador': 5, 'Âncora': 5, 'Maré': 2, 'Canal 16': 3, 'Autonomia': 6, 'Garantias': 8, 'Contatos': 4, 'Checklist de saída': 8, 'Anomalias': 1, 'Horímetros': 0, 'Tanques': 6, 'Clima': 2, 'Posição': 5 };
     const iconFor = (label) => (label in ICON_OF ? ICON_OF[label] : 4);
     return {
-      subtitle: s.note || ('Perfil de Otto · ' + tiles.length + ' de 8 blocos · aparece igual no painel'), noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      subtitle: s.note || ('Perfil de ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' · ' + tiles.length + ' de 8 blocos · aparece igual no painel'), noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
       hint: s.moving >= 0 ? 'Movendo "' + tiles[s.moving].label + '": toque no destino para trocar de lugar · toque de novo para cancelar.' : 'Toque em ⋮⋮ e depois no destino para reordenar · − remove (volta ao banco) · toque no ícone para trocar. Salvo na hora.',
       hintLine: s.moving >= 0 ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' : 'var(--av-line, #1d2229)',
       tiles: tiles.map((t, i) => Object.assign({}, this.ICONS[t.icon % this.ICONS.length], {
