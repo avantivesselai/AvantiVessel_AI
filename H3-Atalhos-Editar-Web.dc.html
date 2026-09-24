@@ -156,7 +156,13 @@ class Component extends DCLogic {
     { id: 'autonomia', l: 'AUTONOMIA', q: 'Autonomia com reserva de 10% pelas horas desde os 500 L.' },
     { id: 'mare', l: 'MARÉ AGORA', q: 'Maré e corrente agora e nas próximas 6 h na posição atual.' }
   ];
-  componentDidMount() { this.whenBrain(() => this.setState({ list: window.AvantiBrain.loadShortcuts() })); }
+  componentDidMount() {
+    this.whenBrain(() => this.setState({ list: window.AvantiBrain.loadShortcuts() }));
+    // Outra aba/tela salvou: recarrega a lista
+    this._st = (e) => { if (window.AvantiBrain && (!e || e.key === null || e.key === 'avanti.atalhos.v1')) this.setState({ list: window.AvantiBrain.loadShortcuts() }); };
+    window.addEventListener('storage', this._st);
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this._st); clearTimeout(this._n); }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -166,29 +172,38 @@ class Component extends DCLogic {
     }, 50);
   }
   list() { return this.state.list || this.FALLBACK; }
+  // Lê de novo antes de gravar (ler-alterar-gravar): nada salvo em outra aba se perde
+  fresh() { return window.AvantiBrain ? window.AvantiBrain.loadShortcuts() : this.list().slice(); }
+  mudou(l) { this.setState({ list: l, editing: -1 }); this.warn('A lista mudou em outra tela — confira e tente de novo'); }
   commit(list, note, tone) {
     if (window.AvantiBrain) window.AvantiBrain.saveShortcuts(list);
     this.setState({ list: list, note: note || '', noteTone: tone || 'var(--av-ok, #34c77a)' });
     clearTimeout(this._n); if (note) this._n = setTimeout(() => this.setState({ note: '' }), 3500);
   }
   warn(msg) { this.setState({ note: msg, noteTone: 'var(--av-warn, #f0a63a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 3500); }
-  move(from, to) { const l = this.list().slice(); if (to < 0 || to >= l.length || from === to || from < 0) return; const it = l.splice(from, 1)[0]; l.splice(to, 0, it); this.commit(l, 'Ordem salva'); }
-  remove(i) { const l = this.list().slice(); const it = l.splice(i, 1)[0]; this.commit(l, it.l + ' removido' + (String(it.id).indexOf('custom-') === 0 ? '' : ' — voltou ao banco')); if (this.state.editing === it.id) this.setState({ editing: -1 }); }
-  add(item) { const l = this.list(); if (l.length >= 8) return this.warn('Máximo de 8 na tela inicial — remova um para adicionar'); this.commit(l.concat([Object.assign({}, item)]), item.l + ' adicionado à tela inicial'); }
+  move(from, to) {
+    const cur = this.list(); if (to < 0 || to >= cur.length || from === to || from < 0 || from >= cur.length) return;
+    const l = this.fresh(); const a = l.findIndex((x) => x.id === cur[from].id); const b = l.findIndex((x) => x.id === cur[to].id); if (a < 0 || b < 0) return this.mudou(l);
+    const it = l.splice(a, 1)[0]; l.splice(b, 0, it); this.commit(l, 'Ordem salva');
+  }
+  remove(i) { const it = this.list()[i]; if (!it) return; const l = this.fresh().filter((x) => x.id !== it.id); this.commit(l, it.l + ' removido' + (String(it.id).indexOf('custom-') === 0 ? '' : ' — voltou ao banco')); if (this.state.editing === it.id) this.setState({ editing: -1 }); }
+  add(item) { const l = this.fresh(); if (l.some((x) => x.id === item.id)) return this.setState({ list: l }); if (l.length >= 8) return this.warn('Máximo de 8 na tela inicial — remova um para adicionar'); this.commit(l.concat([Object.assign({}, item)]), item.l + ' adicionado à tela inicial'); }
   create() {
     const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim().toUpperCase();
     const perg = (this.pergRef.current ? this.pergRef.current.value : '').trim();
     if (!nome || !perg) return this.warn('Preencha nome e pergunta para criar o atalho');
-    const l = this.list(); if (l.length >= 8) return this.warn('Máximo de 8 na tela inicial — remova um para criar');
+    const l = this.fresh(); if (l.length >= 8) return this.warn('Máximo de 8 na tela inicial — remova um para criar');
     if (l.some((x) => String(x.l).toUpperCase() === nome)) return this.warn('Já existe um atalho com esse nome');
     this.commit(l.concat([{ id: 'custom-' + Date.now(), l: nome, q: perg }]), nome + ' criado e salvo');
     if (this.nomeRef.current) this.nomeRef.current.value = ''; if (this.pergRef.current) this.pergRef.current.value = '';
   }
   startEdit(i) { const a = this.list()[i]; if (a) this.setState({ editing: a.id, editL: a.l, editQ: a.q }); }
   saveEdit() {
-    const id = this.state.editing;
-    const l = this.list().slice(); const i = l.findIndex((x) => x.id === id); if (i < 0) { this.setState({ editing: -1 }); return; } const a = l[i];
-    l[i] = Object.assign({}, a, { l: this.state.editL.trim().toUpperCase() || a.l, q: this.state.editQ.trim() || a.q });
+    const id = this.state.editing; const nome = this.state.editL.trim().toUpperCase();
+    const l = this.fresh(); const i = l.findIndex((x) => x.id === id); if (i < 0) return this.mudou(l); const a = l[i];
+    // Mesmo critério de create(): nome único na tela inicial
+    if (nome && l.some((x) => x.id !== id && String(x.l).toUpperCase() === nome)) return this.warn('Já existe um atalho com esse nome');
+    l[i] = Object.assign({}, a, { l: nome || a.l, q: this.state.editQ.trim() || a.q });
     this.setState({ editing: -1 }); this.commit(l, 'Atalho salvo');
   }
   renderVals() {

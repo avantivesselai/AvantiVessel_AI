@@ -18,8 +18,7 @@
 /* Já logado → segue direto para o destino. */
 (function () {
   var A = window.AvantiAuth; if (!A) return;
-  var s = null; try { s = sessionStorage.getItem('avanti.sessao.v1') || localStorage.getItem('avanti.sessao.v1'); } catch (e) {}
-  if (s && A.usuario()) location.replace(A.destinoSeguro(new URLSearchParams(location.search).get('next')));
+  if (A.logado()) location.replace(A.destinoSeguro(new URLSearchParams(location.search).get('next')));
 })();
 </script>
 <script src="./avanti-theme.js"></script>
@@ -86,7 +85,7 @@ button.go:disabled { opacity: 0.55; cursor: progress; }
         <p class="msg" id="m" role="alert" aria-live="assertive"></p>
         <button class="go" id="go" type="submit">ENTRAR</button>
       </form>
-      <p class="note">Com “manter conectado”, o acesso vale 30 dias neste aparelho. Sem ele, até fechar o navegador (máx. 12 h).</p>
+      <p class="note">Com “manter conectado”, o acesso vale 30 dias neste aparelho. Sem ele, vale 12 horas.</p>
     </div>
   </main>
   <avanti-rodape></avanti-rodape>
@@ -129,6 +128,7 @@ button.go:disabled { opacity: 0.55; cursor: progress; }
       }
       p.value = ''; go.disabled = false;
       if (r.motivo === 'bloqueado') travado(r.ate);
+      else if (r.motivo === 'armazenamento') msg('O navegador está bloqueando os dados deste site. Permita cookies e dados do site (ou saia da navegação anônima) e tente de novo.');
       else if (r.motivo === 'navegador') msg('Este navegador não permite o login seguro. Abra pelo endereço https:// em um navegador atual.');
       else { msg('Usuário ou senha incorretos.'); p.focus(); }
     });

@@ -1,7 +1,7 @@
 /* Avanti Vessel AI — publicação (GitHub Pages · app instalável).
    1) Garante as metas de app em toda prancheta (viewport, manifest, ícones, iOS).
    2) No site publicado (janela de topo): ajusta a prancheta à janela —
-      celular = ocupa a largura da tela (rola se precisar); computador/tablet = cabe inteira, centralizada.
+      celular = ocupa a largura da tela (rola se precisar; deitado fica em 1:1); computador/tablet = cabe inteira, centralizada.
    3) Registra o service worker só em *.github.io (abre offline depois da 1ª visita).
    4) Põe o rodapé (versão · usuário · crédito) logo abaixo da prancheta — definido em avanti-auth.js.
    Dentro do editor (iframe) só faz o passo 1. */
@@ -33,6 +33,9 @@
 
   var topWin = true; try { topWin = window.top === window.self; } catch (e) { topWin = false; }
   if (!topWin) return;
+
+  // Fundo fora do <x-dc>: o boot do support.js troca o <x-dc> (e o <style> do helmet) pelo #dc-root — sem isto pisca um quadro branco.
+  var fundo = d.createElement('style'); fundo.textContent = 'html{background:var(--av-bg,#05070b)}'; head.appendChild(fundo);
 
   // Celular abrindo uma tela web → vai para a tela equivalente do app.
   // Respeita a escolha "Sempre web" (index.html?v=web) e quem veio da lista de telas (?v=lista).
@@ -68,9 +71,10 @@
     window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
   }
 
-  var raf = 0, rodape = null;
+  var raf = 0, rodape = null, atual = null, olhaEstilo = null;
+  // Só a prancheta já desenhada (#dc-root): mexer no modelo escondido dentro do <x-dc> fazia o React apagar o zoom depois.
   function art() {
-    var c = d.querySelectorAll('[style*="width: 1440px"],[style*="width: 390px"],[style*="width: 2380px"]');
+    var c = d.querySelectorAll('#dc-root [style*="width: 1440px"],#dc-root [style*="width: 390px"],#dc-root [style*="width: 2380px"]');
     for (var i = 0; i < c.length; i++) {
       var s = c[i].style;
       if (/px$/.test(s.width) && parseFloat(s.height) >= 600) return c[i];
@@ -79,23 +83,29 @@
   }
   function fit() {
     raf = 0;
-    if (d.querySelector('deck-stage')) return; // a apresentação escala sozinha
+    // A apresentação escala sozinha. Sem a trilha de miniaturas do editor: aqui ninguém aplica excluir/duplicar/mover e ela travaria.
+    var ds = d.querySelector('deck-stage');
+    if (ds) { if (!ds.hasAttribute('no-rail')) ds.setAttribute('no-rail', ''); return; }
     var el = art(); if (!el) return;
+    // Se um novo desenho do React reescrever o style da prancheta, ajusta de novo.
+    if (el !== atual && olhaEstilo) { atual = el; olhaEstilo.disconnect(); olhaEstilo.observe(el, { attributes: true, attributeFilter: ['style'] }); }
     var W = parseFloat(el.style.width), H = parseFloat(el.style.height);
     var de = d.documentElement;
     var vw = de.clientWidth || window.innerWidth, vh = de.clientHeight || window.innerHeight;
-    var phone = W <= 430 && vw < 600;
-    var rh = rodape && rodape.isConnected ? rodape.offsetHeight : 0;
+    // Celular deitado (tela de toque baixa) continua celular; janela baixa no computador segue cabendo inteira.
+    var phone = W <= 430 && (vw < 600 || (vh < 600 && !!(window.matchMedia && matchMedia('(pointer: coarse)').matches)));
+    var rh = rodape && rodape.isConnected ? Math.max(rodape.offsetHeight, rodape.scrollHeight) : 0;
     if (!phone) vh = Math.max(200, vh - rh); // no computador o rodapé fica visível sob a prancheta
-    var z = phone ? vw / W : Math.min(vw / W, vh / H);
+    var z = phone ? (vw > vh ? Math.min(vw / W, 1) : vw / W) : Math.min(vw / W, vh / H);
     z = Math.max(0.25, Math.min(z, 2));
     if (Math.abs(z - 1) < 0.005) z = 1;
-    var zs = z === 1 ? '' : String(Math.round(z * 1000) / 1000);
+    var zs = z === 1 ? '' : String(Math.floor(z * 1000) / 1000); // para baixo: nunca passa 1px da tela (barra de rolagem à toa)
     if (el.style.zoom !== zs) el.style.zoom = zs;
     var mt = phone ? 0 : Math.max(0, Math.floor((vh - H * z) / 2));
     var mts = mt ? (mt / z).toFixed(2) + 'px' : '';
     if (el.style.marginTop !== mts) el.style.marginTop = mts;
     if (el.style.marginLeft !== 'auto') { el.style.marginLeft = 'auto'; el.style.marginRight = 'auto'; }
+    if (olhaEstilo) olhaEstilo.takeRecords(); // o que este fit() escreveu não chama outro fit() (senão oscila com barra de rolagem)
   }
   function schedule() { if (!raf) raf = requestAnimationFrame(fit); }
   window.addEventListener('resize', schedule);
@@ -105,7 +115,7 @@
       rodape = d.createElement('avanti-rodape'); d.body.appendChild(rodape);
     }
     schedule();
-    if (window.MutationObserver) new MutationObserver(schedule).observe(d.body, { childList: true, subtree: true });
+    if (window.MutationObserver) { new MutationObserver(schedule).observe(d.body, { childList: true, subtree: true }); olhaEstilo = new MutationObserver(schedule); }
   }
   if (d.body) start(); else d.addEventListener('DOMContentLoaded', start);
 })();

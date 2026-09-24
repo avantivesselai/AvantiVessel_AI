@@ -118,7 +118,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <label for="pergunta" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Pergunta</label>
         <input id="pergunta" maxlength="500" ref="{{inputRef}}" onKeyDown="{{onKey}}" onFocus="{{onFocus}}" onBlur="{{onBlur}}" placeholder="Pergunte qualquer coisa sobre sua embarcação…" autocomplete="off" style="flex-grow: 1; background: none; border: none; outline: none; color: var(--av-ink, #e9edf2); font-size: 16.5px; font-family: inherit; min-width: 0; padding: 12px 0;">
         <sc-for list="{{modes}}" as="m" hint-placeholder-count="4">
-          <button type="button" onClick="{{m.onClick}}" aria-label="{{m.aria}}" title="{{m.aria}}" style="width: 64px; height: 52px; border-radius: 12px; border: 1px solid {{m.line}}; background: {{m.bg}}; color: {{m.tone}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 0; flex-shrink: 0; transition: border-color .3s, color .3s, transform .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.5); color: var(--av-ink, #e9edf2); transform: translateY(-2px);">
+          <button type="button" onClick="{{m.onClick}}" aria-label="{{m.aria}}" title="{{m.aria}}" style="width: 64px; height: 52px; border-radius: 12px; border: 1px solid {{m.line}}; background: {{m.bg}}; color: {{m.tone}}; animation: {{m.anim}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 0; flex-shrink: 0; transition: border-color .3s, color .3s, transform .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.5); color: var(--av-ink, #e9edf2); transform: translateY(-2px);">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{m.d}}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span style="font-size: 8px; letter-spacing: 0.10em; font-weight: 700;">{{m.l}}</span>
           </button>
@@ -160,12 +160,16 @@ class Component extends DCLogic {
   handleHash() {
     const B = window.AvantiBrain; if (!B) return;
     const h = B.parseHash();
+    // Microfone só liga sozinho vindo de link interno: a tela de origem grava 'avanti.modo' = modo logo antes de navegar (uso único). Link de fora só realça o botão.
+    let armado = null;
+    try { armado = sessionStorage.getItem('avanti.modo'); sessionStorage.removeItem('avanti.modo'); } catch (e) {}
     if (!h.q && !h.mode) return;
     B.clearHash();
-    if (h.q) this.ask(h.q);
-    if (h.mode === 'voz') { if (!this.rec) this.toggleVoice(); }
+    if (h.q) this.ask(h.q, null, true);
+    if ((h.mode === 'voz' || h.mode === 'conversa') && armado !== h.mode) this.flash(h.mode === 'voz' ? 'Toque em VOZ para falar a pergunta — o microfone só liga com o seu toque.' : 'Toque em CONVERSA para começar — o microfone só liga com o seu toque.', 8000, h.mode);
+    else if (h.mode === 'voz') { if (!this.rec) this.toggleVoice(); }
     else if (h.mode === 'conversa') { if (!this.state.conversa) this.toggleConversa(); }
-    else if (h.mode === 'foto' || h.mode === 'video') this.flash(h.mode === 'foto' ? 'Toque em FOTO para escolher a imagem — etiqueta, tela de alarme, nota ou página de manual.' : 'Toque em VÍDEO para escolher o clipe de 10 s.');
+    else if (h.mode === 'foto' || h.mode === 'video') this.flash(h.mode === 'foto' ? 'Toque em FOTO para escolher a imagem — etiqueta, tela de alarme, nota ou página de manual.' : 'Toque em VÍDEO para escolher o clipe de 10 s.', 0, h.mode);
     else if (h.mode === 'texto' && this.inputRef.current) this.inputRef.current.focus();
   }
   componentWillUnmount() {
@@ -174,7 +178,7 @@ class Component extends DCLogic {
     this.stopRec();
     (this._pend || []).forEach(clearTimeout); clearTimeout(this._fl);
     if (this._raf) cancelAnimationFrame(this._raf);
-    if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+    this._fala = null; if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
   }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
@@ -202,16 +206,17 @@ class Component extends DCLogic {
     if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; el.style.background = 'radial-gradient(560px circle at ' + x + 'px ' + y + 'px, rgba(var(--av-plat-rgb, 217,222,230), 0.085), rgba(var(--av-accent-rgb, 64,156,255), 0.055) 35%, rgba(var(--av-bg-rgb, 5,7,11), 0) 65%)'; el.style.opacity = '1'; });
   }
   onLeave() { const el = this.spotRef.current; if (el) el.style.opacity = '0'; }
-  flash(msg, ms) { this.setState({ note: msg }); clearTimeout(this._fl); this._fl = setTimeout(() => this.setState({ note: '' }), ms || 4000); }
+  flash(msg, ms, realce) { this.setState({ note: msg, realce: realce || '' }); clearTimeout(this._fl); this._fl = setTimeout(() => this.setState({ note: '', realce: '' }), ms || 4000); }
   scrollThread() { const el = this.threadRef.current; if (el) el.scrollTop = el.scrollHeight; }
-  ask(q, id) {
+  // link = pergunta vinda do endereço (#q=): só leitura — não grava no diário, não leva o anexo nem apaga o que foi digitado.
+  ask(q, id, link) {
     const B = window.AvantiBrain; if (!B) return;
     q = String(q || '').trim().slice(0, 500);
-    const att = this.state.attachment;
+    const att = link ? null : this.state.attachment;
     if (!q && !att) { this.flash('Digite ou fale a pergunta — ou toque em um atalho.'); return; }
-    if (this.inputRef.current) this.inputRef.current.value = '';
+    if (!link && this.inputRef.current) this.inputRef.current.value = '';
     const userText = (att ? '[' + (att.kind === 'video' ? 'vídeo' : 'foto') + ' · ' + att.name + '] ' : '') + q;
-    this.setState((s) => ({ thread: s.thread.concat([{ role: 'user', text: userText }]), pending: (s.pending || 0) + 1, thinking: true, attachment: null, note: '' }), () => this.scrollThread());
+    this.setState((s) => ({ thread: s.thread.concat([{ role: 'user', text: userText }]), pending: (s.pending || 0) + 1, thinking: true, attachment: link ? s.attachment : null, note: '' }), () => this.scrollThread());
     const t = setTimeout(() => {
       this._pend = (this._pend || []).filter((x) => x !== t);
       if (this._dead) return;
@@ -220,21 +225,23 @@ class Component extends DCLogic {
         if (att) {
           a = B.answerAttachment(att.kind, att.file, { platform: 'web' });
           if (q) { const b = B.answer(q, { platform: 'web' }); if (b.key !== 'fallback' && b.key !== 'saudacao') a = { text: a.text + '\n\n' + b.text, src: b.src, actions: b.actions }; }
-        } else a = B.answer(q, { platform: 'web', id: id });
+        } else a = B.answer(q, link ? { platform: 'web', id: id, commit: false } : { platform: 'web', id: id });
       } catch (e) { a = { text: 'Não consegui responder agora — SEM DADOS. Tente de novo.', src: '', actions: [] }; }
       this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(a.text); });
     }, 650);
     this._pend = (this._pend || []).concat([t]);
   }
   clearThread() {
-    this.stopRec(); if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+    this.stopRec(); this._fala = null; if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
     (this._pend || []).forEach(clearTimeout); this._pend = [];
     this.setState({ thread: [], thinking: false, pending: 0, conversa: false, listening: false });
   }
+  // Só a fala mais recente reabre o microfone, e só sem outra resposta a caminho — senão ele ouve a voz do próprio app.
   speakAndResume(text) {
     const B = window.AvantiBrain; if (!B) return;
     this.stopRec(); this.setState({ listening: false });
-    B.speak(text, () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); });
+    const k = this._fala = {};
+    B.speak(text, () => { if (this._fala !== k) return; this._fala = null; if (!this._dead && this.state.conversa && !this.rec && !this.state.pending) this.startVoice(true); });
   }
   pick(kind) { const r = kind === 'video' ? this.videoRef.current : this.fotoRef.current; if (r) r.click(); }
   onFile(kind, e) {
@@ -278,10 +285,10 @@ class Component extends DCLogic {
   }
   toggleConversa() {
     const B = window.AvantiBrain;
-    if (this.state.conversa) { this.stopRec(); if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
+    if (this.state.conversa) { this.stopRec(); this._fala = null; if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
     if (this.rec) { this.stopRec(); this.setState({ listening: false }); }
     if (!B || !B.recognizer({ continuous: true })) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
-    this.setState({ conversa: true }, () => { B.speak('Conversa ativa. Pode falar.', () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); }); });
+    this.setState({ conversa: true }, () => this.speakAndResume('Conversa ativa. Pode falar.'));
   }
   renderVals() {
     const s = this.state; const fx = this.fx();
@@ -292,6 +299,8 @@ class Component extends DCLogic {
     const on = { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' };
     const hot = { tone: 'var(--av-crit, #ff3b30)', bg: 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)', line: 'rgba(var(--av-crit-rgb, 255,59,48), 0.55)' };
     const CARD = 'linear-gradient(180deg, rgba(var(--av-card3-rgb, 22,27,36), 0.92) 0%, rgba(var(--av-card2-rgb, 12,15,21), 0.94) 100%)';
+    const re = s.note ? s.realce : ''; // botão indicado pela dica do link (#mode=)
+    const pulso = (m) => (re === m ? 'avantiPulse 1.6s ease-in-out infinite' : 'none');
     return {
       sweep: fx.sweep, led: fx.led, orbit: fx.orbit, spot: fx.spot,
       onMove: (e) => this.onMove(e), onLeave: () => this.onLeave(),
@@ -320,10 +329,10 @@ class Component extends DCLogic {
         { n: '5 · ELETRÔNICOS', eq: 'Plotter · piloto · radar · AIS', tip: 'Eletrônicos do leme — plotter, piloto automático, radar, AIS, VHF e áudio', chip: '19 FAQ', href: 'F3-FAQ-Piloto-Web.dc.html', d: 'M4 5h16v11H4z M9 20h6 M12 16v4 M7 9l3 3-3 3 M12 15h3', tone: 'var(--av-accent, #409cff)', bg: CARD, line: 'rgba(var(--av-hl-rgb, 255,255,255), 0.09)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', cwash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.08)' }
       ],
       modes: [
-        Object.assign({ l: att && att.kind === 'foto' ? 'FOTO ✓' : 'FOTO', aria: 'Enviar foto — etiqueta, alarme na tela, nota fiscal ou página de manual', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z', onClick: () => this.pick('foto') }, att && att.kind === 'foto' ? on : modeBase),
-        Object.assign({ l: att && att.kind === 'video' ? 'VÍDEO ✓' : 'VÍDEO', aria: 'Enviar vídeo de 10 s — som ou comportamento anormal', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z', onClick: () => this.pick('video') }, att && att.kind === 'video' ? on : modeBase),
-        Object.assign({ l: s.listening && !s.conversa ? 'OUVINDO' : 'VOZ', aria: 'Falar — a pergunta é transcrita e respondida em texto e voz', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3', onClick: () => this.toggleVoice() }, s.listening && !s.conversa ? hot : modeBase),
-        Object.assign({ l: s.conversa ? 'ATIVA' : 'CONVERSA', aria: 'Conversa contínua por voz — sem tocar na tela', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2', onClick: () => this.toggleConversa() }, s.conversa ? { tone: 'var(--av-bg, #05070b)', bg: 'var(--av-accent, #409cff)', line: 'var(--av-accent, #409cff)' } : { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' })
+        Object.assign({ l: att && att.kind === 'foto' ? 'FOTO ✓' : 'FOTO', aria: 'Enviar foto — etiqueta, alarme na tela, nota fiscal ou página de manual', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z', onClick: () => this.pick('foto'), anim: pulso('foto') }, (att && att.kind === 'foto') || re === 'foto' ? on : modeBase),
+        Object.assign({ l: att && att.kind === 'video' ? 'VÍDEO ✓' : 'VÍDEO', aria: 'Enviar vídeo de 10 s — som ou comportamento anormal', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z', onClick: () => this.pick('video'), anim: pulso('video') }, (att && att.kind === 'video') || re === 'video' ? on : modeBase),
+        Object.assign({ l: s.listening && !s.conversa ? 'OUVINDO' : 'VOZ', aria: 'Falar — a pergunta é transcrita e respondida em texto e voz', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3', onClick: () => this.toggleVoice(), anim: pulso('voz') }, s.listening && !s.conversa ? hot : re === 'voz' ? on : modeBase),
+        Object.assign({ l: s.conversa ? 'ATIVA' : 'CONVERSA', aria: 'Conversa contínua por voz — sem tocar na tela', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2', onClick: () => this.toggleConversa(), anim: s.conversa ? 'none' : pulso('conversa') }, s.conversa ? { tone: 'var(--av-bg, #05070b)', bg: 'var(--av-accent, #409cff)', line: 'var(--av-accent, #409cff)' } : re === 'conversa' ? on : { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' })
       ]
     };
   }

@@ -28,27 +28,31 @@
     return framed && !/\.github\.io$/i.test(location.hostname);
   }
 
+  // Sessão só no localStorage: vale para todas as abas, e Sair/expiração chegam a todas. Com "manter conectado" 30 dias; sem, 12 h.
   function lerSessao() {
-    var raw = null;
-    try { raw = sessionStorage.getItem(K) || localStorage.getItem(K); } catch (e) {}
+    var raw = null; try { raw = localStorage.getItem(K); } catch (e) {}
     if (!raw) return null;
-    var s; try { s = JSON.parse(raw); } catch (e) { return null; }
-    if (!s || typeof s !== 'object' || typeof s.u !== 'string' || !Object.prototype.hasOwnProperty.call(USUARIOS, s.u)) return null;
-    if (typeof s.exp !== 'number' || !(s.exp > Date.now())) { limpar(); return null; }
+    var s = null; try { s = JSON.parse(raw); } catch (e) {}
+    var agora = Date.now();
+    if (!s || typeof s !== 'object' || typeof s.u !== 'string' || !Object.prototype.hasOwnProperty.call(USUARIOS, s.u) ||
+      typeof s.exp !== 'number' || !(s.exp > agora) || s.exp - agora > LONGA + DIA) { limpar(); return null; }
     return s;
   }
-  function limpar() { try { localStorage.removeItem(K); } catch (e) {} try { sessionStorage.removeItem(K); } catch (e) {} }
+  function limpar() { try { localStorage.removeItem(K); } catch (e) {} }
 
   function publico(id) {
     var u = USUARIOS[id]; if (!u) return null;
     return { id: id, nome: u.nome, completo: u.completo, ini: u.ini, papel: u.papel };
   }
+  // Sem sessão numa tela protegida (expirou com a página aberta): volta ao login — nada é assinado em nome de outro.
   function usuario() {
     var s = lerSessao();
     if (s) return publico(s.u);
-    return noEditor() ? publico('otto') : null;
+    if (noEditor()) return publico('otto');
+    if (!ehLogin()) paraLogin();
+    return null;
   }
-  function nome() { var u = usuario(); return u ? u.nome : 'Otto'; }
+  function nome() { var u = usuario(); return u ? u.nome : 'sem sessão'; }
 
   // Destino depois do login: só telas deste site (sem outro domínio, sem javascript:, sem subpasta).
   function destinoSeguro(next) {
@@ -67,19 +71,27 @@
   function deB64(s) { var r = atob(s), b = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) b[i] = r.charCodeAt(i); return b; }
   function iguais(a, b) { if (a.length !== b.length) return false; var d = 0; for (var i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; }
 
-  function tentativas() { try { var t = JSON.parse(localStorage.getItem(KT) || 'null'); return t && typeof t.n === 'number' && typeof t.ate === 'number' ? t : { n: 0, ate: 0 }; } catch (e) { return { n: 0, ate: 0 }; } }
+  // Trava no máximo 15 min, mesmo se o relógio do aparelho for corrigido para trás; erro de mais de 1 h atrás não conta.
+  var TETO = 15 * 60000;
+  function tentativas() {
+    var t = null; try { t = JSON.parse(localStorage.getItem(KT) || 'null'); } catch (e) {}
+    var agora = Date.now(), zero = { n: 0, ate: 0, ult: 0 };
+    if (!t || typeof t.n !== 'number' || typeof t.ate !== 'number' || typeof t.ult !== 'number') return zero;
+    if (t.ate - agora > TETO || t.ult - agora > TETO || agora - t.ult > 3600000) return zero;
+    return t;
+  }
   function bloqueadoAte() { var t = tentativas(); return t.ate > Date.now() ? t.ate : 0; }
   function falhou() {
-    var t = tentativas(); t.n += 1;
-    if (t.n >= 5) { t.ate = Date.now() + Math.min(15 * 60000, 30000 * Math.pow(2, t.n - 5)); }
+    var t = tentativas(); t.n += 1; t.ult = Date.now();
+    if (t.n >= 5) { t.ate = Date.now() + Math.min(TETO, 30000 * Math.pow(2, t.n - 5)); }
     try { localStorage.setItem(KT, JSON.stringify(t)); } catch (e) {}
   }
 
-  // Resolve { ok: true, usuario } ou { ok: false, motivo: 'credenciais' | 'bloqueado' | 'navegador', ate }.
+  // Resolve { ok: true, usuario } ou { ok: false, motivo: 'credenciais' | 'bloqueado' | 'navegador' | 'armazenamento', ate }.
   function entrar(login, senha, manter) {
     var ate = bloqueadoAte();
     if (ate) return Promise.resolve({ ok: false, motivo: 'bloqueado', ate: ate });
-    var id = String(login || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    var id = String(login || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     var u = Object.prototype.hasOwnProperty.call(USUARIOS, id) ? USUARIOS[id] : null;
     var subtle = window.crypto && window.crypto.subtle;
     if (!subtle || !window.TextEncoder) return Promise.resolve({ ok: false, motivo: 'navegador' });
@@ -92,17 +104,21 @@
         try { localStorage.removeItem(KT); } catch (e) {}
         limpar();
         var s = JSON.stringify({ u: id, em: Date.now(), exp: Date.now() + (manter ? LONGA : CURTA) });
-        try { (manter ? localStorage : sessionStorage).setItem(K, s); } catch (e) {}
+        try { localStorage.setItem(K, s); } catch (e) {}
+        if (!lerSessao()) return { ok: false, motivo: 'armazenamento' }; // navegador bloqueia dados do site
         avisar();
         return { ok: true, usuario: publico(id) };
       }, function () { return { ok: false, motivo: 'navegador' }; });
   }
 
+  var saindo = false;
   function paraLogin() {
+    if (saindo) return; saindo = true;
+    try { document.documentElement.style.visibility = 'hidden'; } catch (e) {}
     var aqui = arquivo(location.pathname) + location.search + location.hash;
     location.replace('login.html?next=' + encodeURIComponent(aqui));
   }
-  function sair() { limpar(); avisar(); try { sessionStorage.removeItem('avanti.lista'); } catch (e) {} location.replace('login.html'); }
+  function sair() { limpar(); avisar(); try { sessionStorage.removeItem('avanti.lista'); } catch (e) {} saindo = true; location.replace('login.html'); }
 
   function avisar() { try { window.dispatchEvent(new CustomEvent('avanti-sessao')); } catch (e) {} }
   window.addEventListener('storage', function (e) {
@@ -110,19 +126,27 @@
     avisar();
     if (!ehLogin() && !noEditor() && !lerSessao()) paraLogin(); // saiu em outra aba
   });
+  // Expirou com a tela aberta: confere ao voltar para a aba, ao focar e na hora exata do vencimento.
+  var vigia = 0;
+  function vigiar() {
+    if (ehLogin() || noEditor()) return;
+    var s = lerSessao(); clearTimeout(vigia);
+    if (!s) { paraLogin(); return; }
+    vigia = setTimeout(vigiar, Math.max(1000, Math.min(s.exp - Date.now() + 500, DIA)));
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) vigiar(); });
+  window.addEventListener('focus', vigiar);
   // Voltar depois de Sair pode restaurar a página da memória (bfcache) sem rodar este script de novo.
   window.addEventListener('pageshow', function (e) {
     if (e && e.persisted && !ehLogin() && !noEditor() && !lerSessao()) paraLogin();
   });
 
-  window.AvantiAuth = { VERSAO: VERSAO, CREDITO: CREDITO, usuario: usuario, nome: nome, entrar: entrar, sair: sair, destinoSeguro: destinoSeguro, bloqueadoAte: bloqueadoAte, ehLogin: ehLogin };
+  function logado() { return !!lerSessao(); }
+  window.AvantiAuth = { VERSAO: VERSAO, CREDITO: CREDITO, usuario: usuario, nome: nome, logado: logado, entrar: entrar, sair: sair, destinoSeguro: destinoSeguro, bloqueadoAte: bloqueadoAte, ehLogin: ehLogin };
 
   // Porta: sem sessão → login, antes de qualquer desenho.
-  if (!ehLogin() && !noEditor() && !lerSessao()) {
-    try { document.documentElement.style.visibility = 'hidden'; } catch (e) {}
-    paraLogin();
-    return;
-  }
+  if (!ehLogin() && !noEditor() && !lerSessao()) { paraLogin(); return; }
+  vigiar();
 
   if (!window.customElements) return;
 
@@ -143,13 +167,13 @@
     disconnectedCallback() { window.removeEventListener('avanti-sessao', this._on); }
     build() {
       this.setAttribute('role', 'contentinfo');
-      this.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:14px;row-gap:2px;box-sizing:border-box;width:100%;min-height:28px;padding:5px 16px calc(5px + env(safe-area-inset-bottom, 0px));font:500 11px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:0.06em;color:var(--av-ink4, #7d8796);text-align:center;';
+      this.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:14px;row-gap:2px;box-sizing:border-box;width:100%;min-height:32px;padding:3px 16px calc(3px + env(safe-area-inset-bottom, 0px));font:500 11px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:0.06em;color:var(--av-ink4, #7d8796);text-align:center;';
       var d = document;
       var ver = d.createElement('span'); ver.textContent = 'Avanti Vessel AI · v' + VERSAO.v + ' · ' + VERSAO.data;
       var quem = d.createElement('span'); quem.style.cssText = 'display:inline-flex;align-items:center;gap:6px;';
       var nomeEl = d.createElement('b'); nomeEl.style.cssText = 'font-weight:700;color:var(--av-ink3, #9aa3af);';
       var btn = d.createElement('button'); btn.type = 'button'; btn.textContent = 'Sair';
-      btn.style.cssText = 'font:inherit;letter-spacing:inherit;color:var(--av-accent, #409cff);background:transparent;border:0;padding:6px 4px;margin:-6px 0;cursor:pointer;min-height:32px;';
+      btn.style.cssText = 'font:inherit;letter-spacing:inherit;color:var(--av-accent, #409cff);background:transparent;border:0;padding:0 6px;margin:0;cursor:pointer;min-height:26px;';
       btn.addEventListener('click', sair);
       quem.appendChild(nomeEl); quem.appendChild(btn);
       var cred = d.createElement('span'); cred.textContent = CREDITO;

@@ -14,10 +14,10 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 
 Toda tela pede login. Usuários: **Otto**, **Lucas** e **Giovanni** (a senha é combinada com a equipe; não fica neste repositório).
 
-- **Manter conectado:** o acesso vale 30 dias no aparelho. Sem essa opção, vale até fechar o navegador (no máximo 12 h).
-- **Sair:** no rodapé de qualquer tela.
+- **Manter conectado:** o acesso vale 30 dias no aparelho. Sem essa opção, vale 12 horas. Vale para todas as abas; ao vencer com uma tela aberta, ela volta para o login.
+- **Sair:** no rodapé de qualquer tela. Encerra a sessão em todas as abas.
 - O nome de quem entrou aparece no chat, na saudação, no avatar e nos registros novos do diário.
-- Depois de 5 senhas erradas, o login trava por 30 s (o tempo dobra a cada nova tentativa errada, até 15 min).
+- Depois de 5 senhas erradas, o login trava por 30 s (o tempo dobra a cada nova tentativa errada, até 15 min). Erros de mais de 1 hora atrás não contam.
 
 > **Limite:** é uma porta de entrada, não proteção real. O site é estático e o repositório é público: quem abrir os arquivos direto no GitHub vê o conteúdo. A senha é guardada só como hash (PBKDF2-SHA-256), mas é curta e pode ser descoberta por tentativa. Para proteger de verdade, o repositório precisa ser privado e o site precisa de login no servidor (ex.: Cloudflare Access).
 
@@ -82,7 +82,7 @@ Também há duas pranchetas de apoio:
 
 ## Requisitos
 
-- **Internet na primeira visita:** a biblioteca da interface e a fonte vêm de servidores externos. Depois disso, as telas já abertas funcionam sem internet.
+- **Internet na primeira visita:** a biblioteca da interface e a fonte vêm de servidores externos. Depois da primeira visita com internet, todas as telas abrem sem internet (inclusive o SOS).
 - **Voz:** funciona no Chrome, Edge ou Safari, com permissão de microfone. O Firefox não reconhece voz.
 - **Navegador:** uma versão atual do Chrome, Edge, Safari ou Firefox.
 
