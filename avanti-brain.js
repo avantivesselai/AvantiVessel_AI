@@ -50,9 +50,11 @@
   function resetShortcuts() { try { localStorage.removeItem(K.atalhos); } catch (e) {} return loadShortcuts(); }
   function bankFor(list) { var ids = list.map(function (x) { return x.id; }); return ALL.filter(function (x) { return ids.indexOf(x.id) === -1; }); }
 
+  // Usuário logado (avanti-auth.js). Sem sessão — ex.: dentro do editor — cai no proprietário.
+  function quem() { try { var u = window.AvantiAuth && window.AvantiAuth.usuario(); if (u && u.nome) return u.nome; } catch (e) {} return 'Otto'; }
   function now() { var d = new Date(); var p = function (n) { return (n < 10 ? '0' : '') + n; }; return { d: p(d.getDate()) + '/' + p(d.getMonth() + 1), t: p(d.getHours()) + ':' + p(d.getMinutes()), iso: d.toISOString() }; }
   function loadDiario() { var v = read(K.diario, []); return Array.isArray(v) ? v.filter(function (e) { return e && typeof e.t === 'string'; }) : []; }
-  function addDiario(e) { var n = now(); var list = loadDiario(); var entry = Object.assign({ d: n.d, t: n.t, iso: n.iso, sys: 'Diário', tone: 'var(--av-accent, #409cff)', who: 'Otto', src: 'app · texto' }, e); list.unshift(entry); write(K.diario, list); return entry; }
+  function addDiario(e) { var n = now(); var list = loadDiario(); var entry = Object.assign({ d: n.d, t: n.t, iso: n.iso, sys: 'Diário', tone: 'var(--av-accent, #409cff)', who: quem(), src: 'app · texto' }, e); list.unshift(entry); write(K.diario, list); return entry; }
   function loadExec() { var v = read(K.exec, {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
   function markExec(task) { var m = loadExec(); m[task] = now(); write(K.exec, m); return m; }
   function loadEquipe() { var v = read(K.equipe, null); var o = v && typeof v === 'object' ? v : {}; return { fones: o.fones && typeof o.fones === 'object' && !Array.isArray(o.fones) ? o.fones : {}, convites: Array.isArray(o.convites) ? o.convites.filter(function (c) { return c && typeof c.nome === 'string'; }) : [] }; }
@@ -67,12 +69,12 @@
   function askHref(platform, q) { return A(platform, 'home') + '#q=' + encodeURIComponent(q); }
 
   var ANSWERS = {
-    saudacao: function (p) { return { text: 'Olá, Otto. Onde vamos hoje?\nPosso responder sobre telemetria ao vivo, manutenção, documentos, abastecimento, diário de bordo e os passos de cada equipamento — sempre citando a fonte.', src: 'Snapshot 20/09/2026 23:01 · coletor NMEA online', actions: act(p, [['Console completo', 'console'], ['FAQ de bordo', 'faq']]) }; },
+    saudacao: function (p) { return { text: 'Olá, ' + quem() + '. Onde vamos hoje?\nPosso responder sobre telemetria ao vivo, manutenção, documentos, abastecimento, diário de bordo e os passos de cada equipamento — sempre citando a fonte.', src: 'Snapshot 20/09/2026 23:01 · coletor NMEA online', actions: act(p, [['Console completo', 'console'], ['FAQ de bordo', 'faq']]) }; },
     diario: function (p, ctx) {
       var n = now();
       var t = 'Atracado · Rio de Janeiro · ' + SNAP.pos + ' · SOG 0,0 nós · proa 046° · motores desligados · banco 24 V 27,49 V · vento 5,3 nós de 025° · diesel ' + SNAP.diesel + ' (' + SNAP.dieselHora + ').';
-      if (ctx && ctx.commit !== false) addDiario({ sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Resumo de agora registrado pelo atalho: ' + t, who: 'Otto', src: 'atalho · telemetria 20/09' });
-      return { text: 'Registrado no diário de bordo · ' + n.d + ' ' + n.t + ' · Otto\n' + t + '\nLinha nova — nada se apaga.', src: 'Fonte: telemetria NMEA 20/09 23:01 · DIARIO_BORDO_OPERACIONAL.csv', actions: act(p, [['Abrir diário', 'diario']]) };
+      if (ctx && ctx.commit !== false) addDiario({ sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Resumo de agora registrado pelo atalho: ' + t, who: quem(), src: 'atalho · telemetria 20/09' });
+      return { text: 'Registrado no diário de bordo · ' + n.d + ' ' + n.t + ' · ' + quem() + '\n' + t + '\nLinha nova — nada se apaga.', src: 'Fonte: telemetria NMEA 20/09 23:01 · DIARIO_BORDO_OPERACIONAL.csv', actions: act(p, [['Abrir diário', 'diario']]) };
     },
     seguro: function (p) { return { text: 'Sim, com duas ressalvas.\n• Condições: vento 5,3 nós de 025° · barômetro 1014 hPa estável · 9 satélites · banco 24 V 27,49 V em flutuação.\n• Diesel ≈ 516 L (BB 34,0 % · BE 34,8 %) → ≈ 22 h a 8,4 nós com reserva de 10 %.\n• Ressalva 1: teste das bombas de porão e alarmes vencido há 95 dias — acione cada bomba no manual antes de largar.\n• Ressalva 2: sem previsão meteorológica carregada (SEM DADOS) — confira Marinha/DHN.\nMotores desligados: RPM, óleo e temperatura só aparecem após a partida.', src: 'Fonte: telemetria 20/09 23:01 · agenda preditiva (35 tarefas) · NF-e 002925', actions: act(p, [['Ver manutenção', 'manut'], ['Checklist de saída', askHref(p, 'Checklist de saída')]]) }; },
     destinos: function (p) { return { text: '3 destinos a partir da Marina da Glória, no regime observado (8,4 nós · 20,9 L/h), só ida:\n1. Ilhas Cagarras — ≈ 7 mn · ≈ 50 min · ≈ 17 L\n2. Itaipu / Itacoatiara (Niterói) — ≈ 10 mn · ≈ 1 h 10 · ≈ 25 L\n3. Ilha Grande (Abraão) — ≈ 60 mn · ≈ 7 h · ≈ 150 L; ida e volta ≈ 300 L — cabe nos 516 L com reserva, mas sem margem para gerador e manobra: abastecer antes.\nDistâncias em linha reta pela posição atual — confirme a rota no plotter.', src: 'Fonte: posição GPS 20/09 · consumo observado 14/08–20/09 · tanques 13:23', actions: act(p, [['Autonomia', askHref(p, 'Autonomia')], ['Abastecimento', 'abast']]) }; },
@@ -171,7 +173,7 @@
     var name = file && file.name ? file.name : (kind === 'video' ? 'vídeo' : 'foto');
     var kb = file && file.size ? Math.round(file.size / 1024) + ' KB' : '';
     var n = now();
-    addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: (kind === 'video' ? 'Vídeo' : 'Foto') + ' anexada pelo chat: ' + name + (kb ? ' (' + kb + ')' : '') + ' — identificação A CONFIRMAR.', who: 'Otto', src: 'app · ' + kind });
+    addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: (kind === 'video' ? 'Vídeo' : 'Foto') + ' anexada pelo chat: ' + name + (kb ? ' (' + kb + ')' : '') + ' — identificação A CONFIRMAR.', who: quem(), src: 'app · ' + kind });
     if (kind === 'video') return { key: 'video', text: 'Vídeo recebido (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo o som e o comportamento não são analisados automaticamente: anexei ao diário como anomalia A CONFIRMAR, com a telemetria do instante (motores desligados · sem leitura de RPM).\nDescreva em uma frase o que você viu ou ouviu — respondo com o que verificar primeiro.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario']]) };
     return { key: 'foto', text: 'Foto recebida (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo a leitura da imagem não é automática: anexei ao diário como A CONFIRMAR. Para etiqueta ou tela de alarme, digite o modelo/código que aparece e eu localizo o manual; para nota fiscal, digite litros e valor e eu registro o abastecimento.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario'], ['Documentos', 'docs']]) };
   }
@@ -198,18 +200,192 @@
     r.lang = 'pt-BR'; r.interimResults = true; r.continuous = !!(opts && opts.continuous); r.maxAlternatives = 1;
     return r;
   }
-  function speak(text, onEnd) {
-    var done = false; var fin = function () { if (!done) { done = true; if (onEnd) onEnd(); } };
-    if (!('speechSynthesis' in window)) { setTimeout(fin, 0); return false; }
-    try {
-      var u = new SpeechSynthesisUtterance(String(text).replace(/[•·→]/g, ', ').replace(/\n/g, '. '));
-      u.lang = 'pt-BR'; u.rate = 1.02; u.onend = fin; u.onerror = fin;
-      if (onEnd) setTimeout(fin, Math.min(60000, 1800 + String(text).length * 85));
-      window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); return true;
-    } catch (e) { setTimeout(fin, 0); return false; }
+  // ---- Voz (conversa ativa) ----
+  // falavel(): texto de tela → português falado. Regras em ordem, guiadas pelas tabelas; sem lookbehind (Safari antigo).
+  var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  var HEMI = { N: 'norte', S: 'sul', L: 'leste', E: 'leste', O: 'oeste', W: 'oeste' };
+  var LET = 'A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u00FF', MAI = 'A-Z\\u00C0-\\u00D6\\u00D8-\\u00DE'; // letras latinas (em escape: não quebra se o .js vier sem UTF-8)
+  // palavra inteira: o grupo 1 guarda o caractere anterior (reposto como $1)
+  function rx(core) { return new RegExp('(^|[^' + LET + '\\d])(?:' + core + ')(?![' + LET + '\\d])', 'g'); }
+  // unidades — só logo depois de número: [símbolo, singular, plural]; as mais longas primeiro
+  var UNID = [
+    ['km/h', 'quilômetro por hora', 'quilômetros por hora'], ['L/h', 'litro por hora', 'litros por hora'], ['kWh', 'quilowatt-hora', 'quilowatts-hora'],
+    ['kW', 'quilowatt', 'quilowatts'], ['km', 'quilômetro', 'quilômetros'], ['hPa', 'hectopascal', 'hectopascais'], ['MHz', 'megahertz', 'megahertz'],
+    ['kHz', 'quilohertz', 'quilohertz'], ['rpm|RPM', 'rotação por minuto', 'rotações por minuto'], ['min', 'minuto', 'minutos'],
+    ['mn|NM|MN', 'milha náutica', 'milhas náuticas'], ['kts?|kn|nós', 'nó', 'nós'], ['KB', 'quilobyte', 'quilobytes'], ['MB', 'megabyte', 'megabytes'],
+    ['Ah', 'ampère-hora', 'ampères-hora'], ['L', 'litro', 'litros'], ['h', 'hora', 'horas'], ['m', 'metro', 'metros'], ['s', 'segundo', 'segundos'],
+    ['d', 'dia', 'dias'], ['V', 'volt', 'volts'], ['W', 'watt', 'watts'], ['A(?!\\s+[' + MAI + ']{2})', 'ampère', 'ampères']
+  ].map(function (u) { return { re: new RegExp('(^|[^' + LET + '\\d.,])(\\d+(?:[.,]\\d+)*)\\s?(?:' + u[0] + ')(\\+?)(?![' + LET + '\\d])', 'g'), um: u[1], varios: u[2] }; });
+  // siglas e abreviações por extenso (palavra inteira, maiúsculas exatas)
+  var SIGLAS = [
+    ['NF-e', 'nota fiscal eletrônica'], ['NF', 'nota fiscal'], ['BB', 'bombordo'], ['BE', 'boreste'], ['SOG', 'velocidade sobre o fundo'],
+    ['COG', 'rumo sobre o fundo'], ['STBY', 'standby'], ['MOB', 'homem ao mar'], ['AC', 'corrente alternada'], ['DC', 'corrente contínua'],
+    ['RPM', 'rotação'], ['PAN-PAN', 'pan pan'], ['[Nn][º°]', 'número'], ['Cat I', 'categoria 1'], ['máx\\.?', 'máximo'], ['mín\\.?', 'mínimo'],
+    ['Sr\\.', 'senhor'], ['Sra\\.', 'senhora'], ['ref\\.', 'referência'], ['cert\\.', 'certificado']
+  ].map(function (x) { return [rx(x[0]), '$1' + x[1]]; });
+  // símbolos → fala ou pausa
+  var SIMB = [
+    [/Rev\. ?(?=\d)/g, 'revisão '], [/§ ?/g, 'seção '], [/(\d)-(?=\d)/g, '$1 '],
+    [/\s*±\s*/g, ' mais ou menos '], [/\s*[≈~]\s*/g, ' cerca de '], [/\s*≤\s*/g, ' até '], [/\s*≥\s*/g, ' pelo menos '],
+    [new RegExp('(\\d)\\s*×\\s*(?=[' + LET + '])', 'g'), '$1 '], [/×\s*(\d+)/g, '$1 vezes'], [/\s*×\s*/g, ' vezes '],
+    [/\s+\+\s+/g, ' mais '], [/(^|\s)\+(?=\d)/g, '$1mais '], [/\s*%/g, ' por cento'],
+    [new RegExp('([' + LET + '])→(?=[' + LET + '])', 'g'), '$1 para '], [/\s*[•·→›|—–=()\[\]]\s*/g, ', '],
+    [/\.(pdf|csv|jsonl?|jpe?g|png|mp4|mov|txt)(?![A-Za-z])/gi, function (m, e) { return ' ' + e.toUpperCase(); }], [/_/g, ' '],
+    [new RegExp('([' + LET + '])\\s*/\\s*(?=\\d)', 'g'), '$1 ou '], [/\s*\/\s*/g, ', ']
+  ];
+  // MAIÚSCULAS de 4+ letras viram minúsculas (senão o TTS soletra), com as palavrinhas do mesmo trecho; siglas lidas como tal ficam.
+  var SIGLA_OK = ' VHF AIS GPS MMSI EPIRB NMEA ANATEL DHN FISTEL TIE GPSMAP SOS SMAC ICRJ ';
+  var MIUDAS = ' A O E É AS OS DE DA DO DAS DOS EM NA NO NAS NOS AO AOS À ÀS UM UMA SEM COM POR PARA OU QUE SE SÓ JÁ NÃO HÁ ';
+  var CAIXA = new RegExp('(^|[^' + LET + '\\d-])([' + MAI + ']+(?: [' + MAI + ']+)*)(?![' + LET + '\\d-])', 'g');
+  function minusculas(s) {
+    var grande = function (w) { return w.length >= 4 && /[AEIOUÁÉÍÓÚÂÊÔÃÕÀ]/.test(w) && SIGLA_OK.indexOf(' ' + w + ' ') === -1; };
+    return s.replace(CAIXA, function (m, a, run) {
+      var ws = run.split(' ');
+      if (!ws.some(grande)) return m;
+      return a + ws.map(function (w) { return grande(w) || MIUDAS.indexOf(' ' + w + ' ') !== -1 ? w.toLowerCase() : w; }).join(' ');
+    });
   }
-  function stopSpeaking() { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
+  function hora(h) { return h + (h < 2 ? ' hora' : ' horas'); }
+  // Horário: "13:23" → "13 horas e 23 minutos" (":00" → "13 horas"); duração "1 h 10" → "1 hora e 10 minutos".
+  function falavel(text) {
+    var s = String(text == null ? '' : text).replace(/[“”"«»]/g, '').replace(/[\u00a0\t]/g, ' ').replace(/…/g, ', ');
+    // linha = frase; marcador de lista no começo da linha some (a quebra já é pausa)
+    s = s.split(/\r?\n/).map(function (l) { return l.replace(/^[\s•·→›—–]+/, '').replace(/\s+$/, ''); }).filter(Boolean)
+      .map(function (l, i, a) { return i < a.length - 1 && !/[.!?:;,]$/.test(l) ? l + '.' : l; }).join(' ');
+    // coordenadas 22°57,09'S → 22 graus e 57 vírgula 09 minutos sul
+    s = s.replace(/(\d{1,3}) ?° ?(\d{1,2})(?:,(\d+))? ?['′] ?([NSLOEW])(?![A-Za-z])/g, function (m, g, mi, fr, h) {
+      g = +g; mi = +mi;
+      return g + (g === 1 ? ' grau e ' : ' graus e ') + mi + (fr ? ' vírgula ' + fr + ' minutos ' : mi === 1 ? ' minuto ' : ' minutos ') + HEMI[h];
+    }).replace(/(minutos? (?:norte|sul|leste|oeste)) (?=\d)/g, '$1, ');
+    // dinheiro R$ 5.480,50 → 5.480 reais e 50 centavos
+    s = s.replace(/R\$ ?(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d{2}))?(?!\d)/g, function (m, r, c) {
+      var cv = c ? +c : 0, cent = cv ? cv + (cv === 1 ? ' centavo' : ' centavos') : '';
+      return r === '0' && cent ? cent : r + (r === '1' ? ' real' : ' reais') + (cent ? ' e ' + cent : '');
+    });
+    // intervalos 8–14 → 8 a 14; data + hora ganha "às"
+    s = s.replace(/(\d) ?– ?(?=\d)/g, '$1 a ').replace(/(\d{1,2}\/\d{1,2}(?:\/\d{4})?) (?=\d{1,2}:\d{2}(?!\d))/g, '$1 às ');
+    // datas 20/09 → 20 de setembro; 16/07/2026; jan/2031
+    s = s.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?(?![\d\/])/g, function (m, a, d, me, y) {
+      d = +d; me = +me;
+      return d < 1 || d > 31 || me < 1 || me > 12 ? m : a + (d === 1 ? 'primeiro' : d) + ' de ' + MESES[me - 1] + (y ? ' de ' + y : '');
+    }).replace(new RegExp('(^|[^' + LET + '])(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/(\\d{4})(?!\\d)', 'gi'), function (m, a, me, y) {
+      return a + MESES['janfevmarabrmaijunjulagosetoutnovdez'.indexOf(me.toLowerCase()) / 3] + ' de ' + y;
+    });
+    // horário 13:23 / 23h01 (nunca razão) e duração 1 h 10 / 6 h 58 min
+    s = s.replace(/(^|[^\d:,.])(\d{1,2})(?::|h)(\d{2})(?:min(?![A-Za-z]))?(?![\d:])/g, function (m, a, h, mi) {
+      h = +h; mi = +mi;
+      return h > 23 || mi > 59 ? m : a + hora(h) + (mi ? ' e ' + mi + (mi === 1 ? ' minuto' : ' minutos') : '');
+    }).replace(/ às ([01] hora)(?!s)/g, ' à $1').replace(/(^|[^\d,.])(\d+) ?h ?(\d{1,2})(?: ?min(?![A-Za-z])|(?![\d,.:\/]\d|\d| ?[A-Za-z%°]))/g, function (m, a, h, mi) {
+      mi = +mi;
+      return a + hora(+h) + (mi ? ' e ' + mi + (mi === 1 ? ' minuto' : ' minutos') : '');
+    });
+    // graus: 23,8 °C → graus Celsius; proa 046° → 46 graus
+    s = s.replace(/(\d+(?:,\d+)?) ?° ?C(?![A-Za-z])/g, function (m, n) { return n + (n === '1' ? ' grau' : ' graus') + ' Celsius'; })
+      .replace(/(\d+)(,\d+)? ?°/g, function (m, n, f) { n = +n + (f || ''); return n + (n === '1' ? ' grau' : ' graus'); });
+    // D-4 (dias até) → D menos 4; MMSI dígito a dígito, como no rádio
+    s = s.replace(new RegExp('(^|[^' + LET + '\\d])D-(\\d+)(?!\\d)', 'g'), '$1D menos $2')
+      .replace(/MMSI:? ?(\d{9})(?!\d)/g, function (m, n) { return 'MMSI ' + n.split('').join(' '); });
+    // decimal sem zeros à direita (34,0 → 34; 156,800 → 156,8), depois unidades, siglas e símbolos
+    s = s.replace(/(\d),(\d*?)0+(?!\d)/g, function (m, a, b) { return b ? a + ',' + b : a; });
+    UNID.forEach(function (u) { s = s.replace(u.re, function (m, a, n, mais) { return a + n + ' ' + (n === '1' ? u.um : u.varios) + (mais ? ' ou mais' : ''); }); });
+    SIGLAS.forEach(function (x) { s = s.replace(x[0], x[1]); });
+    s = s.replace(/°/g, ' graus');
+    SIMB.forEach(function (x) { s = s.replace(x[0], x[1]); });
+    s = minusculas(s);
+    // 3.2 → 3 ponto 2 (milhar 1.500 fica); 27,49 → 27 vírgula 49
+    s = s.replace(/\d+(?:\.\d+)+/g, function (m) { var g = m.split('.'); return g.slice(1).every(function (x) { return x.length === 3; }) ? m : g.join(' ponto '); })
+      .replace(/(\d),(?=\d)/g, '$1 vírgula ');
+    // pontuação: um só sinal por pausa (o mais forte), sem ". ." nem ", :"
+    return s.replace(/\s+/g, ' ').replace(/\s*([,;:.!?](?:\s*[,;:.!?])*)\s*/g, function (m, p, i, all) {
+      if (m.length === 1 && /\d/.test(all.charAt(i - 1)) && /\d/.test(all.charAt(i + 1))) return m;
+      return (/[?!]/.test(p) ? p.match(/[?!]/)[0] : p.indexOf('.') !== -1 ? '.' : /[:;]/.test(p) ? p.match(/[:;]/)[0] : ',') + ' ';
+    }).replace(/^[\s,;:.!?]+|[\s,;:]+$/g, '');
+  }
 
-  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, speak: speak, stopSpeaking: stopSpeaking, now: now, askHref: askHref };
+  // Melhor voz pt-BR: neural/online › Google › Apple premium/enhanced › Luciana/Felipe › qualquer pt-BR › qualquer pt. Nunca outro idioma.
+  var VOZ = { v: null, on: null, ruim: {} };
+  var VOZ_PREF = [[/natural|neural/i, 600], [/online/i, 550], [/google/i, 500], [/premium/i, 450], [/enhanced|aprimorad|melhorad/i, 400], [/luciana|felipe/i, 300]];
+  function notaVoz(v, on) {
+    var lang = String(v.lang || '').replace(/_/g, '-').toLowerCase(), nome = String(v.name || ''), id = nome + ' ' + (v.voiceURI || '');
+    if (!/^(pt|por)(-|$)/.test(lang) || VOZ.ruim[nome]) return 0;
+    var n = /-bra?$/.test(lang) || (/^(pt|por)$/.test(lang) && /bra[sz]il/i.test(nome)) ? 2000 : 1000;
+    for (var j = 0; j < VOZ_PREF.length; j++) if (VOZ_PREF[j][0].test(id)) { n += VOZ_PREF[j][1]; break; }
+    if (!on && v.localService === false) n -= 700; // sem internet a voz de rede não fala
+    if (/eloquence/i.test(v.voiceURI || '') || /^(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i.test(nome)) n -= 50; // vozes-novidade da Apple
+    return n + (/francisca/i.test(nome) ? 30 : /thalita/i.test(nome) ? 20 : /antonio|luciana/i.test(nome) ? 10 : 0) + (v.default ? 1 : 0);
+  }
+  function vozPtBr() {
+    var ss = window.speechSynthesis, on = !(window.navigator && window.navigator.onLine === false), lista = [], best = null, nota = 0;
+    if (VOZ.v && VOZ.on === on) return VOZ.v;
+    try { lista = (ss && ss.getVoices && ss.getVoices()) || []; } catch (e) {}
+    for (var j = 0; j < lista.length; j++) { var n = notaVoz(lista[j], on); if (n > nota) { nota = n; best = lista[j]; } }
+    VOZ.v = best; VOZ.on = on;
+    return best;
+  }
+  // as vozes chegam depois (Chrome começa com lista vazia): pede já e refaz a escolha quando a lista mudar
+  (function () {
+    var ss = window.speechSynthesis, zera = function () { VOZ.v = null; };
+    if (!ss) return;
+    try { ss.getVoices(); if (ss.addEventListener) ss.addEventListener('voiceschanged', zera); else if (!ss.onvoiceschanged) ss.onvoiceschanged = zera; } catch (e) {}
+  })();
+  // Frases inteiras em blocos de até ~200 letras: prosódia melhor e sem o corte do Chrome em falas longas (~15 s).
+  function blocos(s) {
+    var MAX = 200, out = [];
+    (function junta(partes, sep, nivel) {
+      var cur = '';
+      partes.forEach(function (p) {
+        if (!p) return;
+        if (p.length > MAX && nivel < 2) { if (cur) out.push(cur); cur = ''; junta(nivel ? p.split(' ') : p.split(/,\s+/), nivel ? ' ' : ', ', nivel + 1); return; }
+        if (cur && (cur + sep + p).length > MAX) { out.push(cur); cur = p; } else cur = cur ? cur + sep + p : p;
+      });
+      if (cur) out.push(cur);
+    })(s.replace(/([.!?;])\s+/g, '$1\n').split('\n'), ' ', 0);
+    return out;
+  }
+  // Vigia de cada bloco a 1.25x (base antiga: 85 ms/letra a ~1x → 70) + 200 ms/dígito, porque número falado é longo.
+  function estimaMs(t) { return Math.min(45000, 1500 + t.length * 70 + (t.match(/\d/g) || []).length * 200); }
+  var FALA = { gen: 0, timer: null, vivo: null, fila: [] };
+  function calaTimers() { clearTimeout(FALA.timer); clearInterval(FALA.vivo); FALA.timer = FALA.vivo = null; }
+  // onEnd dispara uma única vez, depois do último bloco (ou por erro/vigia). Nova fala ou stopSpeaking() trocam a geração: o onEnd antigo nunca dispara.
+  function speak(text, onEnd) {
+    var gen = ++FALA.gen, done = false, ss = window.speechSynthesis, i = 0, atual = null, tentou = {}, voz = null, partes = [];
+    var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; if (onEnd) onEnd(); };
+    var vale = function (u) { return !done && gen === FALA.gen && u === atual; };
+    calaTimers(); FALA.fila = [];
+    if (!ss || !window.SpeechSynthesisUtterance) { setTimeout(fin, 0); return false; }
+    function vigia(u, ms) { clearTimeout(FALA.timer); FALA.timer = setTimeout(function () { if (vale(u)) avanca(); }, ms); }
+    function avanca() { if (++i >= partes.length) return fin(); try { fala(i); } catch (e) { fin(); } }
+    function fala(k) {
+      var u = new SpeechSynthesisUtterance(partes[k]), est = estimaMs(partes[k]);
+      u.lang = voz && voz.lang ? String(voz.lang).replace(/_/g, '-') : 'pt-BR'; if (voz) u.voice = voz; u.rate = 1.25;
+      u.onstart = function () { if (vale(u)) vigia(u, est); };
+      u.onend = function () { if (vale(u)) avanca(); };
+      u.onerror = function (e) {
+        if (!vale(u)) return;
+        var err = e && e.error;
+        if (err === 'interrupted' || err === 'canceled') return fin(); // cancelada por fora
+        if (voz && voz.localService === false && !tentou[k]) { // voz de rede falhou (sem internet): troca de voz e repete o bloco
+          tentou[k] = 1; VOZ.ruim[voz.name] = 1; VOZ.v = null; voz = vozPtBr();
+          try { return fala(k); } catch (x) { return fin(); }
+        }
+        avanca();
+      };
+      atual = u; FALA.fila.push(u); vigia(u, est + 4000);
+      ss.speak(u);
+    }
+    try {
+      partes = blocos(falavel(text)); voz = vozPtBr();
+      ss.cancel(); if (ss.paused) ss.resume();
+      if (!partes.length) { setTimeout(fin, 0); return false; }
+      fala(0);
+      // keep-alive do Chrome desktop só p/ voz Google de rede (a que corta em ~15 s)
+      if (!done && voz && /google/i.test(voz.name) && voz.localService === false && !/android/i.test((window.navigator && window.navigator.userAgent) || ''))
+        FALA.vivo = setInterval(function () { try { if (gen === FALA.gen && ss.speaking && !ss.paused) { ss.pause(); ss.resume(); } } catch (e) {} }, 10000);
+      return true;
+    } catch (e) { calaTimers(); setTimeout(fin, 0); return false; }
+  }
+  function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
+
+  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, speak: speak, stopSpeaking: stopSpeaking, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();
