@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Botões de acesso rápido — conjunto padrão</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #05070b; }
+a { color: #409cff; } a:hover { color: #6fb3ff; }
+button { font: inherit; }
+</style>
+</helmet>
+
+<div style="width: 2380px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: #05070b; color: #e9edf2; overflow: hidden;">
+
+  <header style="height: 96px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 20px; padding: 0 36px; border-bottom: 1px solid #1d2229;">
+    <img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 44px; width: 196px; object-fit: contain;">
+    <span style="width: 1px; height: 40px; background: #2a3240;"></span>
+    <div style="display: flex; flex-direction: column;">
+      <span style="font-size: 28px; font-weight: 800; letter-spacing: -0.02em;">Botões de acesso rápido — conjunto padrão</span>
+      <span style="font-size: 14.5px; color: #aeb6c2;">Console (app) · a home tem 5 botões fixos (Console + 4 FAQs) e atalhos de pergunta editáveis · o web herda o mesmo conjunto por usuário</span>
+    </div>
+    <div style="flex-grow: 1;"></div>
+    <span style="padding: 10px 18px; border: 1px solid #1d2229; background: #0f131a; border-radius: 999px; font-size: 13px; font-weight: 600; color: #aeb6c2;">Aprovado por Otto · 21/09/2026 · 1º trial</span>
+  </header>
+
+  <div style="flex-grow: 1; box-sizing: border-box; padding: 26px 36px; display: flex; gap: 28px; min-height: 0;">
+
+    <section style="width: 700px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;">1 · Na tela inicial</h2>
+        <span style="padding: 4px 10px; border-radius: 999px; background: rgba(52,199,122,0.14); color: #34c77a; font-size: 12px; font-weight: 800;">8 BOTÕES APROVADOS · EDITÁVEIS</span>
+      </div>
+      <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 12px; min-height: 0;">
+        <sc-for list="{{tiles}}" as="t" hint-placeholder-count="8">
+          <div style="box-sizing: border-box; display: flex; gap: 14px; padding: 16px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px;">
+            <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 16px; background: {{t.wash}}; display: flex; align-items: center; justify-content: center;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{t.d}}" stroke="{{t.tone}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </span>
+            <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em;">{{t.label}}</span>
+              <span style="font-size: 12.5px; line-height: 1.4; color: #aeb6c2;">{{t.what}}</span>
+              <span style="font-size: 11px; font-weight: 700; color: {{t.tone}};">{{t.agent}}</span>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="width: 760px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;">2 · Fixos, nunca saem da tela</h2>
+
+      <div style="box-sizing: border-box; padding: 18px; background: #0f131a; border: 1px solid rgba(255,59,48,0.4); border-radius: 18px; display: flex; gap: 16px; align-items: center;">
+        <span style="width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; background: #d32f27; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; box-shadow: 0 0 0 4px rgba(255,59,48,0.28);">SOS</span>
+        <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-size: 20px; font-weight: 800; color: #ff3b30;">SOS · Emergência</span>
+          <span style="font-size: 13px; line-height: 1.45; color: #aeb6c2;">Botão vermelho sólido, sempre visível — na home, no console e no web (canto inferior direito). Abre o agente de Segurança, que ignora o limite de concisão. Alarme sonoro local mesmo com o app fechado.</span>
+        </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px;">
+        <sc-for list="{{inputs}}" as="i" hint-placeholder-count="5">
+          <div style="box-sizing: border-box; padding: 16px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="width: 46px; height: 46px; border-radius: 14px; background: rgba(64,156,255,0.14); display: flex; align-items: center; justify-content: center;">
+              <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{i.d}}" stroke="#409cff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </span>
+            <span style="font-size: 16px; font-weight: 800;">{{i.n}}</span>
+            <span style="font-size: 12.5px; line-height: 1.45; color: #aeb6c2;">{{i.s}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="flex-grow: 1; box-sizing: border-box; padding: 18px 22px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px; display: flex; flex-direction: column; gap: 12px; min-height: 0;">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 800;">3 · Como Otto edita — sem suporte técnico</h3>
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{rules}}" as="r" hint-placeholder-count="5">
+            <span style="display: flex; gap: 12px; align-items: flex-start;">
+              <span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: rgba(64,156,255,0.14); color: #409cff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{r.n}}</span>
+              <span style="font-size: 13.5px; line-height: 1.45; padding-top: 2px;">{{r.t}}</span>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="width: 800px; flex-shrink: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+      <div style="box-sizing: border-box; padding: 18px 22px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em;">4 · Banco de atalhos</h2>
+          <span style="font-size: 13px; color: #9aa3af;">18 disponíveis para adicionar</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{bank}}" as="b" hint-placeholder-count="18">
+            <span style="display: flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid #1d2229; background: #151a23; color: #e9edf2; font-size: 13px; font-weight: 600;">
+              <span style="color: #409cff; font-size: 16px; line-height: 1;">+</span>{{b}}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1; box-sizing: border-box; padding: 18px 22px; background: #0f131a; border: 1px solid rgba(64,156,255,0.35); border-radius: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; color: #409cff;">5 · A tela muda sozinha</h2>
+          <span style="padding: 4px 10px; border-radius: 999px; background: rgba(52,199,122,0.14); color: #34c77a; font-size: 12px; font-weight: 800;">APROVADO · LIGADA POR PADRÃO</span>
+        </div>
+        <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #aeb6c2;">A telemetria já sabe se o barco está parado ou andando. Quando a velocidade passa de 1 nó por 60 s, o app troca o conjunto de botões para o de navegação — e volta ao de porto quando atraca. Fonte: coletor NMEA a bordo.</p>
+        <div style="display: flex; gap: 14px; flex-grow: 1;">
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
+              <span style="font-size: 15px; font-weight: 800;">Atracado</span>
+            </span>
+            <sc-for list="{{atracado}}" as="p" hint-placeholder-count="6">
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+            </sc-for>
+          </div>
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border: 1px solid rgba(64,156,255,0.4); border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
+              <span style="font-size: 15px; font-weight: 800; color: #409cff;">Navegando</span>
+            </span>
+            <sc-for list="{{navegando}}" as="p" hint-placeholder-count="6">
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="box-sizing: border-box; padding: 14px 18px; background: #0f131a; border: 1px solid rgba(64,156,255,0.3); border-radius: 16px; display: flex; gap: 18px; align-items: center;">
+        <span style="display: flex; align-items: flex-end; gap: 14px; flex-shrink: 0;">
+          <span style="width: 16px; height: 16px; border-radius: 4px; background: #05070b; border: 1px solid #2a3240; display: flex; align-items: center; justify-content: center; overflow: hidden;"><img src="assets/logo_white.png" alt="" style="width: 14px; height: 14px; object-fit: contain;"></span>
+          <span style="width: 32px; height: 32px; border-radius: 8px; background: #05070b; border: 1px solid #2a3240; display: flex; align-items: center; justify-content: center; overflow: hidden;"><img src="assets/logo_white.png" alt="" style="width: 28px; height: 28px; object-fit: contain;"></span>
+          <span style="width: 56px; height: 56px; border-radius: 14px; background: #05070b; border: 1px solid #2a3240; display: flex; align-items: center; justify-content: center; overflow: hidden;"><img src="assets/logo_white.png" alt="" style="width: 50px; height: 50px; object-fit: contain;"></span>
+          <img src="assets/app_icon_1024.png" alt="Ícone do app" style="width: 56px; height: 56px; border-radius: 14px;"><span style="width: 120px; height: 56px; border-radius: 12px; background: #05070b; border: 1px solid #2a3240; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; overflow: hidden;"><img src="assets/logo_white.png" alt="" style="width: 72px; height: 16px; object-fit: contain;"><span style="font-size: 13px; font-weight: 700; letter-spacing: 0.04em; background: linear-gradient(180deg, #ffffff 20%, #5d6673 95%); -webkit-background-clip: text; background-clip: text; color: transparent;">AVANTI</span></span>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-size: 14px; font-weight: 800;">Identidade · marca, ícone do app e splash</span>
+          <span style="font-size: 12.5px; line-height: 1.45; color: #aeb6c2;">PNG transparente enviado por Otto em 21/09 (824 × 210 px, silhueta branca): é a marca em todas as telas, o favicon do painel web (16 e 32 px), o ícone do app e a base do splash. O nome fica sempre à direita da marca; o wordmark AVANTI é tipografia com gradiente.</span>
+        </span>
+      </div>
+    </section>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2380,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      tiles: [
+        { label: 'Motores', what: 'RPM, pressão de óleo, temperatura e horímetro dos dois Volvo Penta D8 / IPS15, com a faixa normal do manual ao lado.', agent: 'Anomalia + Equipamentos', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8', tone: '#5ac8fa', wash: 'rgba(90,200,250,0.14)' },
+        { label: 'Manutenção', what: 'O que está atrasado, o que vence, quem é o responsável e o botão de marcar como executado.', agent: 'Manutenção + Preditivo', d: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z', tone: '#f0a63a', wash: 'rgba(240,166,58,0.14)' },
+        { label: 'Telemetria', what: 'Leitura ao vivo do barramento: posição, profundidade, vento, tanques, tensão e temperaturas.', agent: 'Anomalia', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', tone: '#5ac8fa', wash: 'rgba(90,200,250,0.14)' },
+        { label: 'Documentos', what: 'Título de inscrição, licenças de rádio, notas fiscais e contratos, com alerta abaixo de 90 dias.', agent: 'Documentos', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', tone: '#409cff', wash: 'rgba(64,156,255,0.14)' },
+        { label: 'Equipamentos', what: 'Como funciona e como configura qualquer item de bordo. Foto da etiqueta identifica o modelo e abre o manual.', agent: 'Equipamentos', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: '#409cff', wash: 'rgba(64,156,255,0.14)' },
+        { label: 'Navegação', what: 'Clima, maré, aviso aos navegantes, ancoragem e canal de VHF. Dados objetivos, sem aula de navegação.', agent: 'Navegação', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M15.5 8.5l-2 5-5 2 2-5z', tone: '#409cff', wash: 'rgba(64,156,255,0.14)' },
+        { label: 'Abastecer', what: 'Foto da nota fiscal: o sistema extrai litros, preço e total, puxa o horímetro do minuto exato e grava sozinho.', agent: 'Cálculos + Documentos', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: '#f0a63a', wash: 'rgba(240,166,58,0.14)' },
+        { label: 'Diário', what: 'Registrar uma intervenção, decisão ou anomalia por texto, voz ou foto — e ver tudo o que já foi registrado.', agent: 'Todos os agentes', d: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M8 20a3 3 0 0 1 0-6h11', tone: '#409cff', wash: 'rgba(64,156,255,0.14)' }
+      ],
+      inputs: [
+        { n: 'Voz → texto', s: 'Pergunta falada, transcrita e respondida em texto e em voz.', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3' },
+        { n: 'Foto', s: 'Etiqueta de equipamento, alarme na tela, nota fiscal ou página de manual — cada tipo tem sua rota.', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z' },
+        { n: 'Vídeo', s: 'Para som ou comportamento anormal: gravar 10 s do equipamento ajuda no diagnóstico.', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z' },
+        { n: 'Conversa', s: 'Modo contínuo: fala e resposta em voz, sem tocar na tela — mãos no leme.', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2' },
+        { n: 'Texto', s: 'Teclado, para quando falar não dá — reunião, marina cheia, mar batendo no casco.', d: 'M3 6h18v12H3z M7 10h.01 M11 10h.01 M15 10h.01 M8 14h8' }
+      ],
+      rules: [
+        { n: '1', t: 'Segurar 2 s em qualquer botão entra no modo de edição.' },
+        { n: '2', t: 'Arrastar reordena · − remove · tocar no ícone troca o ícone e o nome.' },
+        { n: '3', t: 'Máximo de 8 na primeira tela; o que passar vai para a segunda página, deslizando.' },
+        { n: '4', t: 'O conjunto é salvo por usuário — Otto, Giovanni e Lucas têm acesso total — e aparece igual no painel web.' },
+        { n: '5', t: 'SOS, os 5 botões da home e a barra foto · vídeo · voz → texto · conversa · texto não podem ser removidos.' }
+      ],
+      bank: ['Porão', 'Baterias 24 V', 'Gerador', 'Climatização', 'Estabilizador', 'Âncora', 'Maré', 'Clima', 'Canal 16', 'Autonomia', 'Consumo', 'Conversões', 'Tanques', 'Garantias', 'Contatos', 'Checklist de saída', 'Qualidade de dados', 'Anomalias abertas'],
+      atracado: ['Manutenção', 'Documentos', 'Equipamentos', 'Abastecer', 'Telemetria', 'Diário'],
+      navegando: ['Motores', 'Telemetria', 'Navegação', 'Âncora', 'Canal 16', 'Diário']
+    };
+  }
+}
+</script>
+</body>
+</html>

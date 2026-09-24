@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+input::placeholder { color: var(--av-ph, #4c5666); }
+@keyframes avantiSweep { 0% { transform: translateX(-160%) skewX(-16deg); } 42% { transform: translateX(700%) skewX(-16deg); } 100% { transform: translateX(700%) skewX(-16deg); } }
+@keyframes avantiPulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22); } 50% { box-shadow: 0 0 0 6px rgba(var(--av-accent-rgb, 64,156,255), 0.06); } }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<script src="./avanti-brain.js"></script>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden; position: relative;">
+  <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 90% 34% at 50% -4%, rgba(var(--av-plat-rgb, 217,222,230), 0.14) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 62%), conic-gradient(from 150deg at 50% -10%, rgba(var(--av-hl-rgb, 255,255,255), 0) 0deg, rgba(var(--av-hl-rgb, 255,255,255), 0.05) 8deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 13deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 22deg, rgba(var(--av-accent-rgb, 64,156,255), 0.08) 30deg, rgba(var(--av-accent-rgb, 64,156,255), 0) 38deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 46deg, rgba(var(--av-hl-rgb, 255,255,255), 0.04) 52deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 58deg), linear-gradient(rgba(var(--av-hl-rgb, 255,255,255), 0.022) 1px, transparent 1px) 0 0 / 100% 72px;"></div>
+
+  <header style="position: relative; flex-shrink: 0; box-sizing: border-box; height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: rgba(var(--av-bar-rgb, 11,14,19), 0.82); border-bottom: 1px solid rgba(var(--av-plat-rgb, 217,222,230), 0.12); font-size: 10.5px; letter-spacing: 0.14em; white-space: nowrap;">
+    <img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 20px; width: 89px; object-fit: contain; filter: var(--av-logo-filter, none);">
+    <span style="flex-grow: 1;"></span>
+    <span style="display: flex; align-items: center; gap: 6px; color: var(--av-ink3, #9aa3af); font-weight: 600;">{{led}}AO VIVO</span>
+    <b style="font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: 0.04em;">23:01</b>
+    <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="30" hint-size="30px,30px"></x-import>
+      <a href="G4-Equipe-Mobile.dc.html" aria-label="Equipe e acessos" style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 10px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+  </header>
+
+  <div style="position: relative; flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 8px 14px 0; display: flex; flex-direction: column; gap: 8px; overflow: hidden;">
+
+    <sc-if value="{{idle}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 2px;">
+        <div style="position: relative; overflow: hidden; padding: 2px 16px 4px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <svg viewBox="0 0 590 100" width="307" height="52" role="img" aria-label="AVANTI" style="display: block;"><defs><linearGradient id="wmH2Home48" x1="0" y1="0" x2="0" y2="1"><stop offset="0.12" style="stop-color: var(--av-wm-top, var(--av-wm-top, #ffffff));"></stop><stop offset="0.46" style="stop-color: var(--av-plat, var(--av-plat, #d9dee6));"></stop><stop offset="0.96" style="stop-color: var(--av-wm-bot, var(--av-wm-bot, #5d6673));"></stop></linearGradient></defs><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M112 0 L140 0 L168 67 L196 0 L223 0 L179 100 L156 100 Z M219 100 L265 0 L288 0 L334 100 L308 100 L277 27 L255 76 L277 76 L277 100 Z M348 0 L373 0 L421 58.6 L421 0 L447 0 L447 100 L421 100 L421 94.6 L373 39.4 L373 100 L348 100 Z M459 0 L551 0 L551 26 L518 26 L518 100 L491 100 L491 26 L459 26 Z M563 0 L590 0 L590 100 L563 100 Z" fill="url(#wmH2Home48)"></path></svg>
+          <div style="display: flex; align-items: baseline; gap: 0.34em; padding-left: 0.34em; font-size: 22px;"><span style="font-family: Montserrat, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: 0.34em; line-height: 1; color: var(--av-ink, #e9edf2); white-space: nowrap;">VESSEL</span><svg viewBox="0 0 156 100" width="24" height="15" role="img" aria-label="AI" style="display: block;"><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M129 0 L156 0 L156 100 L129 100 Z" style="fill: var(--av-accent, var(--av-accent, #409cff));"></path></svg></div>
+          {{sweep}}
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 70px; height: 1px; background: linear-gradient(90deg, rgba(var(--av-plat-rgb, 217,222,230), 0) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0.6) 100%);"></span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l10 10-10 10L2 12z M2 12h20 M12 2v20" stroke-width="1.6" stroke-linejoin="round" style="stroke: var(--av-plat, var(--av-plat, #d9dee6));"></path></svg>
+          <span style="width: 70px; height: 1px; background: linear-gradient(90deg, rgba(var(--av-plat-rgb, 217,222,230), 0.6) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 100%);"></span>
+        </div>
+        <div style="font-style: italic; font-size: 15px; color: var(--av-greet, #8b94a1); margin: 2px 0 8px;">“Olá, Otto. Onde vamos hoje?”</div>
+      </div>
+
+    </sc-if>
+
+    <sc-if value="{{chatting}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0; padding-top: 2px;">
+        <svg viewBox="0 0 590 100" width="106" height="18" role="img" aria-label="AVANTI" style="display: block;"><defs><linearGradient id="wmH2Home18" x1="0" y1="0" x2="0" y2="1"><stop offset="0.12" style="stop-color: var(--av-wm-top, var(--av-wm-top, #ffffff));"></stop><stop offset="0.46" style="stop-color: var(--av-plat, var(--av-plat, #d9dee6));"></stop><stop offset="0.96" style="stop-color: var(--av-wm-bot, var(--av-wm-bot, #5d6673));"></stop></linearGradient></defs><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M112 0 L140 0 L168 67 L196 0 L223 0 L179 100 L156 100 Z M219 100 L265 0 L288 0 L334 100 L308 100 L277 27 L255 76 L277 76 L277 100 Z M348 0 L373 0 L421 58.6 L421 0 L447 0 L447 100 L421 100 L421 94.6 L373 39.4 L373 100 L348 100 Z M459 0 L551 0 L551 26 L518 26 L518 100 L491 100 L491 26 L459 26 Z M563 0 L590 0 L590 100 L563 100 Z" fill="url(#wmH2Home18)"></path></svg>
+        <span style="font-size: 9.5px; letter-spacing: 0.12em; font-weight: 700; color: var(--av-ink4, #7d8796);">CONVERSA</span>
+        <span style="flex-grow: 1;"></span>
+        <a href="A2-Ponte-Mobile.dc.html" style="height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); color: var(--av-accent, #409cff); font-size: 9.5px; letter-spacing: 0.12em; font-weight: 700; display: flex; align-items: center; text-decoration: none;">CONSOLE</a>
+        <button type="button" onClick="{{clearThread}}" aria-label="Nova conversa" style="height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.14); background: transparent; color: var(--av-ink3, #9aa3af); font-size: 9.5px; letter-spacing: 0.12em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12 M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg> NOVA</button>
+      </div>
+      <div ref="{{threadRef}}" style="flex-grow: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 2px 0;">
+        <sc-for list="{{thread}}" as="m" hint-placeholder-count="0">
+          <div style="display: flex; justify-content: {{m.justify}};">
+            <div style="max-width: 320px; box-sizing: border-box; padding: 10px 12px; border-radius: 14px; background: {{m.bg}}; border: 1px solid {{m.line}}; display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 9px; letter-spacing: 0.14em; font-weight: 700; color: {{m.ktone}};">{{m.k}}</span>
+              <span style="font-size: 12.5px; line-height: 1.45; white-space: pre-wrap; color: var(--av-ink, #e9edf2);">{{m.text}}</span>
+              <sc-if value="{{m.src}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; color: var(--av-ink4, #7d8796); line-height: 1.4;">{{m.src}}</span></sc-if>
+              <sc-if value="{{m.hasActions}}" hint-placeholder-val="{{false}}">
+                <span style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <sc-for list="{{m.actions}}" as="x" hint-placeholder-count="1">
+                    <a href="{{x.href}}" style="height: 32px; padding: 0 11px; border-radius: 9px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); color: var(--av-accent, #409cff); font-size: 9.5px; letter-spacing: 0.10em; font-weight: 700; display: flex; align-items: center; text-decoration: none;">{{x.l}} ›</a>
+                  </sc-for>
+                </span>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{thinking}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex;"><div style="padding: 9px 12px; border-radius: 14px; background: rgba(var(--av-card-rgb, 15,19,26), 0.9); border: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.08); font-size: 9.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-ink4, #7d8796);">CONSULTANDO TELEMETRIA · AGENDA · DOCUMENTOS…</div></div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 2px; flex-shrink: 0;">
+      <sc-if value="{{attachment}}" hint-placeholder-val="{{false}}">
+        <span style="align-self: flex-start; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 11px; border-radius: 9px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); color: var(--av-accent, #409cff); font-size: 9.5px; letter-spacing: 0.10em; font-weight: 700; max-width: 100%; box-sizing: border-box;"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{attachLabel}}</span><button type="button" onClick="{{dropAttachment}}" aria-label="Remover anexo" style="width: 26px; height: 26px; border-radius: 7px; border: none; background: transparent; color: var(--av-accent, #409cff); font-size: 14px; cursor: pointer; flex-shrink: 0;">✕</button></span>
+      </sc-if>
+      <div style="display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(var(--av-card3-rgb, 24,30,40), 0.96) 0%, rgba(var(--av-card2-rgb, 12,15,21), 0.97) 100%); border: 1px solid rgba(var(--av-plat-rgb, 217,222,230), 0.40); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 0 0 4px rgba(var(--av-plat-rgb, 217,222,230), 0.06), 0 18px 44px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.5 * var(--av-shadow-k, 1)));">
+        <div style="display: flex; align-items: center; gap: 6px; padding: 10px 10px 10px 18px;">
+          <label for="pergunta-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Pergunta</label>
+          <input id="pergunta-m" maxlength="500" ref="{{inputRef}}" onKeyDown="{{onKey}}" placeholder="Pergunte ao barco…" autocomplete="off" style="flex-grow: 1; background: none; border: none; outline: none; color: var(--av-ink, #e9edf2); font-size: 17px; font-family: inherit; min-width: 0; padding: 16px 0;">
+          <button type="button" onClick="{{send}}" aria-label="Enviar" style="width: 54px; height: 54px; border-radius: 14px; border: none; background: linear-gradient(180deg, var(--av-accent-hi, #6fb3ff) 0%, var(--av-accent, #409cff) 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h14 M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+          <input type="file" accept="image/*" capture="environment" ref="{{fotoRef}}" onChange="{{onFoto}}" aria-hidden="true" tabindex="-1" style="display: none;">
+          <input type="file" accept="video/*" capture="environment" ref="{{videoRef}}" onChange="{{onVideo}}" aria-hidden="true" tabindex="-1" style="display: none;">
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.07);">
+          <sc-for list="{{modes}}" as="m" hint-placeholder-count="4">
+            <button type="button" onClick="{{m.onClick}}" aria-label="{{m.aria}}" style="height: 50px; border: none; border-right: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.07); background: {{m.mbg}}; color: {{m.tone}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 0;">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{m.d}}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span style="font-size: 9px; letter-spacing: 0.10em; font-weight: 700;">{{m.l}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px;">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+          <button type="button" onClick="{{c.onClick}}" style="font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--av-ink3, #9aa3af); border: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.14); background: rgba(var(--av-card-rgb, 15,19,26), 0.9); border-radius: 10px; padding: 0 10px; height: 46px; display: flex; align-items: center; justify-content: center; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;">{{c.l}}</button>
+        </sc-for>
+      </div>
+      <a href="H3-Atalhos-Editar.dc.html" aria-label="Editar atalhos" style="height: 44px; color: var(--av-accent, #409cff); border: 1px dashed var(--av-dash, #3a4454); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 10px; letter-spacing: 0.14em; font-weight: 700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg>EDITAR ATALHOS</a>
+      <sc-if value="{{showStatus}}" hint-placeholder-val="{{false}}"><span style="font-size: 10.5px; letter-spacing: 0.10em; color: {{statusTone}}; line-height: 1.3;">{{status}}</span></sc-if>
+    </div>
+
+    <sc-if value="{{idle}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 2px; flex-grow: 1; min-height: 0; justify-content: space-evenly; padding-bottom: 8px;">
+        <a href="A2-Ponte-Mobile.dc.html" title="Console completo — telemetria, manutenção, documentos, abastecimento e diário" style="box-sizing: border-box; display: flex; align-items: center; gap: 11px; height: 64px; padding: 0 12px 0 8px; background: linear-gradient(180deg, rgba(var(--av-accent-rgb, 64,156,255), 0.14) 0%, rgba(var(--av-accent-rgb, 64,156,255), 0.05) 100%); border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); border-radius: 14px; text-decoration: none; color: var(--av-ink, #e9edf2); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); transition: transform .3s, border-color .3s;" style-active="transform: scale(0.98); border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.55);">
+          <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: linear-gradient(160deg, rgba(var(--av-hl-rgb, 255,255,255), 0.12) 0%, rgba(var(--av-hl-rgb, 255,255,255), 0.02) 100%); border: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg></span>
+          <span style="flex-grow: 1; font-size: 11.5px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-accent, #409cff);">CONSOLE</span>
+          <span style="display: flex; align-items: center; gap: 5px; font-size: 9px; letter-spacing: 0.12em; font-weight: 700; color: var(--av-crit, #ff3b30); border: 1px solid rgba(var(--av-crit-rgb, 255,59,48), 0.45); background: rgba(var(--av-crit-rgb, 255,59,48), 0.10); border-radius: 5px; padding: 3px 7px; white-space: nowrap;"><span style="width: 5px; height: 5px; border-radius: 50%; background: var(--av-crit, #ff3b30);"></span>2 ATRASADAS</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink4, var(--av-ink4, #7d8796));"></path></svg>
+        </a>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{faq}}" as="b" hint-placeholder-count="4">
+            <a href="{{b.href}}" title="{{b.s}}" aria-label="{{b.n}}" style="box-sizing: border-box; height: 92px; padding: 12px 2px 10px; background: linear-gradient(180deg, rgba(var(--av-card3-rgb, 22,27,36), 0.92) 0%, rgba(var(--av-card2-rgb, 12,15,21), 0.94) 100%); border: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.09); border-radius: 14px; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07); transition: transform .3s, border-color .3s;" style-active="transform: scale(0.96); border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.55);">
+              <span style="position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: {{b.ctone}};"></span>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="margin-top: 4px;"><path d="{{b.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{b.tone}};"></path></svg>
+              <span style="font-size: 9.5px; letter-spacing: 0.10em; font-weight: 700; color: {{b.tone}}; white-space: nowrap;">{{b.short}}</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+
+    
+  </div>
+
+  <a href="S2-SOS-Mobile.dc.html" style="flex-shrink: 0; margin: 0 14px 18px; height: 58px; border-radius: 16px; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; box-shadow: 0 0 0 3px rgba(var(--av-crit-rgb, 255,59,48), 0.28), 0 10px 26px rgba(var(--av-critfill-rgb, 211,47,39), 0.40);">
+    <span style="font-size: 20px; font-weight: 800; letter-spacing: 0.12em; line-height: 1;">SOS</span>
+    <span style="width: 1px; height: 22px; background: rgba(var(--av-hl-rgb, 255,255,255), 0.4);"></span>
+    <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.10em;">EMERGÊNCIA · ALARME SONORO</span>
+  </a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { atalhos: null, thread: [], thinking: false, listening: false, conversa: false, attachment: null, note: '' };
+  inputRef = React.createRef(); fotoRef = React.createRef(); videoRef = React.createRef(); threadRef = React.createRef();
+  FALLBACK = [
+    { id: 'diario', l: 'DIÁRIO DE BORDO', q: 'Registre no diário o resumo da navegação de agora e confirme.' },
+    { id: 'seguro', l: 'SEGURO PARA SAIR?', q: 'Avalie vento, mar, motores e pendências — sim ou não, e por quê.' },
+    { id: 'destinos', l: 'PARA ONDE VAMOS HOJE?', q: '3 destinos saindo daqui, com distância, tempo e diesel.' },
+    { id: 'manutencao', l: 'PRÓXIMAS MANUTENÇÕES', q: 'O que vence primeiro, o que está atrasado, o que falta registrar.' },
+    { id: 'autonomia', l: 'AUTONOMIA', q: 'Autonomia com reserva de 10% pelas horas desde os 500 L.' },
+    { id: 'mare', l: 'MARÉ AGORA', q: 'Maré e corrente agora e nas próximas 6 h na posição atual.' }
+  ];
+  componentDidMount() {
+    this._onHash = () => this.handleHash();
+    window.addEventListener('hashchange', this._onHash);
+    this.whenBrain(() => { this.setState({ atalhos: window.AvantiBrain.loadShortcuts() }); this.handleHash(); });
+  }
+  handleHash() {
+    const B = window.AvantiBrain; if (!B) return;
+    const h = B.parseHash();
+    if (!h.q && !h.mode) return;
+    B.clearHash();
+    if (h.q) this.ask(h.q);
+    if (h.mode === 'voz') { if (!this.rec) this.toggleVoice(); }
+    else if (h.mode === 'conversa') { if (!this.state.conversa) this.toggleConversa(); }
+    else if (h.mode === 'foto' || h.mode === 'video') this.flash(h.mode === 'foto' ? 'Toque em FOTO para escolher a imagem — etiqueta, tela, nota ou manual.' : 'Toque em VÍDEO para escolher o clipe de 10 s.');
+    else if (h.mode === 'texto' && this.inputRef.current) this.inputRef.current.focus();
+  }
+  componentWillUnmount() {
+    this._dead = true;
+    window.removeEventListener('hashchange', this._onHash);
+    this.stopRec();
+    (this._pend || []).forEach(clearTimeout); clearTimeout(this._fl);
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+  }
+  whenBrain(cb) {
+    if (window.AvantiBrain) return cb();
+    let n = 0;
+    const t = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(t); if (window.AvantiBrain) cb(); return; }
+      if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
+  fx() {
+    if (this._fx) return this._fx;
+    const h = React.createElement;
+    this._fx = {
+      sweep: h('div', { key: 'sweep', 'aria-hidden': 'true', style: { position: 'absolute', top: 0, bottom: 0, left: 0, width: '16%', background: 'linear-gradient(90deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 0%, rgba(var(--av-hl-rgb, 255,255,255), 0.55) 50%, rgba(var(--av-hl-rgb, 255,255,255), 0) 100%)', mixBlendMode: 'overlay', animation: 'avantiSweep 6.5s cubic-bezier(.3,.1,.2,1) infinite', pointerEvents: 'none' } }),
+      led: h('span', { key: 'led', 'aria-hidden': 'true', style: { width: 7, height: 7, borderRadius: '50%', background: 'var(--av-accent, #409cff)', animation: 'avantiPulse 2.4s ease-in-out infinite', display: 'inline-block' } })
+    };
+    return this._fx;
+  }
+  flash(msg, ms) { this.setState({ note: msg }); clearTimeout(this._fl); this._fl = setTimeout(() => this.setState({ note: '' }), ms || 4000); }
+  scrollThread() { const el = this.threadRef.current; if (el) el.scrollTop = el.scrollHeight; }
+  ask(q, id) {
+    const B = window.AvantiBrain; if (!B) return;
+    q = String(q || '').trim().slice(0, 500);
+    const att = this.state.attachment;
+    if (!q && !att) { this.flash('Digite ou fale a pergunta — ou toque em um atalho.'); return; }
+    if (this.inputRef.current) this.inputRef.current.value = '';
+    const userText = (att ? '[' + (att.kind === 'video' ? 'vídeo' : 'foto') + ' · ' + att.name + '] ' : '') + q;
+    this.setState((s) => ({ thread: s.thread.concat([{ role: 'user', text: userText }]), pending: (s.pending || 0) + 1, thinking: true, attachment: null, note: '' }), () => this.scrollThread());
+    const t = setTimeout(() => {
+      this._pend = (this._pend || []).filter((x) => x !== t);
+      if (this._dead) return;
+      let a;
+      try {
+        if (att) {
+          a = B.answerAttachment(att.kind, att.file, { platform: 'app' });
+          if (q) { const b = B.answer(q, { platform: 'app' }); if (b.key !== 'fallback' && b.key !== 'saudacao') a = { text: a.text + '\n\n' + b.text, src: b.src, actions: b.actions }; }
+        } else a = B.answer(q, { platform: 'app', id: id });
+      } catch (e) { a = { text: 'Não consegui responder agora — SEM DADOS. Tente de novo.', src: '', actions: [] }; }
+      this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(a.text); });
+    }, 650);
+    this._pend = (this._pend || []).concat([t]);
+  }
+  clearThread() {
+    this.stopRec(); if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+    (this._pend || []).forEach(clearTimeout); this._pend = [];
+    this.setState({ thread: [], thinking: false, pending: 0, conversa: false, listening: false });
+  }
+  speakAndResume(text) {
+    const B = window.AvantiBrain; if (!B) return;
+    this.stopRec(); this.setState({ listening: false });
+    B.speak(text, () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); });
+  }
+  pick(kind) { const r = kind === 'video' ? this.videoRef.current : this.fotoRef.current; if (r) r.click(); }
+  onFile(kind, e) {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    this.setState({ attachment: { kind: kind, name: f.name, file: f }, note: '' });
+    e.target.value = '';
+    setTimeout(() => { if (this.inputRef.current) this.inputRef.current.focus(); }, 50);
+  }
+  startVoice(continuous) {
+    const B = window.AvantiBrain; const r = B && B.recognizer({ continuous: continuous });
+    if (!r) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return false; }
+    this.rec = r; let finalText = '';
+    r.onresult = (ev) => {
+      let interim = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; }
+      if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim();
+      if (continuous && finalText.trim()) { const t = finalText.trim(); finalText = ''; this.stopRec(); this.ask(t); }
+    };
+    r.onend = () => {
+      if (this.rec !== r) return;
+      if (this.state.conversa) { try { r.start(); } catch (e) { this.rec = null; } return; }
+      this.rec = null; this.setState({ listening: false });
+      const t = this.inputRef.current ? this.inputRef.current.value.trim() : '';
+      if (!continuous && t) this.ask(t);
+    };
+    r.onerror = (ev) => {
+      if (this.rec !== r) return;
+      const err = ev && ev.error;
+      if (this.state.conversa && (err === 'no-speech' || err === 'aborted')) return;
+      this.rec = null;
+      this.setState({ listening: false, conversa: false });
+      this.flash(err === 'not-allowed' || err === 'service-not-allowed' ? 'Permissão de microfone negada — digite a pergunta.' : err === 'no-speech' ? 'Não ouvi nada — toque em VOZ→TEXTO e fale de novo.' : 'Voz indisponível agora — digite a pergunta.');
+    };
+    try { r.start(); this.setState({ listening: true, note: '' }); return true; } catch (e) { this.rec = null; return false; }
+  }
+  stopRec() { if (this.rec) { const r = this.rec; this.rec = null; try { r.onend = null; r.onerror = null; r.onresult = null; r.stop(); } catch (e) {} } }
+  toggleVoice() {
+    if (this.state.conversa) { this.toggleConversa(); return; }
+    if (this.rec) { this.stopRec(); this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.ask(t); return; }
+    this.startVoice(false);
+  }
+  toggleConversa() {
+    const B = window.AvantiBrain;
+    if (this.state.conversa) { this.stopRec(); if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
+    if (this.rec) { this.stopRec(); this.setState({ listening: false }); }
+    if (!B || !B.recognizer({ continuous: true })) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
+    this.setState({ conversa: true }, () => { B.speak('Conversa ativa. Pode falar.', () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); }); });
+  }
+  renderVals() {
+    const s = this.state;
+    const atalhos = (s.atalhos || this.FALLBACK).slice(0, 8);
+    const chatting = s.thread.length > 0 || s.thinking;
+    const att = s.attachment;
+    const base = { tone: 'var(--av-ink2, #aeb6c2)', mbg: 'transparent' };
+    const on = { tone: 'var(--av-accent, #409cff)', mbg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' };
+    const hot = { tone: 'var(--av-crit, #ff3b30)', mbg: 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)' };
+    const fx = this.fx();
+    return {
+      sweep: fx.sweep, led: fx.led,
+      idle: !chatting, chatting: chatting, thinking: s.thinking,
+      attachment: !!att,
+      attachLabel: att ? (att.kind === 'video' ? 'VÍDEO · ' : 'FOTO · ') + att.name : '',
+      dropAttachment: () => this.setState({ attachment: null }),
+      clearThread: () => this.clearThread(),
+      inputRef: this.inputRef, fotoRef: this.fotoRef, videoRef: this.videoRef, threadRef: this.threadRef,
+      onKey: (e) => { if (e.key === 'Enter' && !(e.nativeEvent && e.nativeEvent.isComposing) && e.keyCode !== 229) this.ask(e.target.value); },
+      send: () => this.ask(this.inputRef.current ? this.inputRef.current.value : ''),
+      onFoto: (e) => this.onFile('foto', e), onVideo: (e) => this.onFile('video', e),
+      status: s.conversa ? 'CONVERSA ATIVA · OUVINDO · TOQUE EM CONVERSA PARA ENCERRAR' : s.listening ? 'OUVINDO… TOQUE DE NOVO PARA ENVIAR' : s.note ? s.note.toUpperCase() : att ? 'ANEXO PRONTO · DESCREVA E ENVIE' : 'ATALHOS · UM TOQUE ENVIA',
+      statusTone: s.conversa || s.listening ? 'var(--av-accent, #409cff)' : s.note ? 'var(--av-warn, #f0a63a)' : 'var(--av-ink4, #7d8796)',
+      showStatus: !!(s.conversa || s.listening || s.note || att),
+      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : 'rgba(var(--av-card-rgb, 15,19,26), 0.9)', line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.09)', k: m.role === 'user' ? 'OTTO' : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
+      chips: atalhos.map((a) => ({ l: a.l, onClick: () => this.ask(a.q, a.id) })),
+      faq: [
+        { short: 'GERADOR', n: '2 · GERADOR', s: 'Gerador Onan MDKDP — ligar · desligar · alarmes', eq: 'Onan MDKDP · 280,7 h', chip: 'PRONTO', href: 'F4-FAQ-Gerador.dc.html', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)' },
+        { short: 'CLIMA', n: '3 · CLIMATIZAÇÃO', s: 'Chiller Dometic — ligar · desligar · zonas · filtros vencidos há 181 d', eq: 'Chiller Dometic L-3527', chip: '181 D', href: 'F5-FAQ-Climatizacao.dc.html', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-tele, #5ac8fa)', ctone: 'var(--av-crit, #ff3b30)', cline: 'rgba(var(--av-crit-rgb, 255,59,48), 0.45)' },
+        { short: 'SEAKEEPER', n: '4 · ESTABILIZADOR', s: 'Seakeeper 6 — ligar antes de sair · desligar ao atracar', eq: 'Seakeeper 6', chip: 'PRONTO', href: 'F2-FAQ-Estabilizador.dc.html', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 7a5 5 0 0 0 0 10', tone: 'var(--av-ok, #34c77a)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)' },
+        { short: 'LEME', n: '5 · ELETRÔNICOS', s: 'Plotter · piloto · radar · AIS · áudio', eq: 'Plotter · piloto · radar', chip: '19 FAQ', href: 'F3-FAQ-Piloto.dc.html', d: 'M4 5h16v11H4z M9 20h6 M12 16v4 M7 9l3 3-3 3 M12 15h3', tone: 'var(--av-accent, #409cff)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)' }
+      ],
+      modes: [
+        Object.assign({ l: att && att.kind === 'foto' ? 'FOTO ✓' : 'FOTO', aria: 'Enviar foto — etiqueta, alarme na tela, nota fiscal ou página de manual', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z', onClick: () => this.pick('foto') }, att && att.kind === 'foto' ? on : base),
+        Object.assign({ l: att && att.kind === 'video' ? 'VÍDEO ✓' : 'VÍDEO', aria: 'Enviar vídeo de 10 s — som ou comportamento anormal', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z', onClick: () => this.pick('video') }, att && att.kind === 'video' ? on : base),
+        Object.assign({ l: s.listening && !s.conversa ? 'OUVINDO…' : 'VOZ→TEXTO', aria: 'Falar — a pergunta é transcrita e respondida em texto e voz', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3', onClick: () => this.toggleVoice() }, s.listening && !s.conversa ? hot : base),
+        Object.assign({ l: s.conversa ? 'ATIVA' : 'CONVERSA', aria: 'Conversa contínua por voz — sem tocar na tela', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2', onClick: () => this.toggleConversa() }, s.conversa ? { tone: 'var(--av-bg, #05070b)', mbg: 'var(--av-accent, #409cff)' } : { tone: 'var(--av-accent, #409cff)', mbg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.08)' })
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

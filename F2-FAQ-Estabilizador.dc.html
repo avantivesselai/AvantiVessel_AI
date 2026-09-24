@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avanti Vessel AI — FAQ Estabilizador</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
+
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px;">
+    <a href="F1-FAQ-Hub.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px;">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em;">Estabilizador — ligar e desligar</span>
+      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af);">Seakeeper 6 · giroestabilizador · manual 90403 Rev.3</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-ok, #34c77a);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 7a5 5 0 0 0 0 10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ok, var(--av-ok, #34c77a));"></path></svg> FAQ 4</span>
+  </header>
+
+  <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px;">
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+      <sc-for list="{{nums}}" as="k" hint-placeholder-count="3">
+        <div style="padding: 10px 10px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: {{k.tone}};">{{k.v}}</span>
+          <span style="font-size: 10px; color: var(--av-ink3, #9aa3af); line-height: 1.3;">{{k.s}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="box-sizing: border-box; padding: 14px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 9px;">
+      <span style="font-size: 11px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-ok, #34c77a);">LIGAR — ANTES DE SAIR</span>
+      <sc-for list="{{ligar}}" as="s" hint-placeholder-count="4">
+        <span style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); color: var(--av-ok, #34c77a); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{s.n}}</span>
+          <span style="font-size: 13px; line-height: 1.4; padding-top: 2px;">{{s.t}}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <div style="box-sizing: border-box; padding: 14px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 9px;">
+      <span style="font-size: 11px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-accent, #409cff);">DESLIGAR — AO CHEGAR</span>
+      <sc-for list="{{desligar}}" as="s" hint-placeholder-count="3">
+        <span style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-accent-rgb, 64,156,255), 0.14); color: var(--av-accent, #409cff); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{s.n}}</span>
+          <span style="font-size: 13px; line-height: 1.4; padding-top: 2px;">{{s.t}}</span>
+        </span>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px; background: rgba(var(--av-crit-rgb, 255,59,48), 0.08); border: 1px solid rgba(var(--av-crit-rgb, 255,59,48), 0.30); border-radius: 14px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 21 20H3z M12 10v4 M12 17h.01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-crit, var(--av-crit, #ff3b30));"></path></svg>
+      <span style="font-size: 12px; line-height: 1.45; color: var(--av-ink2, #aeb6c2);"><strong style="color: var(--av-crit, #ff3b30);">Nunca</strong> mexa no equipamento com o volante girando: RPM tem de estar em ZERO. Alarme trava o giro sozinho — não force o reset.</span>
+    </div>
+
+    <span style="font-size: 10.5px; line-height: 1.45; color: var(--av-ink4, #7d8796); display: flex; gap: 7px; align-items: flex-start;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink4, var(--av-ink4, #7d8796));"></path></svg> Display em 14/08: 159 h RUN · 119 h SEA · serial do gyro 244.7424 · Fonte: Seakeeper Operation Manual 90403 Rev.3, §2.2–2.4 · Drive: Manuais_Baixados/seakeeper_stabilizer_5-6_operation-manual_en.pdf</span>
+  </div>
+
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; gap: 8px;">
+    <a href="H2-Home-Mobile.dc.html#q=Abrir%20manual%20do%20Seakeeper%206" style="flex-grow: 1; height: 50px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M8 20a3 3 0 0 1 0-6h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg> Manual</a>
+    <a href="G3-Diario-Mobile.dc.html" style="flex-grow: 1; height: 50px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg> Diário</a>
+    <a href="B3-Carta-Resposta.dc.html" aria-label="Perguntar por voz" style="width: 50px; height: 50px; flex-shrink: 0; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      nums: [
+        { v: '24 min', s: 'até poder estabilizar (7.700 rpm)', tone: 'var(--av-ok, #34c77a)' },
+        { v: '40 min', s: 'até velocidade máxima (9.700 rpm)', tone: 'var(--av-ink, #e9edf2)' },
+        { v: '4 h+', s: 'para parar por completo após desligar', tone: 'var(--av-warn, #f0a63a)' }
+      ],
+      ligar: [
+        { n: '1', t: 'Ligue o disjuntor DC (12 V) do estabilizador — o display acende e mostra a tela inicial.' },
+        { n: '2', t: 'Ligue o disjuntor AC do Motor Drive Box. A bomba de água salgada costuma ligar junto; se tiver disjuntor próprio, ligue também.' },
+        { n: '3', t: 'No display, toque ON/OFF — fica azul e a barra de progresso mostra quando estará disponível.' },
+        { n: '4', t: 'Quando aparecer o botão STABILIZE, toque — fica azul: o barco está sendo estabilizado.' }
+      ],
+      desligar: [
+        { n: '1', t: 'Ao entrar no porto, toque ON/OFF — fica cinza e o volante começa a desacelerar.' },
+        { n: '2', t: 'Só depois de atracado, com gerador e motores desligados, desligue os disjuntores AC e DC.' },
+        { n: '3', t: 'O display mostra 0 RPM quando parou de vez (4 h+). A bomba pode rodar até 5 min após desligar.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

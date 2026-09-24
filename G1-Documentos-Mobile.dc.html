@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Console · Documentos (app)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px;">
+    <a href="A2-Ponte-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Documentos</span>
+      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">registro · licenças · garantias · notas</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-warn, #f0a63a); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 7v5l3 2 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg> D-124</span>
+  </header>
+  <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+      <sc-for list="{{nums}}" as="k" hint-placeholder-count="3">
+        <div style="padding: 9px 10px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: {{k.tone}};">{{k.v}}</span>
+          <span style="font-size: 9.5px; color: var(--av-ink3, #9aa3af); line-height: 1.3;">{{k.s}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; overflow: hidden;">
+      <sc-for list="{{docs}}" as="x" hint-placeholder-count="9">
+        <a href="{{x.ask}}" style="display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 8px 6px 10px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px; text-decoration: none; color: var(--av-ink, #e9edf2);">
+          <span style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 10px; background: {{x.wash}}; display: flex; align-items: center; justify-content: center;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{x.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{x.tone}};"></path></svg>
+          </span>
+          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+            <span style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.n}}</span>
+            <span style="font-size: 10.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.dd}}</span>
+          </span>
+          <span style="flex-shrink: 0; padding: 4px 7px; border-radius: 999px; background: {{x.wash}}; color: {{x.tone}}; font-size: 9px; letter-spacing: 0.08em; font-weight: 800;">{{x.st}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; gap: 8px;">
+    <a href="H2-Home-Mobile.dc.html#mode=foto" style="flex-grow: 1; height: 52px; border-radius: 14px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Foto do documento</a>
+    <a href="B3-Carta-Resposta.dc.html" style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center; text-decoration: none;" aria-label="Perguntar por voz"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      nums: [ { v: '7', s: 'válidos', tone: 'var(--av-ok, #34c77a)' }, { v: '1', s: 'vence em 180 d', tone: 'var(--av-warn, #f0a63a)' }, { v: '4', s: 'a conferir / abertos', tone: 'var(--av-crit, #ff3b30)' } ],
+      docs: [
+        { n: 'Título de Inscrição (TIE) · 3813927725', s: 'Capitania dos Portos RJ · emitido 15/01/2026 · protocolo 381-000651/2026', dd: 'até 15/01/2031', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4' },
+        { n: 'FISTEL + licença de estação', s: 'ANATEL · renovar antes do vencimento · alerta D-90 ativo', dd: '23/01/2027 · D-124', st: 'RENOVAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5' },
+        { n: 'Licença do VHF 115', s: 'fonte divergente entre registro e planilha — conferir com a ANATEL', dd: 'sem data', st: 'CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5' },
+        { n: 'Homologação VHF 215 AIS · nº 07895-25-01493', s: 'ANATEL · em nome de Otto B. Licks · série 7GG001169', dd: 'até 11/11/2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5' },
+        { n: 'Homologação VHF 315', s: 'ANATEL · certificado 2025–2028 arquivado', dd: 'até 2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5' },
+        { n: 'EPIRB ACR GlobalFix V5 (RLB-44) · Cat I', s: 'cert. Life Safety 67827-001 (26/01/2026) · MMSI 710400328 · call sign PV4476 · bateria até abr/2036', dd: 'SBM até jan/2031', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6' },
+        { n: 'Seakeeper 6 · garantia estendida', s: 'registro 14/08/2026 · faltam plano, datas e dealer emissor para fixar a vigência', dd: 'vigência ?', st: 'A CONFIRMAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 7a5 5 0 0 0 0 10' },
+        { n: 'Garantia Azimut · vazamento no teto do cockpit', s: 'pleito em rascunho desde 15/08/2026 · aguarda envio ao estaleiro', dd: 'aberto', st: 'A ENVIAR', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01' },
+        { n: 'Health Check Volvo Penta · protocolo 47715565', s: 'dealer · 16/07/2026 · 16 itens · garantia dos motores protegida', dd: 'próximo 16/07/2027', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8' },
+        { n: 'Capas dos estofados · Tlaloc', s: 'NF/recibo a solicitar · devolução prevista 31/08/2026 a conferir', dd: 'pendente', st: 'PENDENTE', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4' },
+        { n: 'NF-e 002925 (500 L) · NF de compra · requerimento de inscrição · Pix Marine Express', s: '14/08/2026 · 07/01/2026 · 09/01/2026 · 09/12/2025 — arquivados em Documentos_Legais', dd: '4 arquivados', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4' }
+      ].map((x) => Object.assign({}, x, { ask: 'H2-Home-Mobile.dc.html#q=' + encodeURIComponent(x.n) })).slice(0, 9)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avanti Vessel AI</title>
+<meta name="theme-color" content="#05070b">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./assets/favicon_64.png">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Avanti">
+<script>
+/* Entrada: celular → app (H2), computador/tablet → web (Main). ?v=web|app fixa a escolha neste aparelho, ?v=auto volta a detectar, ?v=lista mostra todas as telas. */
+(function () {
+  var K = 'avanti.plataforma.v1';
+  var v = new URLSearchParams(location.search).get('v');
+  try { if (v === 'web' || v === 'app') localStorage.setItem(K, v); if (v === 'auto') localStorage.removeItem(K); } catch (e) {}
+  if (v === 'lista') return;
+  var saved = null; try { saved = localStorage.getItem(K); } catch (e) {}
+  var pick = v === 'web' || v === 'app' ? v : saved;
+  if (pick !== 'web' && pick !== 'app') {
+    var ua = navigator.userAgent || '';
+    var uad = navigator.userAgentData;
+    var mobileUA = uad && typeof uad.mobile === 'boolean' ? uad.mobile : /Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua);
+    var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+    var coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+    pick = mobileUA || (coarse && shortSide < 600) ? 'app' : 'web';
+  }
+  location.replace((pick === 'app' ? 'H2-Home-Mobile.dc.html' : 'Main.dc.html') + location.hash);
+})();
+</script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 26px; }
+.top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.top img { height: 34px; width: 134px; object-fit: contain; filter: var(--av-logo-filter, none); }
+.top .t { flex-grow: 1; display: flex; flex-direction: column; gap: 2px; }
+h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+.sub { margin: 0; color: var(--av-ink3, #9aa3af); font-size: 14px; }
+.go { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-weight: 700; font-size: 14px; text-decoration: none; }
+.btn.pri { background: var(--av-accent, #409cff); border-color: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; align-items: start; }
+.col { background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.col h2 { margin: 0 0 6px; font-size: 11.5px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-ink3, #9aa3af); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 12px; background: var(--av-row, #12161e); color: var(--av-ink, #e9edf2); text-decoration: none; font-size: 14px; font-weight: 600; }
+.row span { font-size: 11.5px; font-weight: 500; color: var(--av-ink4, #7d8796); white-space: nowrap; }
+.foot { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--av-ink4, #7d8796); }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <img src="assets/logo_white.png" alt="Avanti Vessel">
+      <div class="t"><h1>Avanti Vessel AI</h1><p class="sub">Azimut Atlantis 51 · registro 3813927725 · todas as telas</p></div>
+      <avanti-theme-toggle size="40"></avanti-theme-toggle>
+    </div>
+    <div class="go">
+      <a class="btn pri" href="index.html?v=auto">Abrir · detectar aparelho</a>
+      <a class="btn" href="index.html?v=web">Sempre web neste aparelho</a>
+      <a class="btn" href="index.html?v=app">Sempre app neste aparelho</a>
+    </div>
+    <div class="grid">
+    <section class="col"><h2>PRINCIPAL</h2>
+      <a class="row" href="Main.dc.html">Início · web<span>1440 × 900</span></a>
+      <a class="row" href="H2-Home-Mobile.dc.html">Início · app<span>390 × 844</span></a>
+      <a class="row" href="Manual-Avanti-Vessel-AI.dc.html">Manual de uso<span>19 slides</span></a>
+      <a class="row" href="D-Botoes.dc.html">Especificação dos botões<span>2380 × 900</span></a>
+    </section>
+    <section class="col"><h2>WEB · CONSOLE E FAQ</h2>
+      <a class="row" href="A1-Ponte-Web.dc.html">Console · Telemetria<span>A1</span></a>
+      <a class="row" href="B1-Carta-Web.dc.html">Gestão<span>B1</span></a>
+      <a class="row" href="C1-Leme-Web.dc.html">Manutenção<span>C1</span></a>
+      <a class="row" href="G1-Documentos-Web.dc.html">Documentos<span>G1</span></a>
+      <a class="row" href="G2-Abastecimento-Web.dc.html">Abastecimento<span>G2</span></a>
+      <a class="row" href="G3-Diario-Web.dc.html">Diário de bordo<span>G3</span></a>
+      <a class="row" href="G4-Equipe-Web.dc.html">Equipe e acessos<span>G4</span></a>
+      <a class="row" href="F1-FAQ-Hub-Web.dc.html">FAQ de bordo<span>F1</span></a>
+      <a class="row" href="F2-FAQ-Estabilizador-Web.dc.html">FAQ · Estabilizador<span>F2</span></a>
+      <a class="row" href="F3-FAQ-Piloto-Web.dc.html">FAQ · Eletrônicos<span>F3</span></a>
+      <a class="row" href="F4-FAQ-Gerador-Web.dc.html">FAQ · Gerador<span>F4</span></a>
+      <a class="row" href="F5-FAQ-Climatizacao-Web.dc.html">FAQ · Climatização<span>F5</span></a>
+      <a class="row" href="H3-Atalhos-Editar-Web.dc.html">Editar atalhos<span>H3</span></a>
+      <a class="row" href="S1-SOS-Web.dc.html">SOS<span>S1</span></a>
+    </section>
+    <section class="col"><h2>APP · CELULAR</h2>
+      <a class="row" href="A2-Ponte-Mobile.dc.html">Console<span>A2</span></a>
+      <a class="row" href="A3-Ponte-Editar.dc.html">Editar blocos<span>A3</span></a>
+      <a class="row" href="B2-Carta-Mobile.dc.html">Sistemas<span>B2</span></a>
+      <a class="row" href="B3-Carta-Resposta.dc.html">Resposta por voz<span>B3</span></a>
+      <a class="row" href="C2-Leme-Mobile.dc.html">Leme<span>C2</span></a>
+      <a class="row" href="C3-Leme-Alerta.dc.html">Alerta crítico<span>C3</span></a>
+      <a class="row" href="E1-Navegando-Gatilhos.dc.html">Modo navegação<span>E1</span></a>
+      <a class="row" href="E2-Navegando-Sintoma.dc.html">Sintoma<span>E2</span></a>
+      <a class="row" href="F1-FAQ-Hub.dc.html">FAQ de bordo<span>F1</span></a>
+      <a class="row" href="F2-FAQ-Estabilizador.dc.html">FAQ · Estabilizador<span>F2</span></a>
+      <a class="row" href="F3-FAQ-Piloto.dc.html">FAQ · Eletrônicos<span>F3</span></a>
+      <a class="row" href="F4-FAQ-Gerador.dc.html">FAQ · Gerador<span>F4</span></a>
+      <a class="row" href="F5-FAQ-Climatizacao.dc.html">FAQ · Climatização<span>F5</span></a>
+      <a class="row" href="G1-Documentos-Mobile.dc.html">Documentos<span>G1</span></a>
+      <a class="row" href="G2-Abastecimento-Mobile.dc.html">Abastecimento<span>G2</span></a>
+      <a class="row" href="G3-Diario-Mobile.dc.html">Diário de bordo<span>G3</span></a>
+      <a class="row" href="G4-Equipe-Mobile.dc.html">Equipe e acessos<span>G4</span></a>
+      <a class="row" href="H3-Atalhos-Editar.dc.html">Editar atalhos<span>H3</span></a>
+      <a class="row" href="S2-SOS-Mobile.dc.html">SOS<span>S2</span></a>
+    </section>
+    </div>
+    <p class="foot">Atalhos, diário, documentos e equipe ficam salvos neste navegador. Precisa de internet na primeira visita. No celular, use “Adicionar à tela de início” para abrir como app, em tela cheia. Esta lista: index.html?v=lista</p>
+  </main>
+</body>
+</html>

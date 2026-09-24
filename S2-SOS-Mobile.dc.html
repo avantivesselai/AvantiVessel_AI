@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avanti Vessel AI — SOS (app)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #05070b; -webkit-font-smoothing: antialiased; }
+a { color: #409cff; } a:hover { color: #6fb3ff; }
+button { font: inherit; }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #05070b; color: #e9edf2; overflow: hidden; padding: 14px 16px 18px; gap: 10px;">
+
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 16px 16px 18px; background: #d32f27; border-radius: 22px; display: flex; flex-direction: column; gap: 12px; color: #ffffff;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="width: 12px; height: 12px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 0 5px rgba(255,255,255,0.28);"></span>
+      <span style="flex-grow: 1; font-size: 12px; font-weight: 800; letter-spacing: 0.10em;">ALARME SONORO ATIVO</span>
+      <a href="H2-Home-Mobile.dc.html" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px;">✕</a>
+    </div>
+    <span style="font-size: 30px; font-weight: 800; letter-spacing: 0.06em; line-height: 1;">EMERGÊNCIA</span>
+    <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; color: #ffd6d3;">22°57,09'S 043°10,23'W · 23:01 · gravado no diário de bordo</span>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
+    <sc-for list="{{proto}}" as="p" hint-placeholder-count="4">
+      <button type="button" onClick="{{p.toggle}}" aria-expanded="{{p.open}}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 12px; background: {{p.bg}}; border: 1px solid {{p.line}}; border-radius: 14px; color: #e9edf2; cursor: pointer; text-align: left; font-family: inherit; width: 100%; box-sizing: border-box; flex-shrink: 0;">
+        <span style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: {{p.wash}}; display: flex; align-items: center; justify-content: center;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{p.d}}" stroke="{{p.tone}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+          <span style="font-size: 14.5px; font-weight: 700;">{{p.n}}</span>
+          <span style="font-size: 12px; color: #aeb6c2; line-height: 1.35;">{{p.s}}</span>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="margin-left: auto; flex-shrink: 0;"><path d="{{p.chev}}" stroke="#9aa3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <sc-if value="{{p.open}}" hint-placeholder-val="{{false}}">
+        <div style="margin: -4px 0 2px; padding: 10px 12px 10px 14px; border-radius: 0 0 14px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-top: none; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;">
+          <sc-for list="{{p.steps}}" as="st" hint-placeholder-count="3">
+            <span style="display: flex; gap: 9px; align-items: flex-start;"><span style="width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%; background: rgba(255,59,48,0.14); color: #ff3b30; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{st.n}}</span><span style="font-size: 12.5px; line-height: 1.4; padding-top: 1px;">{{st.t}}</span></span>
+          </sc-for>
+          <span style="font-size: 10.5px; color: #7d8796; line-height: 1.4;">{{p.src}}</span>
+          <sc-if value="{{p.href}}" hint-placeholder-val="{{false}}"><a href="{{p.href}}" style="align-self: flex-start; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(64,156,255,0.45); background: rgba(64,156,255,0.10); color: #409cff; font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; display: flex; align-items: center; text-decoration: none;">{{p.hl}} ›</a></sc-if>
+        </div>
+      </sc-if>
+    </sc-for>
+    <sc-if value="{{mayday}}" hint-placeholder-val="{{false}}">
+      <div style="padding: 12px 14px; border-radius: 14px; background: rgba(255,59,48,0.10); border: 1px solid rgba(255,59,48,0.45); display: flex; flex-direction: column; gap: 5px; flex-shrink: 0;">
+        <span style="font-size: 10px; letter-spacing: 0.14em; font-weight: 800; color: #ff3b30;">ROTEIRO · CANAL 16 · 156,800 MHz · REPETIR ATÉ RESPOSTA</span>
+        <sc-for list="{{roteiro}}" as="r" hint-placeholder-count="8">
+          <span style="font-family: ui-monospace, SF Mono, Menlo, Consolas, monospace; font-size: 12.5px; font-weight: 700; line-height: 1.35; color: #ffffff;">{{r}}</span>
+        </sc-for>
+        <span style="font-size: 10.5px; color: #aeb6c2; line-height: 1.4;">Urgência sem perigo de vida: PAN-PAN ×3 · Diran no canal 67 (24 h).</span>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding-top: 4px;">
+      <button type="button" onClick="{{toggleMayday}}" aria-pressed="{{mayday}}" style="height: 60px; border-radius: 16px; border: none; background: #e9edf2; color: #05070b; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; flex-shrink: 0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-size: 16px; font-weight: 800; letter-spacing: 0.06em;">{{maydayLabel}}</span></button>
+      <div style="display: flex; gap: 8px;">
+        <a href="G4-Equipe-Mobile.dc.html" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid #2a3240; background: #0f131a; color: #e9edf2; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 700;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Dealer</a>
+        <a href="G4-Equipe-Mobile.dc.html" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid #2a3240; background: #0f131a; color: #e9edf2; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 700;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Giovanni</a>
+        <button type="button" onClick="{{silence}}" aria-pressed="{{muted}}" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid {{silenceLine}}; background: #0f131a; color: {{silenceTone}}; font-size: 13px; font-weight: 700; cursor: pointer;">{{silenceLabel}}</button>
+      </div>
+      <a href="H2-Home-Mobile.dc.html" style="text-align: center; font-size: 12.5px; font-weight: 600; color: #9aa3af; text-decoration: none; padding: 8px; min-height: 28px;">Voltar ao início</a>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  state = { open: -1, mayday: false, left: 0 };
+  componentWillUnmount() { clearInterval(this._t); }
+  silence() {
+    if (this.state.left > 0) { clearInterval(this._t); this.setState({ left: 0 }); return; }
+    this.setState({ left: 60 }); clearInterval(this._t);
+    this._t = setInterval(() => { const l = this.state.left - 1; if (l <= 0) { clearInterval(this._t); this.setState({ left: 0 }); } else this.setState({ left: l }); }, 1000);
+  }
+  protoVals() {
+    const s = this.state; const docs = 'G1-Documentos-Mobile.dc.html'; const faq3 = 'F3-FAQ-Piloto.dc.html';
+    const P = [
+      { n: 'VHF Canal 16 — MAYDAY', s: 'Diran no canal 67 (24 h) · MMSI programado no VHF 215', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', tone: '#ff3b30', wash: 'rgba(255,59,48,0.14)', bg: 'rgba(255,59,48,0.08)', line: 'rgba(255,59,48,0.30)', steps: [{ n: '1', t: 'Canal 16 · 156,800 MHz. Só MAYDAY em perigo grave e iminente; urgência sem risco de vida é PAN-PAN ×3.' }, { n: '2', t: 'Abra o roteiro em CANAL 16 · MAYDAY e leia devagar: nome ×3, MMSI 710400328, posição, natureza do perigo, pessoas a bordo, auxílio.' }, { n: '3', t: 'Repita a cada 2 minutos até resposta. Sem resposta no 16: DSC (botão DISTRESS do VHF 215) e Diran no 67.' }], src: 'Fonte: registro EPIRB/MMSI (cert. 67827-001) · protocolo de emergência Avanti · RIPEAM', href: '', hl: '' },
+      { n: 'MOB — homem ao mar', s: 'Segurar SOS/MOB na barra superior do plotter · marca a posição', d: 'M12 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4z M8 13l4-4 4 4 M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0', tone: '#e9edf2', wash: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)', line: 'rgba(255,255,255,0.08)', steps: [{ n: '1', t: 'Segure SOS/MOB na barra superior do plotter GPSMAP 8x16 — a posição é marcada e vai para o diário com a hora.' }, { n: '2', t: 'Piloto em STBY (nunca manobrar engatado) · manter contato visual · retornar à marca MOB no plotter.' }, { n: '3', t: 'Se perder de vista: MAYDAY no canal 16 com a posição da marca MOB.' }], src: 'Fonte: FAQ de eletrônicos (GPSMAP 8x16 · Reactor) · protocolo de emergência Avanti', href: faq3, hl: 'FAQ eletrônicos' },
+      { n: 'Sea-Fire — incêndio na praça de máquinas', s: 'Painel do salão · corta motores · cabo de descarga manual SMAC', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: '#e9edf2', wash: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)', line: 'rgba(255,255,255,0.08)', steps: [{ n: '1', t: 'Alarme no painel Sea-Fire do salão: o sistema corta motores e ventilação e descarrega o agente na praça de máquinas.' }, { n: '2', t: 'Reserva: cabo de descarga manual SMAC. Não abra a praça de máquinas até esfriar — reabastece o fogo.' }, { n: '3', t: 'Sequência completa do manual Sea-Fire SMAC: MANUAL NO DRIVE · passo a passo A CONFIRMAR.' }], src: 'Fonte: manual Sea-Fire SMAC (Drive) · protocolo de emergência Avanti', href: '', hl: '' },
+      { n: 'EPIRB', s: 'Flybridge · acionamento manual · registro válido até 2036', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6', tone: '#e9edf2', wash: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)', line: 'rgba(255,255,255,0.08)', steps: [{ n: '1', t: 'ACR GlobalFix V5 (RLB-44) · Cat I · no flybridge · acionamento manual conforme o manual ACR (MANUAL NO DRIVE).' }, { n: '2', t: 'Transmite MMSI 710400328 · indicativo PV4476 · posição GPS — abandonar só com o EPIRB junto.' }, { n: '3', t: 'Certificado Life Safety 67827-001 · SBM até jan/2031 · bateria até abr/2036.' }], src: 'Fonte: Drive › Documentos_Legais › EPIRB · cert. 67827-001', href: docs, hl: 'Documentos' }
+    ];
+    return {
+      proto: P.map((p, i) => Object.assign({}, p, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), chev: s.open === i ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6' })),
+      mayday: s.mayday, toggleMayday: () => this.setState({ mayday: !s.mayday }), maydayLabel: s.mayday ? 'FECHAR ROTEIRO' : 'CANAL 16 · MAYDAY',
+      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO 22°57,09'S 043°10,23'W · BAÍA DE GUANABARA, RIO DE JANEIRO", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
+      silence: () => this.silence(), muted: s.left > 0, silenceLabel: s.left > 0 ? 'Silenciado · ' + s.left + ' s' : 'Silenciar 60 s', silenceLine: s.left > 0 ? 'rgba(240,166,58,0.55)' : '#2a3240', silenceTone: s.left > 0 ? '#f0a63a' : '#e9edf2'
+    };
+  }
+  renderVals() { return this.protoVals(); }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avanti Vessel AI — FAQ de bordo (web)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+</style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden; position: relative;">
+
+  <header style="height: 68px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 28px; border-bottom: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.28);">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="Main.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 34px; width: 151px; object-fit: contain; filter: var(--av-logo-filter, none);"></a>
+      <span style="width: 1px; height: 30px; background: var(--av-line2, #2a3240);"></span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 17px; font-weight: 700; letter-spacing: -0.01em;">Avanti Vessel AI</span>
+        <span style="font-size: 11.5px; font-weight: 500; color: var(--av-ink3, #9aa3af);">Azimut Atlantis 51 · registro 3813927725</span>
+      </div>
+    </div>
+    <div style="flex-grow: 1; display: flex; justify-content: center;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 999px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-6 6-11a6 6 0 0 0-12 0c0 5 6 11 6 11z M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke-width="1.7" stroke-linejoin="round" style="stroke: var(--av-ink2, var(--av-ink2, #aeb6c2));"></path></svg>
+        <span style="font-size: 13px; font-weight: 600;">Atracado · Rio de Janeiro</span>
+        <span style="width: 1px; height: 14px; background: var(--av-line2, #2a3240);"></span>
+        <span style="font-family: ui-monospace, SF Mono, Menlo, Consolas, monospace; font-size: 12px; color: var(--av-ink2, #aeb6c2);">22°57,09'S 043°10,23'W</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); border-radius: 999px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--av-ok, #34c77a); box-shadow: 0 0 0 4px rgba(var(--av-ok-rgb, 52,199,122), 0.22);"></span>
+        <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
+      </span>
+      <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+    </div>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; min-height: 0;">
+
+    <nav aria-label="Seções" style="width: 96px; flex-shrink: 0; box-sizing: border-box; border-right: 1px solid var(--av-line, #1d2229); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 6px;">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="9">
+        <a href="{{n.href}}" style="width: 76px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 4px; border-radius: 14px; text-decoration: none; background: {{n.bg}}; color: {{n.tone}}; transition: background .25s, color .25s;" style-hover="background: rgba(var(--av-plat-rgb, 217,222,230), 0.08); color: var(--av-ink, #e9edf2);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{n.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span style="font-size: 10.5px; font-weight: 600;">{{n.l}}</span>
+        </a>
+      </sc-for>
+    </nav>
+
+    <main style="flex-grow: 1; box-sizing: border-box; padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; min-width: 0; min-height: 0;">
+
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 18px;">
+        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;">FAQ de bordo</h1>
+        <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">passo a passo por equipamento · fonte: manual no Drive · PRONTO só quando há passo a passo confirmado</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="flex-grow: 1; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px; height: 54px; box-sizing: border-box;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M16 16l4 4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink4, var(--av-ink4, #7d8796));"></path></svg>
+          <label for="busca" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Buscar</label>
+          <input id="busca" placeholder="Buscar: “ligar gerador”, “radar”, “parear celular”…" autocomplete="off" style="flex-grow: 1; background: none; border: none; outline: none; color: var(--av-ink, #e9edf2); font-size: 15px; font-family: inherit; min-width: 0; padding: 12px 0;">
+        </div>
+        <a href="Main.dc.html" style="height: 54px; padding: 0 22px; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 12px; font-weight: 800; letter-spacing: 0.18em; display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg> PERGUNTAR AO BARCO</a>
+      </div>
+      <div style="flex-grow: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 14px; min-height: 0; padding-right: 100px;">
+        <sc-for list="{{itens}}" as="f" hint-placeholder-count="8">
+          <a href="{{f.href}}" style="box-sizing: border-box; padding: 18px 18px 16px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; text-decoration: none; color: var(--av-ink, #e9edf2); display: flex; flex-direction: column; gap: 10px; min-width: 0;">
+            <span style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
+              <span style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 12px; background: {{f.wash}}; display: flex; align-items: center; justify-content: center;">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{f.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{f.tone}};"></path></svg>
+              </span>
+              <span style="font-size: 9.5px; letter-spacing: 0.14em; font-weight: 700; color: {{f.ctone}}; border: 1px solid {{f.cline}}; background: {{f.cwash}}; border-radius: 5px; padding: 3px 7px; white-space: nowrap;">{{f.chip}}</span>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 16px; font-weight: 700; letter-spacing: -0.01em;">{{f.n}}</span>
+              <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2); line-height: 1.45;">{{f.s}}</span>
+            </span>
+            <span style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <span style="font-size: 11px; letter-spacing: 0.04em; color: var(--av-ink4, #7d8796); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{f.eq}}</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink4, var(--av-ink4, #7d8796));"></path></svg>
+            </span>
+          </a>
+        </sc-for>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; margin-right: 100px; background: var(--av-card, #0f131a); border-radius: 12px;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 8v5 M12 16h.01 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg>
+        <span style="font-size: 12.5px; line-height: 1.4; color: var(--av-ink2, #aeb6c2);"><strong style="color: var(--av-ink, #e9edf2);">Regra:</strong> sem manual no Drive, a resposta diz “não tenho esse dado confirmado” e aponta onde buscar. Nada é inventado.</span>
+      </div>    </main>
+  </div>
+
+<footer style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 26px; border-top: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.05); font-size: 11px; letter-spacing: 0.16em; color: var(--av-ink4, #7d8796); white-space: nowrap;"><span>SOG <b style="color: var(--av-ink3, #9aa3af);">0,0 NÓS</b></span><span>PROA <b style="color: var(--av-ink3, #9aa3af);">046°</b></span><span>VENTO <b style="color: var(--av-ink3, #9aa3af);">5,3 NÓS</b></span><span>24 V <b style="color: var(--av-ink3, #9aa3af);">27,49 V</b></span><span>ÁGUA DOCE <b style="color: var(--av-ink3, #9aa3af);">50%</b></span><span>DIESEL <b style="color: var(--av-ink3, #9aa3af);">34% · 20/09 13:23</b></span><span>ATRACADO · RIO DE JANEIRO · 23:01</span><span style="flex-grow: 1;"></span><a href="Main.dc.html" style="color: var(--av-ink3, #9aa3af); font-weight: 700; display: flex; align-items: center; gap: 8px; text-decoration: none; min-height: 44px; letter-spacing: 0.16em;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> INÍCIO ›</a></footer>
+<a href="S1-SOS-Web.dc.html" aria-label="SOS — emergência" style="position: absolute; right: 26px; bottom: 62px; width: 78px; height: 78px; border-radius: 50%; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 0 0 4px rgba(var(--av-crit-rgb, 255,59,48), 0.30), 0 0 0 10px rgba(var(--av-crit-rgb, 255,59,48), 0.10), 0 12px 32px rgba(var(--av-critfill-rgb, 211,47,39), 0.45); z-index: 30;"><span style="font-size: 18px; font-weight: 800; letter-spacing: 0.10em; line-height: 1;">SOS</span></a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      "nav": [
+        {
+          "l": "Início",
+          "href": "Main.dc.html",
+          "d": "M4 11l8-7 8 7v9H4z",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Gestão",
+          "href": "B1-Carta-Web.dc.html",
+          "d": "M4 5h16v14H4z M4 10h16 M9 10v9",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Telemetria",
+          "href": "A1-Ponte-Web.dc.html",
+          "d": "M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Manutenção",
+          "href": "C1-Leme-Web.dc.html",
+          "d": "M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Documentos",
+          "href": "G1-Documentos-Web.dc.html",
+          "d": "M6 3h8l4 4v14H6z M14 3v4h4",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Abastecer",
+          "href": "G2-Abastecimento-Web.dc.html",
+          "d": "M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "Diário",
+          "href": "G3-Diario-Web.dc.html",
+          "d": "M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M8 20a3 3 0 0 1 0-6h11",
+          "bg": "transparent",
+          "tone": "var(--av-ink2, #aeb6c2)"
+        },
+        {
+          "l": "FAQ",
+          "href": "F1-FAQ-Hub-Web.dc.html",
+          "d": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01",
+          "bg": "rgba(var(--av-accent-rgb, 64,156,255), 0.14)",
+          "tone": "var(--av-accent, #409cff)"
+        },
+        { "l": "Equipe", "href": "G4-Equipe-Web.dc.html", "d": "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20a6 6 0 0 1 12 0 M16 11a3 3 0 1 0 0-6 M21 20a6 6 0 0 0-5-5.9", "bg": "transparent", "tone": "var(--av-ink2, #aeb6c2)" }
+      ],
+      "itens": [
+        {
+          "n": "Gerador",
+          "s": "Ligar e desligar, checagem diária, alarmes e horas de uso.",
+          "eq": "Onan MDKDP · 280,7 h",
+          "chip": "PRONTO",
+          "href": "F4-FAQ-Gerador-Web.dc.html",
+          "d": "M13 3L5 14h6l-1 7 8-11h-6z",
+          "tone": "var(--av-warn, #f0a63a)",
+          "wash": "rgba(var(--av-warn-rgb, 240,166,58), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Climatização",
+          "s": "Ligar e desligar, modo frio/calor, setpoints 8–14 °C e alarmes do chiller.",
+          "eq": "Chiller Dometic PLC L-3527",
+          "chip": "PRONTO",
+          "href": "F5-FAQ-Climatizacao-Web.dc.html",
+          "d": "M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18",
+          "tone": "var(--av-tele, #5ac8fa)",
+          "wash": "rgba(var(--av-tele-rgb, 90,200,250), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Estabilizador",
+          "s": "Ligar antes de sair, desligar ao atracar, tempo de giro e alarmes.",
+          "eq": "Seakeeper 6 · manual 90403",
+          "chip": "PRONTO",
+          "href": "F2-FAQ-Estabilizador-Web.dc.html",
+          "d": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 7a5 5 0 0 0 0 10",
+          "tone": "var(--av-ok, #34c77a)",
+          "wash": "rgba(var(--av-ok-rgb, 52,199,122), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Eletrônicos do leme",
+          "s": "Plotter, piloto automático, radar, AIS, VHF e áudio — 19 respostas prontas.",
+          "eq": "GPSMAP 8x16 · Reactor · Fantom · AIS 800",
+          "chip": "PRONTO",
+          "href": "F3-FAQ-Piloto-Web.dc.html",
+          "d": "M4 5h16v11H4z M9 20h6 M12 16v4 M7 9l3 3-3 3 M12 15h3",
+          "tone": "var(--av-accent, #409cff)",
+          "wash": "rgba(var(--av-accent-rgb, 64,156,255), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Motores",
+          "s": "Partida, joystick, DPS e EVC — passo a passo ainda não confirmado nos manuais.",
+          "eq": "Volvo Penta D8 / IPS15 · 7 manuais",
+          "chip": "MANUAL NO DRIVE",
+          "href": "Main.dc.html#q=Como%20dar%20partida%20e%20operar%20os%20motores%20Volvo%20Penta%20D8%20%2F%20IPS15%3F",
+          "d": "M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8",
+          "tone": "var(--av-tele, #5ac8fa)",
+          "wash": "rgba(var(--av-tele-rgb, 90,200,250), 0.14)",
+          "ctone": "var(--av-warn, #f0a63a)",
+          "cline": "rgba(var(--av-warn-rgb, 240,166,58), 0.45)",
+          "cwash": "rgba(var(--av-warn-rgb, 240,166,58), 0.08)"
+        },
+        {
+          "n": "Rádio VHF e AIS",
+          "s": "Canal 16, chamada DSC, MMSI e transmitir ou só receber AIS.",
+          "eq": "VHF 215 · AIS 800",
+          "chip": "PRONTO",
+          "href": "Main.dc.html#q=Roteiro%20do%20VHF%20canal%2016%20e%20transmiss%C3%A3o%20AIS",
+          "d": "M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5",
+          "tone": "var(--av-accent, #409cff)",
+          "wash": "rgba(var(--av-accent-rgb, 64,156,255), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Áudio",
+          "s": "Parear celular, zonas e o que fazer quando fica sem som.",
+          "eq": "Fusion MS-RA770",
+          "chip": "PRONTO",
+          "href": "Main.dc.html#q=Como%20parear%20o%20celular%20e%20configurar%20zonas%20no%20%C3%A1udio%20Fusion%3F",
+          "d": "M9 18V6l11-2v12 M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0z M20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z",
+          "tone": "var(--av-accent, #409cff)",
+          "wash": "rgba(var(--av-accent-rgb, 64,156,255), 0.14)",
+          "ctone": "var(--av-ok, #34c77a)",
+          "cline": "rgba(var(--av-ok-rgb, 52,199,122), 0.45)",
+          "cwash": "rgba(var(--av-ok-rgb, 52,199,122), 0.08)"
+        },
+        {
+          "n": "Dessalinizador",
+          "s": "Não catalogado — modelo a confirmar na etiqueta (foto).",
+          "eq": "Modelo a confirmar",
+          "chip": "SEM DADOS",
+          "href": "Main.dc.html#q=Dessalinizador%3A%20modelo%20e%20como%20ligar",
+          "d": "M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z",
+          "tone": "var(--av-ink3, #9aa3af)",
+          "wash": "rgba(var(--av-ink3-rgb, 154,163,175), 0.14)",
+          "ctone": "var(--av-ink3, #9aa3af)",
+          "cline": "rgba(var(--av-ink3-rgb, 154,163,175), 0.45)",
+          "cwash": "rgba(var(--av-ink3-rgb, 154,163,175), 0.08)"
+        }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avanti Vessel AI — FAQ Gerador</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px;">
+    <a href="F1-FAQ-Hub.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Gerador — ligar e desligar</span>
+      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Onan MDKDP · manual A046J602</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-warn, #f0a63a); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg> FAQ 2</span>
+  </header>
+  <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+      <sc-for list="{{nums}}" as="k" hint-placeholder-count="3">
+        <div style="padding: 9px 10px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: {{k.tone}};">{{k.v}}</span>
+          <span style="font-size: 9.5px; color: var(--av-ink3, #9aa3af); line-height: 1.25;">{{k.s}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="box-sizing: border-box; padding: 11px 13px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-ink3, #9aa3af);">ANTES DE LIGAR — CHECAGEM DIÁRIA (§3.2)</span>
+      <sc-for list="{{antes}}" as="a" hint-placeholder-count="3">
+        <span style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-ink3-rgb, 154,163,175), 0.14); color: var(--av-ink3, #9aa3af); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{a.n}}</span>
+          <span style="font-size: 12px; line-height: 1.38; padding-top: 2px;">{{a.t}}</span>
+        </span>
+      </sc-for>
+    </div>
+    <div style="box-sizing: border-box; padding: 11px 13px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-ok, #34c77a);">LIGAR (§4.2.1)</span>
+      <sc-for list="{{ligar}}" as="s" hint-placeholder-count="3">
+        <span style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); color: var(--av-ok, #34c77a); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{s.n}}</span>
+          <span style="font-size: 12px; line-height: 1.38; padding-top: 2px;">{{s.t}}</span>
+        </span>
+      </sc-for>
+    </div>
+    <div style="box-sizing: border-box; padding: 11px 13px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; letter-spacing: 0.16em; font-weight: 700; color: var(--av-accent, #409cff);">DESLIGAR (§4.2.1.4)</span>
+      <sc-for list="{{desligar}}" as="d" hint-placeholder-count="2">
+        <span style="display: flex; gap: 10px; align-items: flex-start;">
+          <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-accent-rgb, 64,156,255), 0.14); color: var(--av-accent, #409cff); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{d.n}}</span>
+          <span style="font-size: 12px; line-height: 1.38; padding-top: 2px;">{{d.t}}</span>
+        </span>
+      </sc-for>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.08); border: 1px solid rgba(var(--av-warn-rgb, 240,166,58), 0.30); border-radius: 14px;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 21 20H3z M12 10v4 M12 17h.01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg>
+      <span style="font-size: 11.5px; line-height: 1.4; color: var(--av-ink2, #aeb6c2);"><strong style="color: var(--av-warn, #f0a63a);">Falha:</strong> a lâmpada de status pisca o código do defeito. Foto da lâmpada → o agente identifica pelo manual (cap. 8). Não repita partidas longas: limite de 20–60 s.</span>
+    </div>
+    <span style="font-size: 10px; line-height: 1.4; color: var(--av-ink4, #7d8796); display: flex; gap: 7px; align-items: flex-start;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink4, var(--av-ink4, #7d8796));"></path></svg> Fonte: Onan Service Manual A046J602 (Issue 2, 4-2015) — §3.2 Inspeção geral, §4.2.1 Partida e parada · Drive: Manuais_Equipamentos/onan_generator_mdkdp-series_service-manual_en.pdf · horímetro pela telemetria (motor_4)</span>
+  </div>
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; gap: 8px;">
+    <a href="H2-Home-Mobile.dc.html#q=Abrir%20manual%20do%20gerador%20Onan" style="flex-grow: 1; height: 50px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M8 20a3 3 0 0 1 0-6h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg> Manual</a>
+    <a href="G3-Diario-Mobile.dc.html" style="flex-grow: 1; height: 50px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg> Diário</a>
+    <a href="B3-Carta-Resposta.dc.html" aria-label="Perguntar por voz" style="width: 50px; height: 50px; flex-shrink: 0; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      nums: [
+        { v: '280,7 h', s: 'horímetro do gerador · 20/09 13:23 (telemetria)', tone: 'var(--av-ink, #e9edf2)' },
+        { v: '≤ 15 s', s: 'pré-aquecimento das velas antes da partida', tone: 'var(--av-ok, #34c77a)' },
+        { v: '20–60 s', s: 'tempo máximo de partida (depende da temperatura)', tone: 'var(--av-warn, #f0a63a)' }
+      ],
+      antes: [
+        { n: '1', t: 'Nível de óleo, nível de arrefecimento e combustível — drenar água do filtro separador.' },
+        { n: '2', t: 'Bateria e conexões; entrada de água salgada livre; escape sem vazamento.' },
+        { n: '3', t: 'Repetir a cada 8 h de operação. Só opere com a tampa e portas de serviço fechadas.' }
+      ],
+      ligar: [
+        { n: '1', t: 'Ficou parado? Segure STOP (Prime) por mais de 3 s para escorvar o combustível.' },
+        { n: '2', t: 'Segure START (Preheat) até o gerador pegar: a lâmpada âmbar pisca, as velas pré-aquecem (≤ 15 s) e o motor gira.' },
+        { n: '3', t: 'Solte quando pegar. Em rotação de regime a lâmpada fica verde e a tensão de saída é liberada.' }
+      ],
+      desligar: [
+        { n: '1', t: 'Toque STOP (Prime): corta a tensão de saída e a bomba de combustível; a lâmpada apaga.' },
+        { n: '2', t: 'O controlador grava a sessão (partidas, minutos, última falha). STOP tem prioridade sobre START.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

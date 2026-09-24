@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Console · Diário de bordo (app)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+</style>
+<script src="./avanti-brain.js"></script>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px;">
+    <a href="A2-Ponte-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Diário de bordo</span>
+      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-accent, #409cff); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3 M5 11h14v9H5z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> SÓ CRESCE</span>
+  </header>
+  <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
+    <div style="display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0;">
+      <sc-for list="{{filtros}}" as="f" hint-placeholder-count="5">
+        <button type="button" onClick="{{f.onClick}}" aria-pressed="{{f.active}}" style="height: 32px; padding: 0 11px; border-radius: 999px; border: 1px solid {{f.line}}; background: {{f.bg}}; color: {{f.tone}}; font-size: 11px; font-weight: 700; display: flex; align-items: center; cursor: pointer; white-space: nowrap; flex-shrink: 0;">{{f.l}}</button>
+      </sc-for>
+    </div>
+    <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; overflow-y: auto;">
+      <sc-for list="{{log}}" as="e" hint-placeholder-count="7">
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 9px 11px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px;">
+          <span style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 40px; flex-shrink: 0;"><span style="font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums;">{{e.d}}</span><span style="width: 8px; height: 8px; border-radius: 50%; background: {{e.tone}};"></span></span>
+          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 10px; letter-spacing: 0.10em; font-weight: 800; color: {{e.tone}};">{{e.sys}}</span>
+            <span style="font-size: 12px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{e.t}}</span>
+            <span style="font-size: 10px; color: var(--av-ink4, #7d8796);">{{e.who}} · {{e.src}}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; align-items: center; gap: 6px; background: var(--av-card, #0f131a); border-top: 1px solid var(--av-line, #1d2229);">
+    <label for="nova-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Nova entrada</label>
+    <input id="nova-m" placeholder="Registrar agora…" style="flex-grow: 1; background: var(--av-row, #12161e); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; outline: none; color: var(--av-ink, #e9edf2); font-size: 13.5px; font-family: inherit; min-width: 0; padding: 12px 12px; height: 46px; box-sizing: border-box;">
+    <a href="H2-Home-Mobile.dc.html#mode=foto" aria-label="Foto" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--av-line, #1d2229); background: var(--av-row, #12161e); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center;  flex-shrink: 0; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <a href="B3-Carta-Resposta.dc.html" aria-label="Registrar por voz" style="width: 46px; height: 46px; border-radius: 12px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none; flex-shrink: 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  state = { filter: 'Todos', extra: [] };
+  componentDidMount() { this.whenBrain(() => this.setState({ extra: window.AvantiBrain.loadDiario() })); }
+  whenBrain(cb) {
+    if (window.AvantiBrain) return cb();
+    let n = 0;
+    const t = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(t); if (window.AvantiBrain) cb(); return; }
+      if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
+  renderVals() {
+    const s = this.state;
+    const LOG = [
+        { d: '24/08', sys: 'Estofamento', tone: 'var(--av-accent, #409cff)', t: 'Sr. Dalmo (Tlaloc) retirou as capas dos estofados internos e o fechamento da popa para reforma: botões e zíper. Prazo 7 dias → previsão 31/08.', who: 'Otto', src: 'chat 24/08' },
+        { d: '15/08', sys: 'Manutenção', tone: 'var(--av-warn, #f0a63a)', t: 'Troca de óleo dos motores: data corrigida — última troca é 16/07/2026, não 23/01. Correção lançada como nova linha; próximo vencimento recalculado (500 h ou 12 meses).', who: 'Claude + Otto', src: 'manual 47707890 · agenda' },
+        { d: '15/08', sys: 'Anomalia', tone: 'var(--av-crit, #ff3b30)', t: 'Seakeeper online porém sem ativar: motores desligados e sem horas de gerador no log — sem fonte AC para o spool-up. Ação: ligar gerador/AC antes de exigir estabilização.', who: 'Sistema · Otto', src: 'nmea_20260815.jsonl' },
+        { d: '15/08', sys: 'Manutenção', tone: 'var(--av-warn, #f0a63a)', t: 'Vazamento no teto do cockpit — infiltração de chuva. Acionamento de garantia Azimut em preparação (pleito em rascunho).', who: 'Otto', src: 'relato 15/08' },
+        { d: '15/08', sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Interrupção da telemetria: coletor NMEA fora do ar por 6 h 58 min (03:22–10:20 BRT). Horímetros retomam constantes; verificar estabilidade do coletor.', who: 'Sistema', src: 'lacuna no jsonl' },
+        { d: '15/08', sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Fundeado na enseada de Botafogo/Urca, sem deslocamento. Combustível na última leitura: BB 44,0 % · BE 43,6 % (≈ 657 L). Sem alarmes.', who: 'Telemetria', src: 'snapshot 15:56Z' },
+        { d: '14/08', sys: 'Segurança', tone: 'var(--av-ok, #34c77a)', t: 'Certificado SBM e test report do EPIRB RLB-44 arquivados: teste anual aprovado, SBM válido até jan/2031, bateria até abr/2036.', who: 'Life Safety · Otto', src: 'cert. 67827-001' },
+        { d: '14/08', sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Fechamento do dia: base Glória → posto → enseada de Botafogo/Urca. ≈ 8,0 mn, pico 9,4 nós. Horas: BB +2,3 h · BE +2,4 h · gerador +3,7 h. Consumo ≈ 17 L.', who: 'Telemetria', src: 'nmea_20260814.jsonl' },
+        { d: '14/08', sys: 'Anomalia', tone: 'var(--av-crit, #ff3b30)', t: 'Alarme de combustível baixo no tanque BB (9,6 %) às 09:19 — resolvido às 10:24 após o início do abastecimento.', who: 'Sistema', src: 'e-mail OnDeck' },
+        { d: '14/08', sys: 'Combustível', tone: 'var(--av-warn, #f0a63a)', t: 'Abastecimento no Posto Marina da Glória: 500 L de diesel a R$ 10,96/L = R$ 5.480,00 (NF-e 002925). Horímetro casado no minuto: BB 96,8 h · BE 92,5 h.', who: 'Otto', src: 'NF-e 002925' },
+        { d: '14/08', sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: 'Display do Seakeeper fotografado: modelo 6 confirmado, serial do gyro 244.7424, 159 h RUN · 119 h SEA. Sem alarme.', who: 'Otto + Claude', src: 'foto do display' },
+        { d: '14/08', sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Saída da marina (base Glória) rumo ao posto para abastecer. Motores partidos 09:29; pico 9,4 nós; profundidade 2,7–22,3 m; vento até 14 nós de NW.', who: 'Telemetria', src: 'nmea_20260814.jsonl' }
+      ];
+    const extra = (s.extra || []).map((e) => ({ d: e.d, sys: e.sys || 'Diário', tone: e.tone || 'var(--av-accent, #409cff)', t: e.t, who: e.who || 'Otto', src: e.src || 'app' }));
+    const all = extra.concat(LOG);
+    const filtered = s.filter === 'Todos' ? all : all.filter((e) => e.sys === s.filter);
+    return {
+      subtitle: (26 + extra.length) + ' registros · 4 pendências abertas' + (s.filter === 'Todos' ? '' : ' · filtro: ' + s.filter),
+      filtros: ['Todos', 'Navegação', 'Manutenção', 'Anomalia', 'Combustível', 'Equipamentos', 'Segurança', 'Sistema', 'Diário'].map((f) => ({ l: f, onClick: () => this.setState({ filter: f }), active: s.filter === f, line: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: s.filter === f ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
+      log: filtered
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Console · Documentos (web)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+input::placeholder { color: var(--av-ph, #4c5666); }
+</style>
+<script src="./avanti-brain.js"></script>
+</helmet>
+
+<div style="width: 1440px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden; position: relative;">
+
+  <header style="height: 68px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 28px; border-bottom: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.28);">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="Main.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 34px; width: 151px; object-fit: contain; filter: var(--av-logo-filter, none);"></a>
+      <span style="width: 1px; height: 30px; background: var(--av-line2, #2a3240);"></span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 17px; font-weight: 700; letter-spacing: -0.01em;">Avanti Vessel AI</span>
+        <span style="font-size: 11.5px; font-weight: 500; color: var(--av-ink3, #9aa3af);">Azimut Atlantis 51 · registro 3813927725</span>
+      </div>
+    </div>
+    <div style="flex-grow: 1; display: flex; justify-content: center;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 999px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-6 6-11a6 6 0 0 0-12 0c0 5 6 11 6 11z M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke-width="1.7" stroke-linejoin="round" style="stroke: var(--av-ink2, var(--av-ink2, #aeb6c2));"></path></svg>
+        <span style="font-size: 13px; font-weight: 600;">Atracado · Rio de Janeiro</span>
+        <span style="width: 1px; height: 14px; background: var(--av-line2, #2a3240);"></span>
+        <span style="font-family: ui-monospace, SF Mono, Menlo, Consolas, monospace; font-size: 12px; color: var(--av-ink2, #aeb6c2);">22°57,09'S 043°10,23'W</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); border-radius: 999px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--av-ok, #34c77a); box-shadow: 0 0 0 4px rgba(var(--av-ok-rgb, 52,199,122), 0.22);"></span>
+        <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
+      </span>
+      <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+    </div>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; min-height: 0;">
+
+    <nav aria-label="Seções" style="width: 96px; flex-shrink: 0; box-sizing: border-box; border-right: 1px solid var(--av-line, #1d2229); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 6px;">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="9">
+        <a href="{{n.href}}" style="width: 76px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 4px; border-radius: 14px; text-decoration: none; background: {{n.bg}}; color: {{n.tone}}; transition: background .25s, color .25s;" style-hover="background: rgba(var(--av-plat-rgb, 217,222,230), 0.08); color: var(--av-ink, #e9edf2);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{n.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span style="font-size: 10.5px; font-weight: 600;">{{n.l}}</span>
+        </a>
+      </sc-for>
+    </nav>
+
+    <main style="flex-grow: 1; box-sizing: border-box; padding: 22px 26px; display: flex; flex-direction: column; gap: 16px; min-width: 0; min-height: 0;">
+      <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0;">
+          <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;">Documentos</h1>
+          <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">Registro · licenças · garantias · notas · fonte em cada linha</span>
+        </div>
+        <span style="font-size: 12.5px; font-weight: 600; color: {{noteTone}}; max-width: 420px; text-align: right;">{{note}}</span><a href="Main.dc.html#q=Quais%20documentos%20vencem%20primeiro%3F" style="display: flex; align-items: center; gap: 9px; height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.08); color: var(--av-accent, #409cff); font-size: 13.5px; font-weight: 600; text-decoration: none; flex-shrink: 0;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>Perguntar</a>
+      </div>
+      <section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; flex-shrink: 0;">
+        <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+          <button type="button" onClick="{{k.onClick}}" aria-pressed="{{k.active}}" style="box-sizing: border-box; padding: 12px 18px; background: var(--av-card, #0f131a); border: 1px solid {{k.line}}; border-radius: 18px; color: var(--av-ink, #e9edf2); display: flex; flex-direction: column; gap: 6px; cursor: pointer; text-align: left; font-family: inherit;">
+            <span style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 12.5px; font-weight: 600; color: var(--av-ink2, #aeb6c2);">{{k.l}}</span><span style="font-size: 11px; font-weight: 700; color: var(--av-accent, #409cff);">{{k.go}}</span></span>
+            <span style="display: flex; align-items: baseline; gap: 8px;">
+              <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; color: {{k.tone}};">{{k.v}}</span>
+              <span style="font-size: 12.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{k.s}}</span>
+            </span>
+          </button>
+        </sc-for>
+      </section>
+      <div style="flex-grow: 1; display: flex; gap: 16px; min-height: 0;">
+        <section style="flex-grow: 1; box-sizing: border-box; padding: 14px 20px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; overflow: hidden;">
+          <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 4px;">
+            <span style="flex-grow: 1; display: flex; flex-direction: column;">
+              <span style="font-size: 16px; font-weight: 700;">{{listTitle}}</span>
+              <span style="font-size: 12px; color: var(--av-ink3, #9aa3af);">Clique na linha para ver a fonte e as ações</span>
+            </span>
+            <span style="display: flex; gap: 6px;">
+              <sc-for list="{{filtros}}" as="f" hint-placeholder-count="4">
+                <button type="button" onClick="{{f.onClick}}" aria-pressed="{{f.active}}" style="height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid {{f.line}}; background: {{f.bg}}; color: {{f.tone}}; font-size: 11.5px; font-weight: 700; cursor: pointer;">{{f.l}}</button>
+              </sc-for>
+            </span>
+          </div>
+          <div style="flex-grow: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+            <sc-for list="{{rows}}" as="x" hint-placeholder-count="11">
+              <button type="button" onClick="{{x.toggle}}" aria-expanded="{{x.open}}" style="display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 3px 10px 3px 8px; border-radius: 12px; border: 1px solid {{x.line}}; color: var(--av-ink, #e9edf2); background: var(--av-row, #12161e); cursor: pointer; text-align: left; font-family: inherit; flex-shrink: 0;">
+                <span style="width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px; background: {{x.wash}}; display: flex; align-items: center; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{x.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{x.tone}};"></path></svg></span>
+                <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+                  <span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.n}}</span>
+                  <span style="font-size: 11px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{x.s}}</span>
+                </span>
+                <span style="flex-shrink: 0; width: 138px; font-size: 12px; font-weight: 600; color: var(--av-ink2, #aeb6c2); text-align: right; font-variant-numeric: tabular-nums;">{{x.dd}}</span>
+                <span style="flex-shrink: 0; width: 104px; padding: 5px 0; border-radius: 999px; background: {{x.wash}}; color: {{x.tone}}; font-size: 10.5px; letter-spacing: 0.08em; font-weight: 800; text-align: center;">{{x.st}}</span>
+              </button>
+              <sc-if value="{{x.open}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin: 0 6px 4px; border-radius: 12px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.06); border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.25); flex-shrink: 0;">
+                  <span style="flex-grow: 1; min-width: 0; font-size: 12px; line-height: 1.45; color: var(--av-ink2, #aeb6c2);"><strong style="color: var(--av-ink, #e9edf2);">Fonte:</strong> {{x.fonte}}</span>
+                  <a href="G3-Diario-Web.dc.html" style="height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--av-line2, #2a3240); color: var(--av-ink, #e9edf2); font-size: 11px; letter-spacing: 0.08em; font-weight: 700; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">REGISTRAR NO DIÁRIO</a>
+                  <a href="{{x.ask}}" style="height: 34px; padding: 0 12px; border-radius: 9px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 11px; letter-spacing: 0.08em; font-weight: 800; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">PERGUNTAR AO BARCO</a>
+                </div>
+              </sc-if>
+            </sc-for>
+            <sc-if value="{{emptyList}}" hint-placeholder-val="{{false}}">
+              <div style="padding: 16px; border: 1px dashed var(--av-dash, #3a4454); border-radius: 12px; font-size: 12.5px; color: var(--av-ink4, #7d8796); text-align: center;">Nenhum documento neste filtro.</div>
+            </sc-if>
+          </div>
+        </section>
+        <section style="width: 340px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
+          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 700;">Vence primeiro</span><button type="button" onClick="{{showVencendo}}" style="border: none; background: transparent; color: var(--av-accent, #409cff); font-size: 12px; font-weight: 700; cursor: pointer; padding: 0;">Filtrar ›</button></span>
+            <sc-for list="{{proximos}}" as="p" hint-placeholder-count="3">
+              <span style="display: flex; align-items: center; gap: 10px; padding: 8px 11px; background: var(--av-row, #12161e); border-radius: 12px;">
+                <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+                  <span style="font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{p.n}}</span>
+                  <span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">{{p.s}}</span>
+                </span>
+                <span style="flex-shrink: 0; padding: 5px 10px; border-radius: 999px; background: {{p.wash}}; color: {{p.tone}}; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums;">{{p.dd}}</span>
+              </span>
+            </sc-for>
+          </div>
+          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.35); border-radius: 18px; display: flex; flex-direction: column; gap: 9px;">
+            <span style="font-size: 15px; font-weight: 700;">Enviar documento</span>
+            <span style="font-size: 12px; color: var(--av-ink2, #aeb6c2); line-height: 1.45;">Foto ou PDF de nota, certificado, contrato ou licença: o agente de Documentos lê, extrai vencimento e valor e cria a linha como A CONFERIR — a original fica no Drive (Documentos_Legais).</span>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" onClick="{{pickFoto}}" style="flex-grow: 1; height: 44px; border-radius: 12px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Foto</button>
+              <button type="button" onClick="{{pickPdf}}" style="flex-grow: 1; height: 44px; border-radius: 12px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-row, #12161e); color: var(--av-ink, #e9edf2); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> PDF</button>
+              <input type="file" accept="image/*" ref="{{fotoRef}}" onChange="{{onFoto}}" aria-hidden="true" tabindex="-1" style="display: none;">
+              <input type="file" accept=".pdf,application/pdf" ref="{{pdfRef}}" onChange="{{onPdf}}" aria-hidden="true" tabindex="-1" style="display: none;">
+            </div>
+          </div>
+          <span style="flex-grow: 1;"></span>
+          <div style="box-sizing: border-box; padding: 12px 18px; margin-right: 100px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--av-ink2, #aeb6c2);">Fontes</span>
+            <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); line-height: 1.45;">Drive › Documentos_Legais (TIE, certificados ANATEL, NF de compra, requerimento, Pix, EPIRB) · Base_Conhecimento_KB · diário de bordo 14–24/08 · agenda preditiva.</span>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+<footer style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 26px; border-top: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.05); font-size: 11px; letter-spacing: 0.16em; color: var(--av-ink4, #7d8796); white-space: nowrap;"><span>SOG <b style="color: var(--av-ink3, #9aa3af);">0,0 NÓS</b></span><span>PROA <b style="color: var(--av-ink3, #9aa3af);">046°</b></span><span>VENTO <b style="color: var(--av-ink3, #9aa3af);">5,3 NÓS</b></span><span>24 V <b style="color: var(--av-ink3, #9aa3af);">27,49 V</b></span><span>ÁGUA DOCE <b style="color: var(--av-ink3, #9aa3af);">50%</b></span><span>DIESEL <b style="color: var(--av-ink3, #9aa3af);">34% · 20/09 13:23</b></span><span>ATRACADO · RIO DE JANEIRO · 23:01</span><span style="flex-grow: 1;"></span><a href="Main.dc.html" style="color: var(--av-ink3, #9aa3af); font-weight: 700; display: flex; align-items: center; gap: 8px; text-decoration: none; min-height: 44px; letter-spacing: 0.16em;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> INÍCIO ›</a></footer>
+<a href="S1-SOS-Web.dc.html" aria-label="SOS — emergência" style="position: absolute; right: 26px; bottom: 62px; width: 78px; height: 78px; border-radius: 50%; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 0 0 4px rgba(var(--av-crit-rgb, 255,59,48), 0.30), 0 0 0 10px rgba(var(--av-crit-rgb, 255,59,48), 0.10), 0 12px 32px rgba(var(--av-critfill-rgb, 211,47,39), 0.45); z-index: 30;"><span style="font-size: 18px; font-weight: 800; letter-spacing: 0.10em; line-height: 1;">SOS</span></a>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  state = { filter: 'all', open: -1, extra: [], note: '', noteTone: 'var(--av-ok, #34c77a)' };
+  fotoRef = React.createRef(); pdfRef = React.createRef();
+  componentDidMount() { this.whenBrain(() => this.setState({ extra: window.AvantiBrain.loadDocs() })); }
+  whenBrain(cb) {
+    if (window.AvantiBrain) return cb();
+    let n = 0;
+    const t = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(t); if (window.AvantiBrain) cb(); return; }
+      if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
+  toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
+  onFile(kind, e) {
+    const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
+    const B = window.AvantiBrain; if (!B) return;
+    const n = B.now();
+    const extra = B.addDoc({ n: f.name, s: 'enviado ' + n.d + ' ' + n.t + ' por Otto (' + kind + ') · o agente de Documentos extrai vencimento e valor · original vai para Drive › Documentos_Legais', dd: 'a extrair', st: 'A CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'notas', fonte: 'Upload ' + kind + ' · ' + f.name + ' · ' + n.d + ' ' + n.t + ' · leitura pendente' });
+    B.addDiario({ sys: 'Documentação', tone: 'var(--av-accent, #409cff)', t: 'Documento enviado pelo console (' + kind + '): ' + f.name + ' — linha criada como A CONFERIR até a extração.', who: 'Otto', src: 'console · documentos' });
+    this.setState({ extra: extra, filter: 'all', open: 0 }); this.toast('Documento recebido — linha criada como A CONFERIR');
+  }
+  renderVals() {
+    const s = this.state;
+    const DOCS = [
+      { n: 'Título de Inscrição (TIE) · 3813927725', s: 'Capitania dos Portos RJ · emitido 15/01/2026 · protocolo 381-000651/2026', dd: 'até 15/01/2031', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'registro', fonte: 'Drive › Documentos_Legais · Capitania dos Portos RJ · protocolo 381-000651/2026' },
+      { n: 'FISTEL + licença de estação', s: 'ANATEL · renovar antes do vencimento · alerta D-90 ativo', dd: '23/01/2027 · D-124', st: 'RENOVAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'ANATEL · Drive › Documentos_Legais (certificados ANATEL) · agenda preditiva D-90' },
+      { n: 'Licença do VHF 115', s: 'fonte divergente entre registro e planilha — conferir com a ANATEL', dd: 'sem data', st: 'CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'registro oficial × planilha divergem — conferir na ANATEL (hierarquia: registro › planilha)' },
+      { n: 'Homologação VHF 215 AIS · nº 07895-25-01493', s: 'ANATEL · em nome de Otto B. Licks · série 7GG001169', dd: 'até 11/11/2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'Drive › Documentos_Legais · certificado ANATEL 07895-25-01493' },
+      { n: 'Homologação VHF 315', s: 'ANATEL · certificado 2025–2028 arquivado', dd: 'até 2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'Drive › Documentos_Legais · certificado ANATEL 2025–2028' },
+      { n: 'EPIRB ACR GlobalFix V5 (RLB-44) · Cat I', s: 'cert. Life Safety 67827-001 (26/01/2026) · MMSI 710400328 · call sign PV4476 · bateria até abr/2036', dd: 'SBM até jan/2031', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6', cat: 'seguranca', fonte: 'Drive › Documentos_Legais › EPIRB · certificado Life Safety 67827-001 + test report · diário 14/08' },
+      { n: 'Seakeeper 6 · garantia estendida', s: 'registro 14/08/2026 · faltam plano, datas e dealer emissor para fixar a vigência', dd: 'vigência ?', st: 'A CONFIRMAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 7a5 5 0 0 0 0 10', cat: 'garantia', fonte: 'diário de bordo 14/08 · pendência aberta: plano, datas e dealer emissor' },
+      { n: 'Garantia Azimut · vazamento no teto do cockpit', s: 'pleito em rascunho desde 15/08/2026 · aguarda envio ao estaleiro', dd: 'aberto', st: 'A ENVIAR', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01', cat: 'garantia', fonte: 'diário de bordo 15/08 · relato de infiltração · pleito em rascunho' },
+      { n: 'Health Check Volvo Penta · protocolo 47715565', s: 'dealer · 16/07/2026 · 16 itens · garantia dos motores protegida', dd: 'próximo 16/07/2027', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8', cat: 'garantia', fonte: 'dealer Volvo Penta · protocolo 47715565 · 16/07/2026 · laudo' },
+      { n: 'Capas dos estofados · Tlaloc', s: 'NF/recibo a solicitar · devolução prevista 31/08/2026 a conferir', dd: 'pendente', st: 'PENDENTE', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'notas', fonte: 'diário de bordo 24/08 · Sr. Dalmo (Tlaloc) · NF/recibo a solicitar' },
+      { n: 'NF-e 002925 (500 L) · NF de compra · requerimento de inscrição · Pix Marine Express', s: '14/08/2026 · 07/01/2026 · 09/01/2026 · 09/12/2025 — arquivados em Documentos_Legais', dd: '4 arquivados', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'notas', fonte: 'Drive › Documentos_Legais · NF-e 002925 · NF de compra · requerimento · comprovante Pix' }
+    ];
+    const all = (s.extra || []).concat(DOCS);
+    const pendSt = ['RENOVAR', 'CONFERIR', 'A CONFIRMAR', 'A ENVIAR', 'PENDENTE', 'A CONFERIR'];
+    const match = (x) => s.filter === 'all' ? true : s.filter === 'vencendo' ? x.st !== 'OK' : s.filter === 'radio' ? x.cat === 'radio' : s.filter === 'notas' ? (x.cat === 'notas' || x.cat === 'garantia') : s.filter === 'ok' ? x.st === 'OK' : s.filter === 'conferir' ? pendSt.indexOf(x.st) !== -1 && x.st !== 'RENOVAR' : true;
+    const filtered = all.filter(match);
+    const setF = (k) => () => this.setState({ filter: k, open: -1 });
+    const act = (k) => s.filter === k;
+    const titles = { all: 'Registro, licenças, garantias e notas', vencendo: 'Vencendo, a renovar ou a conferir', radio: 'Rádio · ANATEL', notas: 'Notas, contratos e garantias', ok: 'Documentos válidos', conferir: 'A conferir, confirmar ou enviar' };
+    return {
+      nav: [
+        { l: 'Início', href: 'Main.dc.html', d: 'M4 11l8-7 8 7v9H4z', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Gestão', href: 'B1-Carta-Web.dc.html', d: 'M4 5h16v14H4z M4 10h16 M9 10v9', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Telemetria', href: 'A1-Ponte-Web.dc.html', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Manutenção', href: 'C1-Leme-Web.dc.html', d: 'M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Documentos', href: 'G1-Documentos-Web.dc.html', d: 'M6 3h8l4 4v14H6z M14 3v4h4', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)', tone: 'var(--av-accent, #409cff)' },
+        { l: 'Abastecer', href: 'G2-Abastecimento-Web.dc.html', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Diário', href: 'G3-Diario-Web.dc.html', d: 'M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M8 20a3 3 0 0 1 0-6h11', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'FAQ', href: 'F1-FAQ-Hub-Web.dc.html', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7 M12 17h.01', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
+        { l: 'Equipe', href: 'G4-Equipe-Web.dc.html', d: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20a6 6 0 0 1 12 0 M16 11a3 3 0 1 0 0-6 M21 20a6 6 0 0 0-5-5.9', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' }
+      ],
+      note: s.note, noteTone: s.noteTone,
+      listTitle: titles[s.filter] + ' · ' + filtered.length + ' de ' + all.length,
+      kpis: [
+        { l: 'Documentos válidos', v: String(all.filter((x) => x.st === 'OK').length), s: 'registro, rádio, EPIRB, laudos', tone: 'var(--av-ok, #34c77a)', k: 'ok' },
+        { l: 'Vence em 180 dias', v: '1', s: 'FISTEL + licença · 23/01/2027', tone: 'var(--av-warn, #f0a63a)', k: 'vencendo' },
+        { l: 'A conferir / confirmar', v: String(all.filter((x) => pendSt.indexOf(x.st) !== -1 && x.st !== 'RENOVAR').length), s: 'VHF 115 · Seakeeper · Tlaloc · uploads', tone: 'var(--av-warn, #f0a63a)', k: 'conferir' },
+        { l: 'Pleito aberto', v: '1', s: 'garantia Azimut · teto do cockpit', tone: 'var(--av-crit, #ff3b30)', k: 'conferir' }
+      ].map((k) => Object.assign(k, { onClick: setF(k.k), active: act(k.k), go: act(k.k) ? 'filtro ativo' : 'filtrar ›', line: act(k.k) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' : 'var(--av-line, #1d2229)' })),
+      filtros: [['all', 'Todos'], ['vencendo', 'Vencendo'], ['radio', 'Rádio · ANATEL'], ['notas', 'Notas e contratos']].map((c) => ({ l: c[1], onClick: setF(c[0]), active: act(c[0]), line: act(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: act(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: act(c[0]) ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
+      rows: filtered.map((x, i) => Object.assign({}, x, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), line: s.open === i ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'transparent', ask: 'Main.dc.html#q=' + encodeURIComponent(x.n), fonte: x.fonte || 'Drive › Documentos_Legais' })),
+      emptyList: filtered.length === 0,
+      showVencendo: setF('vencendo'),
+      pickFoto: () => this.fotoRef.current && this.fotoRef.current.click(), pickPdf: () => this.pdfRef.current && this.pdfRef.current.click(),
+      fotoRef: this.fotoRef, pdfRef: this.pdfRef, onFoto: (e) => this.onFile('foto', e), onPdf: (e) => this.onFile('PDF', e),
+      proximos: [
+        { n: 'FISTEL + licença de estação', s: '23/01/2027 · renovar na ANATEL', dd: 'D-124', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+        { n: 'Health Check anual · dealer', s: '16/07/2027 · protocolo 47715565', dd: 'D-298', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
+        { n: 'Homologações VHF 215 e 315', s: '11/11/2028', dd: 'D-782', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./avanti-app.js"></script>
+<script src="./avanti-theme.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
+a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
+button { font: inherit; }
+input::placeholder { color: var(--av-ph, #4c5666); }
+</style>
+<script src="./avanti-brain.js"></script>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
+
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 16px 16px 10px; display: flex; align-items: center; gap: 10px;">
+    <a href="H2-Home-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0;">
+      <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.01em;">Editar atalhos</span>
+      <span style="font-size: 11.5px; color: {{noteTone}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
+    </div>
+    <a href="H2-Home-Mobile.dc.html" style="height: 44px; padding: 0 18px; border-radius: 999px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">CONCLUIR</a>
+  </header>
+
+  <div style="flex-shrink: 0; box-sizing: border-box; margin: 0 16px; padding: 10px 13px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px; display: flex; gap: 10px; align-items: center;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 8v5 M12 16h.01 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg>
+    <span style="font-size: 12px; line-height: 1.4; color: var(--av-ink2, #aeb6c2);">Setas reordenam · <strong style="color: var(--av-crit, #ff3b30);">−</strong> remove (volta ao banco) · toque no nome para trocar texto ou pergunta. Salvo na hora.</span>
+  </div>
+
+  <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 10px 16px 0; display: flex; flex-direction: column; gap: 6px; overflow-y: auto;">
+    <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af);">{{countLabel}}</span>
+    <sc-for list="{{rows}}" as="a" hint-placeholder-count="6">
+      <div style="display: flex; align-items: center; gap: 6px; min-height: 52px; padding: 0 2px 0 6px; background: var(--av-card, #0f131a); border: 1.5px dashed var(--av-dash, #3a4454); border-radius: 14px; flex-shrink: 0;">
+        <span style="display: flex; flex-direction: column; flex-shrink: 0;">
+          <button type="button" onClick="{{a.up}}" aria-label="Mover para cima" style="width: 32px; height: 24px; border: none; background: transparent; color: {{a.upTone}}; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+          <button type="button" onClick="{{a.down}}" aria-label="Mover para baixo" style="width: 32px; height: 24px; border: none; background: transparent; color: {{a.downTone}}; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+        </span>
+        <sc-if value="{{a.notEditing}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{a.edit}}" style="flex-grow: 1; min-width: 0; text-align: left; background: none; border: none; padding: 6px 0; cursor: text; color: var(--av-ink, #e9edf2); display: flex; flex-direction: column; gap: 1px;">
+            <span style="font-size: 12px; letter-spacing: 0.12em; font-weight: 700;">{{a.l}}</span>
+            <span style="font-size: 10.5px; color: var(--av-ink4, #7d8796); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">{{a.q}}</span>
+          </button>
+        </sc-if>
+        <sc-if value="{{a.editing}}" hint-placeholder-val="{{false}}">
+          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 8px 0;">
+            <input value="{{editL}}" onChange="{{onEditL}}" onKeyDown="{{onEditKey}}" maxlength="28" placeholder="NOME DO ATALHO" aria-label="Nome do atalho" style="height: 36px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.55); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 12px; letter-spacing: 0.12em; font-weight: 700; outline: none; text-transform: uppercase; min-width: 0;">
+            <input value="{{editQ}}" onChange="{{onEditQ}}" onKeyDown="{{onEditKey}}" maxlength="240" placeholder="Pergunta que o atalho envia" aria-label="Pergunta do atalho" style="height: 36px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 12.5px; outline: none; min-width: 0;">
+            <span style="display: flex; gap: 6px;">
+              <button type="button" onClick="{{saveEdit}}" style="height: 34px; padding: 0 12px; border-radius: 9px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 10.5px; letter-spacing: 0.12em; font-weight: 800; cursor: pointer;">SALVAR</button>
+              <button type="button" onClick="{{cancelEdit}}" style="height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); font-size: 10.5px; letter-spacing: 0.12em; font-weight: 700; cursor: pointer;">CANCELAR</button>
+            </span>
+          </span>
+        </sc-if>
+        <button type="button" onClick="{{a.remove}}" aria-label="Remover atalho" style="width: 44px; height: 44px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--av-crit, #ff3b30); color: #ffffff; font-size: 18px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center;">−</span></button>
+      </div>
+    </sc-for>
+    <sc-if value="{{empty}}" hint-placeholder-val="{{false}}">
+      <div style="padding: 14px; border: 1.5px dashed var(--av-dash, #3a4454); border-radius: 14px; font-size: 12px; color: var(--av-ink4, #7d8796); text-align: center;">Nenhum atalho na tela inicial — adicione do banco ou crie um novo.</div>
+    </sc-if>
+
+    <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af); margin-top: 8px;">{{bankLabel}}</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+      <sc-for list="{{bank}}" as="b" hint-placeholder-count="9">
+        <button type="button" onClick="{{b.add}}" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; cursor: pointer;"><span style="color: var(--av-accent, #409cff); font-size: 15px; line-height: 1;">+</span>{{b.l}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding: 10px 10px 10px 12px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px; flex-shrink: 0;">
+      <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-accent, #409cff);">CRIAR ATALHO</span>
+      <label for="novo-nome-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Nome do atalho</label>
+      <input id="novo-nome-m" ref="{{nomeRef}}" maxlength="28" placeholder="NOME · ex.: CHECKLIST DE CHEGADA" autocomplete="off" style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 12px; letter-spacing: 0.10em; font-weight: 700; outline: none; text-transform: uppercase; min-width: 0;">
+      <label for="novo-pergunta-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Pergunta que dispara</label>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <input id="novo-pergunta-m" ref="{{pergRef}}" onKeyDown="{{onCreateKey}}" maxlength="240" placeholder="Pergunta que o atalho envia" autocomplete="off" style="flex-grow: 1; height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 12.5px; outline: none; min-width: 0;">
+        <button type="button" onClick="{{create}}" aria-label="Criar atalho" style="width: 44px; height: 40px; border-radius: 10px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14 M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </div>
+    </div>
+    <button type="button" onClick="{{reset}}" style="align-self: flex-start; height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; cursor: pointer; flex-shrink: 0;">RESTAURAR PADRÃO</button>
+    <span style="height: 4px; flex-shrink: 0;"></span>
+  </div>
+
+  <div style="flex-shrink: 0; box-sizing: border-box; margin: 10px 16px 18px; display: flex; align-items: center; gap: 9px; padding: 10px 12px; background: var(--av-card, #0f131a); border-radius: 12px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3 M5 11h14v9H5z" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink3, var(--av-ink3, #9aa3af));"></path></svg>
+    <span style="font-size: 11.5px; line-height: 1.4; color: var(--av-ink2, #aeb6c2);"><strong style="color: var(--av-ink, #e9edf2);">SOS</strong>, os 5 botões e a barra foto · vídeo · voz→texto · conversa são fixos.</span>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { list: null, editing: -1, editL: '', editQ: '', note: '', noteTone: 'var(--av-ink3, #9aa3af)' };
+  nomeRef = React.createRef(); pergRef = React.createRef();
+  FALLBACK = [
+    { id: 'diario', l: 'DIÁRIO DE BORDO', q: 'Registre no diário o resumo da navegação de agora e confirme.' },
+    { id: 'seguro', l: 'SEGURO PARA SAIR?', q: 'Avalie vento, mar, motores e pendências — sim ou não, e por quê.' },
+    { id: 'destinos', l: 'PARA ONDE VAMOS HOJE?', q: '3 destinos saindo daqui, com distância, tempo e diesel.' },
+    { id: 'manutencao', l: 'PRÓXIMAS MANUTENÇÕES', q: 'O que vence primeiro, o que está atrasado, o que falta registrar.' },
+    { id: 'autonomia', l: 'AUTONOMIA', q: 'Autonomia com reserva de 10% pelas horas desde os 500 L.' },
+    { id: 'mare', l: 'MARÉ AGORA', q: 'Maré e corrente agora e nas próximas 6 h na posição atual.' }
+  ];
+  componentDidMount() { this.whenBrain(() => this.setState({ list: window.AvantiBrain.loadShortcuts() })); }
+  whenBrain(cb) {
+    if (window.AvantiBrain) return cb();
+    let n = 0;
+    const t = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(t); if (window.AvantiBrain) cb(); return; }
+      if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
+  list() { return this.state.list || this.FALLBACK; }
+  commit(list, note, tone) {
+    if (window.AvantiBrain) window.AvantiBrain.saveShortcuts(list);
+    this.setState({ list: list, note: note || '', noteTone: tone || 'var(--av-ok, #34c77a)' });
+    clearTimeout(this._n); if (note) this._n = setTimeout(() => this.setState({ note: '' }), 3500);
+  }
+  warn(msg) { this.setState({ note: msg, noteTone: 'var(--av-warn, #f0a63a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 3500); }
+  move(from, to) { const l = this.list().slice(); if (to < 0 || to >= l.length || from === to || from < 0) return; const it = l.splice(from, 1)[0]; l.splice(to, 0, it); this.commit(l, 'Ordem salva'); }
+  remove(i) { const l = this.list().slice(); const it = l.splice(i, 1)[0]; this.commit(l, it.l + ' removido' + (String(it.id).indexOf('custom-') === 0 ? '' : ' — voltou ao banco')); if (this.state.editing === it.id) this.setState({ editing: -1 }); }
+  add(item) { const l = this.list(); if (l.length >= 8) return this.warn('Máximo de 8 — remova um para adicionar'); this.commit(l.concat([Object.assign({}, item)]), item.l + ' adicionado'); }
+  create() {
+    const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim().toUpperCase();
+    const perg = (this.pergRef.current ? this.pergRef.current.value : '').trim();
+    if (!nome || !perg) return this.warn('Preencha nome e pergunta');
+    const l = this.list(); if (l.length >= 8) return this.warn('Máximo de 8 — remova um para criar');
+    if (l.some((x) => String(x.l).toUpperCase() === nome)) return this.warn('Já existe um atalho com esse nome');
+    this.commit(l.concat([{ id: 'custom-' + Date.now(), l: nome, q: perg }]), nome + ' criado e salvo');
+    if (this.nomeRef.current) this.nomeRef.current.value = ''; if (this.pergRef.current) this.pergRef.current.value = '';
+  }
+  startEdit(i) { const a = this.list()[i]; if (a) this.setState({ editing: a.id, editL: a.l, editQ: a.q }); }
+  saveEdit() {
+    const id = this.state.editing;
+    const l = this.list().slice(); const i = l.findIndex((x) => x.id === id); if (i < 0) { this.setState({ editing: -1 }); return; } const a = l[i];
+    l[i] = Object.assign({}, a, { l: this.state.editL.trim().toUpperCase() || a.l, q: this.state.editQ.trim() || a.q });
+    this.setState({ editing: -1 }); this.commit(l, 'Atalho salvo');
+  }
+  renderVals() {
+    const s = this.state; const list = this.list(); const B = window.AvantiBrain;
+    const bank = B ? B.bankFor(list) : [];
+    return {
+      rows: list.map((a, i) => ({ l: a.l, q: a.q, editing: s.editing === a.id, notEditing: s.editing !== a.id, up: () => this.move(i, i - 1), down: () => this.move(i, i + 1), remove: () => this.remove(i), edit: () => this.startEdit(i), upTone: i === 0 ? 'var(--av-ph, #4c5666)' : 'var(--av-ink2, #aeb6c2)', downTone: i === list.length - 1 ? 'var(--av-ph, #4c5666)' : 'var(--av-ink2, #aeb6c2)' })),
+      empty: list.length === 0,
+      countLabel: 'NA TELA INICIAL · ' + list.length + ' DE 8',
+      bankLabel: 'BANCO · ' + bank.length + ' DISPONÍVEIS · TOQUE EM + PARA ADICIONAR',
+      bank: bank.map((b) => ({ l: b.l, add: () => this.add(b) })),
+      subtitle: s.note || 'abaixo do chat · perfil de Otto · igual no web', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      editL: s.editL, editQ: s.editQ,
+      onEditL: (e) => this.setState({ editL: e.target.value }), onEditQ: (e) => this.setState({ editQ: e.target.value }),
+      onEditKey: (e) => { if (e.key === 'Enter') this.saveEdit(); if (e.key === 'Escape') this.setState({ editing: -1 }); },
+      saveEdit: () => this.saveEdit(), cancelEdit: () => this.setState({ editing: -1 }),
+      nomeRef: this.nomeRef, pergRef: this.pergRef, create: () => this.create(), onCreateKey: (e) => { if (e.key === 'Enter') this.create(); },
+      reset: () => { if (B) this.commit(B.resetShortcuts(), 'Padrão restaurado'); }
+    };
+  }
+}
+</script>
+</body>
+</html>
