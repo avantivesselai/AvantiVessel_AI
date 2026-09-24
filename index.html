@@ -18,6 +18,7 @@
   var K = 'avanti.plataforma.v1';
   var v = new URLSearchParams(location.search).get('v');
   try { if (v === 'web' || v === 'app') localStorage.setItem(K, v); if (v === 'auto') localStorage.removeItem(K); } catch (e) {}
+  try { if (v === 'lista') sessionStorage.setItem('avanti.lista', '1'); else if (v) sessionStorage.removeItem('avanti.lista'); } catch (e) {}
   if (v === 'lista') return;
   var saved = null; try { saved = localStorage.getItem(K); } catch (e) {}
   var pick = v === 'web' || v === 'app' ? v : saved;

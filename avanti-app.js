@@ -33,6 +33,36 @@
   var topWin = true; try { topWin = window.top === window.self; } catch (e) { topWin = false; }
   if (!topWin) return;
 
+  // Celular abrindo uma tela web → vai para a tela equivalente do app.
+  // Respeita a escolha "Sempre web" (index.html?v=web) e quem veio da lista de telas (?v=lista).
+  (function () {
+    var K = 'avanti.plataforma.v1';
+    var pick = null, lista = false;
+    try { pick = localStorage.getItem(K); lista = sessionStorage.getItem('avanti.lista') === '1'; } catch (e) {}
+    var v = new URLSearchParams(location.search).get('v');
+    if (v === 'web' || v === 'app') { pick = v; try { localStorage.setItem(K, v); } catch (e) {} }
+    if (pick === 'web' || lista) return;
+    var APP = {
+      'Main': 'H2-Home-Mobile', 'A1-Ponte-Web': 'A2-Ponte-Mobile', 'B1-Carta-Web': 'B2-Carta-Mobile', 'C1-Leme-Web': 'C2-Leme-Mobile',
+      'F1-FAQ-Hub-Web': 'F1-FAQ-Hub', 'F2-FAQ-Estabilizador-Web': 'F2-FAQ-Estabilizador', 'F3-FAQ-Piloto-Web': 'F3-FAQ-Piloto',
+      'F4-FAQ-Gerador-Web': 'F4-FAQ-Gerador', 'F5-FAQ-Climatizacao-Web': 'F5-FAQ-Climatizacao',
+      'G1-Documentos-Web': 'G1-Documentos-Mobile', 'G2-Abastecimento-Web': 'G2-Abastecimento-Mobile', 'G3-Diario-Web': 'G3-Diario-Mobile',
+      'G4-Equipe-Web': 'G4-Equipe-Mobile', 'H3-Atalhos-Editar-Web': 'H3-Atalhos-Editar', 'S1-SOS-Web': 'S2-SOS-Mobile'
+    };
+    var m = location.pathname.match(/([^\/]+)\.dc\.html$/);
+    var alvo = m && APP[safe(m[1])];
+    if (!alvo) return;
+    if (pick !== 'app') {
+      var uad = navigator.userAgentData;
+      var mobileUA = uad && typeof uad.mobile === 'boolean' ? uad.mobile : /Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua);
+      var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
+      var coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+      if (!(mobileUA || (coarse && shortSide < 600))) return;
+    }
+    location.replace(alvo + '.dc.html' + location.hash);
+    function safe(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+  })();
+
   if ('serviceWorker' in navigator && /\.github\.io$/i.test(location.hostname)) {
     window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
   }
