@@ -24,7 +24,7 @@ button { font: inherit; }
     <a href="A2-Ponte-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
     <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
       <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Diário de bordo</span>
-      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
+      <span style="font-size: 11.5px; color: {{subTone}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
     </span>
     <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-accent, #409cff); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3 M5 11h14v9H5z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> SÓ CRESCE</span>
   </header>
@@ -45,20 +45,26 @@ button { font: inherit; }
           </span>
         </div>
       </sc-for>
+      <sc-if value="{{emptyList}}" hint-placeholder-val="{{false}}">
+        <div style="padding: 14px; border: 1px dashed var(--av-dash, #3a4454); border-radius: 14px; font-size: 12px; color: var(--av-ink4, #7d8796); text-align: center;">Nenhum registro neste filtro.</div>
+      </sc-if>
     </div>
   </div>
   <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; align-items: center; gap: 6px; background: var(--av-card, #0f131a); border-top: 1px solid var(--av-line, #1d2229);">
     <label for="nova-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Nova entrada</label>
-    <input id="nova-m" placeholder="Registrar agora…" style="flex-grow: 1; background: var(--av-row, #12161e); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; outline: none; color: var(--av-ink, #e9edf2); font-size: 13.5px; font-family: inherit; min-width: 0; padding: 12px 12px; height: 46px; box-sizing: border-box;">
+    <input id="nova-m" ref="{{inputRef}}" onKeyDown="{{onKey}}" placeholder="Registrar agora…" autocomplete="off" style="flex-grow: 1; background: var(--av-row, #12161e); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; outline: none; color: var(--av-ink, #e9edf2); font-size: 13.5px; font-family: inherit; min-width: 0; padding: 12px 12px; height: 46px; box-sizing: border-box;">
     <a href="H2-Home-Mobile.dc.html#mode=foto" aria-label="Foto" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--av-line, #1d2229); background: var(--av-row, #12161e); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center;  flex-shrink: 0; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
-    <a href="B3-Carta-Resposta.dc.html" aria-label="Registrar por voz" style="width: 46px; height: 46px; border-radius: 12px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none; flex-shrink: 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+    <button type="button" onClick="{{toggleVoz}}" aria-pressed="{{listening}}" aria-label="Registrar por voz" style="width: 46px; height: 46px; border-radius: 12px; border: 1px solid {{vozLine}}; background: {{vozBg}}; color: {{vozTone}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; padding: 0; box-sizing: border-box;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+    <button type="button" onClick="{{registrar}}" aria-label="Registrar" style="width: 46px; height: 46px; border-radius: 12px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; padding: 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5 M6 11l6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
   </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  state = { filter: 'Todos', extra: [] };
+  state = { filter: 'Todos', extra: [], listening: false, note: '', noteTone: 'var(--av-ok, #34c77a)' };
+  inputRef = React.createRef();
   componentDidMount() { this.whenBrain(() => this.setState({ extra: window.AvantiBrain.loadDiario() })); }
+  componentWillUnmount() { this.calarVoz(); clearTimeout(this._n); }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -66,6 +72,31 @@ class Component extends DCLogic {
       if (window.AvantiBrain || ++n > 120) { clearInterval(t); if (window.AvantiBrain) cb(); return; }
       if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
     }, 50);
+  }
+  toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
+  registrar(text, src) {
+    const B = window.AvantiBrain; if (!B) return;
+    text = (text || (this.inputRef.current ? this.inputRef.current.value : '')).trim();
+    if (!text) return this.toast('Escreva ou fale o que registrar', 'var(--av-warn, #f0a63a)');
+    if (this.rec) this.calarVoz(); // gravou digitando no meio do ditado: resultado tardio não volta ao campo
+    B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: src || 'app · texto' });
+    if (this.inputRef.current) this.inputRef.current.value = '';
+    this.setState({ extra: B.loadDiario(), filter: 'Todos', listening: false }); this.toast('Registrado no diário');
+  }
+  calarVoz() { clearTimeout(this._vt); const r = this.rec; this.rec = null; if (!r) return; r.onresult = r.onend = r.onerror = null; try { r.abort(); } catch (e) {} }
+  toggleVoz() {
+    const B = window.AvantiBrain;
+    // Parar à mão: o stop() ainda entrega o resultado final — quem grava é o fim(), uma vez só (timer se o onend não vier).
+    // Toque enquanto para é ignorado: gravar agora salvaria o texto parcial.
+    if (this.rec) { const r = this.rec; if (r.parando) return; r.parando = true; this.setState({ listening: false }); clearTimeout(this._vt); this._vt = setTimeout(r.fim, 3000); try { r.stop(); } catch (e) { r.fim(); } return; }
+    const r = B && B.recognizer({ continuous: false });
+    if (!r) return this.toast('Voz indisponível — digite', 'var(--av-warn, #f0a63a)');
+    this.rec = r; let finalText = '';
+    r.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; } if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim(); };
+    r.fim = () => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'app · voz'); };
+    r.onend = r.fim;
+    r.onerror = (ev) => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Microfone bloqueado — digite' : 'Sem voz agora — digite', 'var(--av-warn, #f0a63a)'); };
+    try { r.start(); this.setState({ listening: true }); } catch (e) { this.rec = null; }
   }
   renderVals() {
     const s = this.state;
@@ -87,8 +118,15 @@ class Component extends DCLogic {
     const all = extra.concat(LOG);
     const filtered = s.filter === 'Todos' ? all : all.filter((e) => e.sys === s.filter);
     return {
-      subtitle: (26 + extra.length) + ' registros · 4 pendências abertas' + (s.filter === 'Todos' ? '' : ' · filtro: ' + s.filter),
-      filtros: ['Todos', 'Navegação', 'Manutenção', 'Anomalia', 'Combustível', 'Equipamentos', 'Segurança', 'Sistema', 'Diário'].map((f) => ({ l: f, onClick: () => this.setState({ filter: f }), active: s.filter === f, line: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: s.filter === f ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
+      subtitle: s.note || ((26 + extra.length) + ' registros · 4 pendências abertas' + (s.filter === 'Todos' ? '' : ' · filtro: ' + s.filter)),
+      subTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      inputRef: this.inputRef,
+      onKey: (e) => { if (e.key === 'Enter') this.registrar(); },
+      registrar: () => this.registrar(),
+      toggleVoz: () => this.toggleVoz(), listening: s.listening,
+      vozLine: s.listening ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.55)' : 'var(--av-line, #1d2229)', vozBg: s.listening ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)' : 'var(--av-row, #12161e)', vozTone: s.listening ? 'var(--av-crit, #ff3b30)' : 'var(--av-ink2, #aeb6c2)',
+      emptyList: filtered.length === 0,
+      filtros: ['Todos', 'Navegação', 'Manutenção', 'Anomalia', 'Combustível', 'Equipamentos', 'Segurança', 'Documentação', 'Sistema', 'Diário'].map((f) => ({ l: f, onClick: () => this.setState({ filter: f }), active: s.filter === f, line: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: s.filter === f ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: s.filter === f ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
       log: filtered
     };
   }

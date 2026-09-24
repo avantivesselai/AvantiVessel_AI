@@ -136,7 +136,7 @@ class Component extends DCLogic {
   state = { filter: 'Todos', extra: [], showAll: false, listening: false, note: '', noteTone: 'var(--av-ok, #34c77a)' };
   inputRef = React.createRef(); fotoRef = React.createRef();
   componentDidMount() { this.whenBrain(() => this.setState({ extra: window.AvantiBrain.loadDiario() })); }
-  componentWillUnmount() { if (this.rec) { try { this.rec.onend = null; this.rec.stop(); } catch (e) {} } }
+  componentWillUnmount() { this.calarVoz(); }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -150,10 +150,12 @@ class Component extends DCLogic {
     const B = window.AvantiBrain; if (!B) return;
     text = (text || (this.inputRef.current ? this.inputRef.current.value : '')).trim();
     if (!text) return this.toast('Escreva, fale ou fotografe o que registrar', 'var(--av-warn, #f0a63a)');
+    if (this.rec) this.calarVoz(); // gravou digitando no meio do ditado: resultado tardio não volta ao campo
     B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: src || 'console · texto' });
     if (this.inputRef.current) this.inputRef.current.value = '';
-    this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Linha nova no diário — nada se apaga');
+    this.setState({ extra: B.loadDiario(), filter: 'Todos', listening: false }); this.toast('Linha nova no diário — nada se apaga');
   }
+  calarVoz() { clearTimeout(this._vt); const r = this.rec; this.rec = null; if (!r) return; r.onresult = r.onend = r.onerror = null; try { r.abort(); } catch (e) {} }
   onFoto(e) {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
     const B = window.AvantiBrain; if (!B) return;
@@ -164,13 +166,16 @@ class Component extends DCLogic {
   }
   toggleVoz() {
     const B = window.AvantiBrain;
-    if (this.rec) { const r = this.rec; this.rec = null; try { r.onend = null; r.stop(); } catch (e) {} this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); return; }
+    // Parar à mão: o stop() ainda entrega o resultado final — quem grava é o fim(), uma vez só (timer se o onend não vier).
+    // Toque enquanto para é ignorado: gravar agora salvaria o texto parcial.
+    if (this.rec) { const r = this.rec; if (r.parando) return; r.parando = true; this.setState({ listening: false }); clearTimeout(this._vt); this._vt = setTimeout(r.fim, 3000); try { r.stop(); } catch (e) { r.fim(); } return; }
     const r = B && B.recognizer({ continuous: false });
     if (!r) return this.toast('Microfone indisponível neste navegador — digite o registro', 'var(--av-warn, #f0a63a)');
     this.rec = r; let finalText = '';
     r.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; } if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim(); };
-    r.onend = () => { if (this.rec !== r) return; this.rec = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); };
-    r.onerror = (ev) => { this.rec = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Permissão de microfone negada — digite o registro' : 'Voz indisponível agora — digite o registro', 'var(--av-warn, #f0a63a)'); };
+    r.fim = () => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); };
+    r.onend = r.fim;
+    r.onerror = (ev) => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Permissão de microfone negada — digite o registro' : 'Voz indisponível agora — digite o registro', 'var(--av-warn, #f0a63a)'); };
     try { r.start(); this.setState({ listening: true }); } catch (e) { this.rec = null; }
   }
   renderVals() {

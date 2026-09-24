@@ -17,13 +17,14 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Displa
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
 button { font: inherit; }
 </style>
+<script src="./avanti-brain.js"></script>
 </helmet>
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
   <header style="flex-shrink: 0; box-sizing: border-box; padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px;">
     <a href="A2-Ponte-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
     <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
       <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Abastecimento</span>
-      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">diesel 2 × 750 L · estimativas pela telemetria</span>
+      <span style="font-size: 11.5px; color: {{subTone}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
     </span>
     <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-warn, #f0a63a); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg> 34 %</span>
   </header>
@@ -58,18 +59,47 @@ button { font: inherit; }
       <span style="font-size: 14px; font-weight: 700;">14/08 · Posto Marina da Glória · 500 L</span>
       <span style="font-size: 12px; color: var(--av-ink2, #aeb6c2);">R$ 10,96/L · R$ 5.480,00 · NF-e 002925 · horímetro BB 96,8 h / BE 92,5 h</span>
       <span style="font-size: 11px; color: var(--av-ink4, #7d8796);">nível BB 9 → 48 % · BE 14 → 46 % · alarme de nível baixo (9,6 %) resolvido</span>
+      <sc-if value="{{temPend}}" hint-placeholder-val="{{false}}">
+        <a href="G3-Diario-Mobile.dc.html" style="font-size: 11.5px; font-weight: 700; color: var(--av-warn, #f0a63a); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{pendLine}}</a>
+      </sc-if>
     </div>
   </div>
   <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; display: flex; gap: 8px;">
-    <a href="H2-Home-Mobile.dc.html#mode=foto" style="flex-grow: 1; height: 52px; border-radius: 14px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Foto da NF → registrar</a>
+    <button type="button" onClick="{{pickNf}}" style="flex-grow: 1; height: 52px; border-radius: 14px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; box-sizing: border-box;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Foto da NF → registrar</button>
+    <input type="file" accept="image/*,.pdf" ref="{{nfRef}}" onChange="{{onNf}}" aria-hidden="true" tabindex="-1" style="display: none;">
     <a href="B3-Carta-Resposta.dc.html" style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center; text-decoration: none;" aria-label="Perguntar por voz"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
   </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
+  state = { extra: [], note: '', noteTone: 'var(--av-ok, #34c77a)' };
+  nfRef = React.createRef();
+  componentDidMount() { this.setState({ extra: this.loadAbast() }); }
+  componentWillUnmount() { clearTimeout(this._n); }
+  // NF enviadas e ainda A CONFIRMAR: guardadas neste aparelho (avanti.abast.v1), mais nova primeiro — igual ao console web
+  loadAbast() {
+    let v = null; try { v = JSON.parse(localStorage.getItem('avanti.abast.v1') || '[]'); } catch (e) {}
+    const txt = (x) => typeof x === 'string' ? x : '—';
+    return Array.isArray(v) ? v.filter((h) => h && typeof h.d === 'string' && typeof h.local === 'string').map((h) => ({ d: h.d, local: h.local, nf: txt(h.nf), l: txt(h.l), pl: txt(h.pl), total: txt(h.total), hor: txt(h.hor), nivel: txt(h.nivel), pending: true, iso: h.iso, who: h.who })) : [];
+  }
+  addAbast(h) { const list = this.loadAbast(); list.unshift(h); try { localStorage.setItem('avanti.abast.v1', JSON.stringify(list)); } catch (e) {} return list; }
+  toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
+  onNf(e) {
+    const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
+    const B = window.AvantiBrain; const who = (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto');
+    const dt = new Date(); const p2 = (x) => (x < 10 ? '0' : '') + x;
+    if (B) B.addDiario({ sys: 'Combustível', tone: 'var(--av-warn, #f0a63a)', t: 'Foto da NF enviada pelo app: ' + f.name + ' — extração de litros, preço e horímetro pendente (A CONFIRMAR).', who: who, src: 'app · foto da NF' });
+    this.setState({ extra: this.addAbast({ d: p2(dt.getDate()) + '/' + p2(dt.getMonth() + 1) + '/' + dt.getFullYear(), local: 'A CONFIRMAR · ' + f.name, nf: 'extração de litros, preço e total pendente · ' + p2(dt.getHours()) + ':' + p2(dt.getMinutes()) + ' · ' + who, l: '—', pl: '—', total: '—', hor: 'horímetro do minuto: a casar na telemetria', nivel: '—', pending: true, iso: dt.toISOString(), who: who }) });
+    this.toast('NF no diário · A CONFIRMAR');
+  }
   renderVals() {
+    const s = this.state; const pend = s.extra || [];
     return {
+      subtitle: s.note || 'diesel 2 × 750 L · estimativas pela telemetria', subTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      temPend: pend.length > 0,
+      pendLine: pend.length ? pend[0].d + ' · ' + pend[0].local + (pend.length > 1 ? ' · +' + (pend.length - 1) + ' a confirmar' : '') + ' ›' : '',
+      pickNf: () => this.nfRef.current && this.nfRef.current.click(), nfRef: this.nfRef, onNf: (e) => this.onNf(e),
       tanks: [ { n: 'Diesel BB', v: '34,0%', w: '34%', tone: 'var(--av-tele, #5ac8fa)' }, { n: 'Diesel BE', v: '34,8%', w: '34.8%', tone: 'var(--av-accent, #409cff)' } ],
       kpis: [
         { l: 'AUTONOMIA', v: '≈ 22 h', s: '≈ 185 mn a 8,4 nós · reserva 10 %', tone: 'var(--av-ok, #34c77a)' },
