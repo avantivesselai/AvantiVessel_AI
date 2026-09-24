@@ -55,9 +55,11 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
             <span style="font-size: 14px; font-weight: 700;">{{p.n}}</span>
             <span style="font-size: 11px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{p.role}}</span>
+            <sc-if value="{{p.hasFone}}" hint-placeholder-val="{{false}}"><span style="font-size: 11px; font-weight: 600; color: var(--av-ok, #34c77a); font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{p.fone}}</span></sc-if>
           </span>
           <sc-if value="{{p.hasFone}}" hint-placeholder-val="{{false}}">
-            <a href="{{p.tel}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(var(--av-ok-rgb, 52,199,122), 0.45); background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); color: var(--av-ok, #34c77a); font-size: 10.5px; letter-spacing: 0.08em; font-weight: 800; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">LIGAR</a>
+            <a href="{{p.tel}}" aria-label="Ligar para {{p.n}} · {{p.fone}}" style="height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(var(--av-ok-rgb, 52,199,122), 0.45); background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); color: var(--av-ok, #34c77a); font-size: 10.5px; letter-spacing: 0.08em; font-weight: 800; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">LIGAR</a>
+            <button type="button" onClick="{{p.addFone}}" aria-label="Editar telefone de {{p.n}}" style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
           </sc-if>
           <sc-if value="{{p.needsFone}}" hint-placeholder-val="{{true}}">
             <button type="button" onClick="{{p.addFone}}" style="height: 36px; padding: 0 10px; border-radius: 10px; border: 1px dashed var(--av-dash, #3a4454); background: transparent; color: var(--av-warn, #f0a63a); font-size: 10px; letter-spacing: 0.06em; font-weight: 700; cursor: pointer; flex-shrink: 0;">A CADASTRAR</button>
@@ -66,8 +68,9 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <span style="font-size: 11.5px; color: var(--av-ink2, #aeb6c2); line-height: 1.4;">{{p.s}}</span>
         <sc-if value="{{p.editing}}" hint-placeholder-val="{{false}}">
           <span style="display: flex; gap: 6px;">
-            <input ref="{{foneRef}}" onKeyDown="{{onFoneKey}}" maxlength="20" placeholder="+55 21 9…" aria-label="Telefone" inputmode="tel" autocomplete="off" style="flex-grow: 1; height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.55); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+            <input ref="{{foneRef}}" onKeyDown="{{onFoneKey}}" maxlength="25" placeholder="{{p.ph}}" aria-label="Telefone" inputmode="tel" autocomplete="off" style="flex-grow: 1; height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.55); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
             <button type="button" onClick="{{saveFone}}" style="height: 40px; padding: 0 12px; border-radius: 10px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 10.5px; letter-spacing: 0.08em; font-weight: 800; cursor: pointer;">SALVAR</button>
+            <button type="button" onClick="{{cancelFone}}" aria-label="Cancelar" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); cursor: pointer;">✕</button>
           </span>
         </sc-if>
       </div>
@@ -81,9 +84,11 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
             <span style="font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{v.n}}</span>
             <span style="font-size: 10.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{v.role}} · {{v.s}}</span>
+            <sc-if value="{{v.hasFone}}" hint-placeholder-val="{{false}}"><span style="font-size: 10.5px; font-weight: 600; color: var(--av-ok, #34c77a); font-variant-numeric: tabular-nums; overflow-wrap: anywhere;">{{v.fone}}</span></sc-if>
           </span>
           <sc-if value="{{v.hasFone}}" hint-placeholder-val="{{false}}">
-            <a href="{{v.tel}}" style="height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-ok-rgb, 52,199,122), 0.45); background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); color: var(--av-ok, #34c77a); font-size: 10px; letter-spacing: 0.06em; font-weight: 800; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">LIGAR</a>
+            <a href="{{v.tel}}" aria-label="Ligar para {{v.n}} · {{v.fone}}" style="height: 34px; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-ok-rgb, 52,199,122), 0.45); background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); color: var(--av-ok, #34c77a); font-size: 10px; letter-spacing: 0.06em; font-weight: 800; display: flex; align-items: center; text-decoration: none; flex-shrink: 0;">LIGAR</a>
+            <button type="button" onClick="{{v.addFone}}" aria-label="Editar telefone de {{v.n}}" style="width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg></button>
           </sc-if>
           <sc-if value="{{v.needsFone}}" hint-placeholder-val="{{true}}">
             <button type="button" onClick="{{v.addFone}}" aria-label="Adicionar telefone" style="width: 34px; height: 34px; border-radius: 10px; border: 1px dashed var(--av-dash, #3a4454); background: transparent; color: var(--av-warn, #f0a63a); font-size: 16px; font-weight: 700; cursor: pointer; flex-shrink: 0;">+</button>
@@ -91,8 +96,9 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         </span>
         <sc-if value="{{v.editing}}" hint-placeholder-val="{{false}}">
           <span style="display: flex; gap: 6px;">
-            <input ref="{{foneRef}}" onKeyDown="{{onFoneKey}}" maxlength="20" placeholder="+55 21 9…" aria-label="Telefone" inputmode="tel" autocomplete="off" style="flex-grow: 1; height: 38px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.55); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+            <input ref="{{foneRef}}" onKeyDown="{{onFoneKey}}" maxlength="25" placeholder="{{v.ph}}" aria-label="Telefone" inputmode="tel" autocomplete="off" style="flex-grow: 1; height: 38px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.55); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
             <button type="button" onClick="{{saveFone}}" style="height: 38px; padding: 0 12px; border-radius: 10px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 10.5px; letter-spacing: 0.08em; font-weight: 800; cursor: pointer;">SALVAR</button>
+            <button type="button" onClick="{{cancelFone}}" aria-label="Cancelar" style="width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); cursor: pointer;">✕</button>
           </span>
         </sc-if>
       </div>
@@ -124,7 +130,16 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 class Component extends DCLogic {
   state = { eq: { fones: {}, convites: [] }, fone: null, inviteOpen: false, acesso: 'Total', atalhos: 6, note: '', noteTone: 'var(--av-ink3, #9aa3af)' };
   foneRef = React.createRef(); nomeRef = React.createRef(); funcRef = React.createRef();
-  componentDidMount() { this.whenBrain(() => { const B = window.AvantiBrain; this.setState({ eq: B.loadEquipe(), atalhos: B.loadShortcuts().length }); }); }
+  componentDidMount() {
+    this.whenBrain(() => this.load());
+    // Outra aba/tela salvou: recarrega do armazenamento
+    this._st = (e) => { if (!e || e.key === null || e.key === 'avanti.equipe.v1' || e.key === 'avanti.atalhos.v1') this.load(); };
+    window.addEventListener('storage', this._st);
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this._st); clearTimeout(this._n); }
+  load() { const B = window.AvantiBrain; if (B) this.setState({ eq: B.loadEquipe(), atalhos: B.loadShortcuts().length }); }
+  // Lê de novo antes de gravar (ler-alterar-gravar): nada salvo em outra aba se perde
+  fresh() { const B = window.AvantiBrain; const eq = B ? B.loadEquipe() : this.state.eq; return { fones: Object.assign({}, eq.fones), convites: (eq.convites || []).slice() }; }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -135,32 +150,42 @@ class Component extends DCLogic {
   }
   toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
   save(eq) { if (window.AvantiBrain) window.AvantiBrain.saveEquipe(eq); this.setState({ eq: eq }); }
+  openFone(id) { this.setState({ fone: id }, () => { const el = this.foneRef.current; if (el) { el.value = (this.state.eq.fones || {})[id] || ''; el.focus(); } }); }
   saveFone() {
-    const id = this.state.fone; const v = (this.foneRef.current ? this.foneRef.current.value : '').trim();
-    if (!id) return; if (!v) return this.toast('Digite o telefone', 'var(--av-warn, #f0a63a)');
-    const dg = v.replace(/\D/g, ''); if (dg.length < 8 || dg.length > 15) return this.toast('Telefone inválido — use DDD e número', 'var(--av-warn, #f0a63a)');
-    const eq = Object.assign({}, this.state.eq); eq.fones = Object.assign({}, eq.fones, { [id]: v });
-    this.save(eq); this.setState({ fone: null }); this.toast('Telefone salvo · ' + v);
-    if (window.AvantiBrain) window.AvantiBrain.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Contato atualizado em Equipe: ' + id + ' · telefone cadastrado por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + '.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
+    const id = this.state.fone; const v = (this.foneRef.current ? this.foneRef.current.value : '').replace(/\s+/g, ' ').trim();
+    if (!id) return;
+    const eq = this.fresh(); const antes = eq.fones[id] || '';
+    if (!v && !antes) return this.toast('Digite o telefone', 'var(--av-warn, #f0a63a)');
+    // Só dígitos, espaço, + no início, ( ) . e -; 8 a 15 dígitos (E.164)
+    const dg = v.replace(/\D/g, ''); if (v && (!/^\+?[\d ().-]+$/.test(v) || dg.length < 8 || dg.length > 15)) return this.toast('Tel. inválido — use DDD', 'var(--av-warn, #f0a63a)');
+    if (v === antes) { this.setState({ eq: eq, fone: null }); return; }
+    if (v) eq.fones[id] = v; else delete eq.fones[id];
+    this.save(eq); this.setState({ fone: null }); this.toast(v ? 'Telefone salvo' : 'Telefone removido');
+    if (window.AvantiBrain) window.AvantiBrain.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Contato atualizado em Equipe: ' + id + ' · telefone ' + (!v ? 'removido' : antes ? 'alterado' : 'cadastrado') + ' por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + '.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
   }
   convidar() {
     const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim(); const func = (this.funcRef.current ? this.funcRef.current.value : '').trim();
     if (!nome) return this.toast('Digite o nome', 'var(--av-warn, #f0a63a)');
     const B = window.AvantiBrain; const n = B ? B.now() : { d: 'hoje' };
-    const eq = Object.assign({}, this.state.eq); eq.convites = (eq.convites || []).concat([{ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d }]);
+    const eq = this.fresh(); eq.convites.push({ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d });
     this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite PENDENTE · ' + nome);
     if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' — pendente de confirmação.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
+  }
+  cancelConvite(c) {
+    const eq = this.fresh(); const k = eq.convites.findIndex((x) => x.nome === c.nome && x.d === c.d && x.func === c.func && x.acesso === c.acesso);
+    if (k < 0) return this.setState({ eq: eq });
+    eq.convites.splice(k, 1); this.save(eq); this.toast('Convite cancelado');
   }
   renderVals() {
     const s = this.state; const fones = (s.eq && s.eq.fones) || {}; const convites = (s.eq && s.eq.convites) || [];
     const tel = (v) => 'tel:' + String(v).replace(/[^+\d]/g, '');
-    const fone = (id) => ({ fone: fones[id] || '', hasFone: !!fones[id] && s.fone !== id, editing: s.fone === id, needsFone: !fones[id] && s.fone !== id, tel: fones[id] ? tel(fones[id]) : '#', addFone: () => this.setState({ fone: id }) });
+    const fone = (id) => ({ fone: fones[id] || '', hasFone: !!fones[id] && s.fone !== id, editing: s.fone === id, needsFone: !fones[id] && s.fone !== id, tel: fones[id] ? tel(fones[id]) : '#', ph: fones[id] ? 'vazio = remover' : '+55 21 9…', addFone: () => this.openFone(id) });
     return {
       subtitle: s.note || '3 com acesso total · 7 contatos de apoio', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
       inviteOpen: s.inviteOpen, inviteLabel: s.inviteOpen ? 'FECHAR' : '+ CONVIDAR', toggleInvite: () => this.setState({ inviteOpen: !s.inviteOpen }),
       acessos: ['Total', 'Leitura'].map((a) => ({ l: a.toUpperCase(), onClick: () => this.setState({ acesso: a }), active: s.acesso === a, bg: s.acesso === a ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.18)' : 'transparent', tone: s.acesso === a ? 'var(--av-accent, #409cff)' : 'var(--av-ink4, #7d8796)' })),
       nomeRef: this.nomeRef, funcRef: this.funcRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
-      foneRef: this.foneRef, saveFone: () => this.saveFone(), onFoneKey: (e) => { if (e.key === 'Enter') this.saveFone(); if (e.key === 'Escape') this.setState({ fone: null }); },
+      foneRef: this.foneRef, saveFone: () => this.saveFone(), cancelFone: () => this.setState({ fone: null }), onFoneKey: (e) => { if (e.key === 'Enter') this.saveFone(); if (e.key === 'Escape') this.setState({ fone: null }); },
       people: [
         Object.assign({ n: 'Otto Licks', ini: 'OL', role: 'proprietário' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'otto' ? ' · perfil ativo' : ''), s: s.atalhos + ' atalhos na tela inicial · alertas das 09:00 · recebe SOS, anomalias e vencimentos', tone: 'var(--av-accent, #409cff)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' }, fone('Otto')),
         Object.assign({ n: 'Giovanni', ini: 'G', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'giovanni' ? ' · perfil ativo' : ''), s: 'Acionado pelo SOS e pelo modo navegação ("Chamar Giovanni") · alertas das 09:00 desde 14/08', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)' }, fone('Giovanni')),
@@ -176,7 +201,7 @@ class Component extends DCLogic {
         { id: 'Life Safety', n: 'Life Safety', role: 'EPIRB', s: 'cert. 67827-001 · SBM jan/2031', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
       ].map((v) => Object.assign(v, fone(v.id))),
       hasConvites: convites.length > 0,
-      convites: convites.map((c, i) => Object.assign({}, c, { remove: () => { const eq = Object.assign({}, s.eq); eq.convites = convites.filter((_, j) => j !== i); this.save(eq); this.toast('Convite cancelado'); } }))
+      convites: convites.map((c) => Object.assign({}, c, { remove: () => this.cancelConvite(c) }))
     };
   }
 }

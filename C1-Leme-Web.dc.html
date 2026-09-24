@@ -65,7 +65,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
       <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
         <div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0;">
           <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;">Manutenção</h1>
-          <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">35 tarefas · 2 atrasadas · horímetros 20/09 13:23</span>
+          <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">{{resumo}}</span>
         </div>
         <span style="font-size: 12.5px; font-weight: 600; color: {{noteTone}}; max-width: 420px; text-align: right;">{{note}}</span>
         
@@ -133,6 +133,9 @@ input::placeholder { color: var(--av-ph, #4c5666); }
               <sc-if value="{{a.done}}" hint-placeholder-val="{{false}}">
                 <a href="G3-Diario-Web.dc.html" style="flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 12px; border: 1.5px solid rgba(var(--av-ok-rgb, 52,199,122), 0.45); background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); color: var(--av-ok, #34c77a); font-size: 12px; font-weight: 800; letter-spacing: 0.06em; display: flex; align-items: center; text-decoration: none;">{{a.doneLabel}} · NO DIÁRIO ›</a>
               </sc-if>
+              <sc-if value="{{a.canUndo}}" hint-placeholder-val="{{false}}">
+                <button type="button" onClick="{{a.onUndo}}" title="Marcou por engano? Volta a tarefa para a agenda e registra no diário" style="flex-shrink: 0; height: 40px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--av-line2, #2a3240); background: transparent; color: var(--av-ink2, #aeb6c2); font-size: 13px; font-weight: 700; cursor: pointer;">Desfazer</button>
+              </sc-if>
             </div>
           </sc-for>
           <sc-if value="{{showRest}}" hint-placeholder-val="{{true}}">
@@ -150,15 +153,18 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
-  state = { filter: 'all', exec: {}, sun: false, note: '', noteTone: 'var(--av-ok, #34c77a)' };
+  state = { filter: 'all', exec: {}, last: '', sun: false, note: '', noteTone: 'var(--av-ok, #34c77a)' };
   componentDidMount() {
     const m = /f=(\w+)/.exec(location.hash || '');
     if (m && ['atrasadas', 'd30', 'emdia', 'all'].indexOf(m[1]) !== -1) this.setState({ filter: m[1] });
     this.whenBrain(() => this.setState({ exec: window.AvantiBrain.loadExec() }));
     this._onHash = () => { const m2 = /f=(\w+)/.exec(location.hash || ''); if (m2 && ['atrasadas', 'd30', 'emdia', 'all'].indexOf(m2[1]) !== -1) this.setState({ filter: m2[1] }); };
     window.addEventListener('hashchange', this._onHash);
+    // Executado em outra aba/tela: recarrega
+    this._st = (e) => { if (window.AvantiBrain && (!e || e.key === null || e.key === 'avanti.executado.v1')) this.setState({ exec: window.AvantiBrain.loadExec() }); };
+    window.addEventListener('storage', this._st);
   }
-  componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); clearTimeout(this._n); }
+  componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('storage', this._st); clearTimeout(this._n); }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -170,22 +176,37 @@ class Component extends DCLogic {
   toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
   markDone(task) {
     const B = window.AvantiBrain; if (!B) return;
+    if (B.loadExec()[task]) return this.setState({ exec: B.loadExec() });
     const exec = B.markExec(task);
     B.addDiario({ sys: 'Manutenção', tone: 'var(--av-warn, #f0a63a)', t: 'Executado: ' + task + '. Marcado no console por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' — linha nova, nada se apaga.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · manutenção' });
-    this.setState({ exec: exec }); this.toast('Registrado no diário: ' + task);
+    this.setState({ exec: exec, last: task }); this.toast('Registrado no diário: ' + task);
+  }
+  // Desfaz só a última marcação: relê antes de gravar e o diário ganha uma linha nova (nada se apaga)
+  undo(task) {
+    const B = window.AvantiBrain; if (!B) return;
+    const m = B.loadExec(); if (!m[task]) return this.setState({ exec: m, last: '' });
+    delete m[task]; B.unmarkExec(task);
+    B.addDiario({ sys: 'Manutenção', tone: 'var(--av-warn, #f0a63a)', t: 'Desfeito: ' + task + ' volta para a agenda (Executado marcado por engano). Desfeito no console por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' — linha nova, nada se apaga.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · manutenção' });
+    this.setState({ exec: m, last: '' }); this.toast('Desfeito — ' + task + ' voltou para a agenda', 'var(--av-warn, #f0a63a)');
   }
   renderVals() {
     const s = this.state; const ex = s.exec || {};
     const TASKS = [
-      { status: 'atrasadas', dd: '181 dias atrás', date: '23/03', task: 'Limpeza de filtros do chiller', eq: 'Dometic PLC L-3527 + MCGX', who: 'Estaleiro', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { status: 'atrasadas', dd: '95 dias atrás', date: '17/06', task: 'Teste de bombas de porão e alarmes', eq: 'Diagrama ATL51', who: 'Estaleiro', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { status: 'd30', dd: 'Em 4 dias', date: '24/09', task: 'Verificação de tensões e conexões', eq: 'Quick VRS / SBC NRG+', who: 'Lucas', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-      { status: 'd30', dd: 'Em 24 dias', date: '14/10', task: 'Revisão programada do sistema', eq: 'Avanti Vessel AI', who: 'Lucas + Avanti', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+      { status: 'atrasadas', dd: '181 dias atrás', date: '23/03', task: 'Limpeza de filtros do chiller', curto: 'filtros do chiller há 181 dias', eq: 'Dometic PLC L-3527 + MCGX', who: 'Estaleiro', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { status: 'atrasadas', dd: '95 dias atrás', date: '17/06', task: 'Teste de bombas de porão e alarmes', curto: 'bombas de porão há 95 dias', eq: 'Diagrama ATL51', who: 'Estaleiro', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { status: 'd30', dd: 'Em 4 dias', date: '24/09', task: 'Verificação de tensões e conexões', curto: 'D-4 tensões Quick VRS / SBC NRG+ (Lucas)', eq: 'Quick VRS / SBC NRG+', who: 'Lucas', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+      { status: 'd30', dd: 'Em 24 dias', date: '14/10', task: 'Revisão programada do sistema', curto: 'D-24 revisão do sistema', eq: 'Avanti Vessel AI', who: 'Lucas + Avanti', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
       { status: 'emdia', dd: 'Em 33 dias', date: '23/10', task: 'Verificação do isolador galvânico', eq: 'ProMariner ProSafe FS30 / FS60', who: 'Lucas', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
       { status: 'emdia', dd: 'Em 53 dias', date: '12/11', task: 'Inspeção de casco, anodos e zincos', eq: 'Casco e hélices IPS', who: 'Eduardo', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
       { status: 'emdia', dd: 'D-117 · 280 h', date: '16/01/2027', task: 'Revisão dos motores Volvo Penta D8 / IPS15', eq: 'faltam 173,0 h · a data vence antes', who: 'Dealer', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
     ];
-    const pend = (st) => TASKS.filter((t) => t.status === st && !ex[t.task]).length;
+    // Todos os números saem de TASKS + executados: 35 = 7 com data aqui + 28 em dia na agenda preditiva
+    const TOTAL = 35;
+    const abertas = (st) => TASKS.filter((t) => t.status === st && !ex[t.task]);
+    const pend = (st) => abertas(st).length;
+    const nAtr = pend('atrasadas'), nD30 = pend('d30'), nEmDia = TOTAL - nAtr - nD30;
+    const feitas = TASKS.filter((t) => t.status !== 'emdia' && ex[t.task]).length;
+    const sub = (st, vazio) => { const x = abertas(st).map((t) => t.curto).join(' · '); return x ? x.charAt(0).toUpperCase() + x.slice(1) : vazio; };
     const filtered = s.filter === 'all' ? TASKS : TASKS.filter((t) => t.status === s.filter);
     const labels = { all: 'todas com data', atrasadas: 'atrasadas', d30: 'vencem em 30 dias', emdia: 'em dia' };
     const setF = (k) => () => this.setState({ filter: k });
@@ -203,12 +224,13 @@ class Component extends DCLogic {
         { l: 'Equipe', href: 'G4-Equipe-Web.dc.html', d: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20a6 6 0 0 1 12 0 M16 11a3 3 0 1 0 0-6 M21 20a6 6 0 0 0-5-5.9', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' }
       ],
       note: s.note, noteTone: s.noteTone,
+      resumo: TOTAL + ' tarefas · ' + (nAtr ? nAtr + (nAtr === 1 ? ' atrasada' : ' atrasadas') : 'nenhuma atrasada') + ' · horímetros 20/09 13:23',
       sun: s.sun, toggleSun: () => this.setState({ sun: !s.sun }), sunFilter: s.sun ? 'contrast(1.18) brightness(1.12)' : 'none',
       sunLine: s.sun ? 'rgba(var(--av-warn-rgb, 240,166,58), 0.55)' : 'var(--av-line, #1d2229)', sunBg: s.sun ? 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' : 'var(--av-card, #0f131a)', sunTone: s.sun ? 'var(--av-warn, #f0a63a)' : 'var(--av-ink, #e9edf2)',
       status: [
-        { v: String(pend('atrasadas')), l: 'atrasadas', sub: 'Bombas de porão há 95 dias · filtros do chiller há 181 dias', go: active('atrasadas') ? 'filtro ativo' : 'filtrar ›', onClick: setF('atrasadas'), active: active('atrasadas'), line: active('atrasadas') ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.55)' : 'var(--av-line, #1d2229)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)' },
-        { v: String(pend('d30')), l: 'em 30 dias', sub: 'D-4 tensões Quick VRS / SBC NRG+ (Lucas) · D-24 revisão do sistema', go: active('d30') ? 'filtro ativo' : 'filtrar ›', onClick: setF('d30'), active: active('d30'), line: active('d30') ? 'rgba(var(--av-warn-rgb, 240,166,58), 0.55)' : 'var(--av-line, #1d2229)', d: 'M12 7v5l3 2 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.12)' },
-        { v: '31', l: 'em dia', sub: 'De 35 tarefas · próxima revisão dos motores em 117 dias ou 280 h', go: active('emdia') ? 'filtro ativo' : 'filtrar ›', onClick: setF('emdia'), active: active('emdia'), line: active('emdia') ? 'rgba(var(--av-ok-rgb, 52,199,122), 0.55)' : 'var(--av-line, #1d2229)', d: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.12)' }
+        { v: String(nAtr), l: nAtr === 1 ? 'atrasada' : 'atrasadas', sub: sub('atrasadas', 'Nada atrasado · executadas registradas no diário'), go: active('atrasadas') ? 'filtro ativo' : 'filtrar ›', onClick: setF('atrasadas'), active: active('atrasadas'), line: active('atrasadas') ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.55)' : 'var(--av-line, #1d2229)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)' },
+        { v: String(nD30), l: 'em 30 dias', sub: sub('d30', 'Nada vence nos próximos 30 dias'), go: active('d30') ? 'filtro ativo' : 'filtrar ›', onClick: setF('d30'), active: active('d30'), line: active('d30') ? 'rgba(var(--av-warn-rgb, 240,166,58), 0.55)' : 'var(--av-line, #1d2229)', d: 'M12 7v5l3 2 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.12)' },
+        { v: String(nEmDia), l: 'em dia', sub: 'De ' + TOTAL + ' tarefas' + (feitas ? ' · inclui ' + feitas + (feitas === 1 ? ' executada' : ' executadas') : '') + ' · próxima revisão dos motores em 117 dias ou 280 h', go: active('emdia') ? 'filtro ativo' : 'filtrar ›', onClick: setF('emdia'), active: active('emdia'), line: active('emdia') ? 'rgba(var(--av-ok-rgb, 52,199,122), 0.55)' : 'var(--av-line, #1d2229)', d: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.12)' }
       ],
       live: [
         { k: 'Velocidade', v: '0,0', u: 'nós', s: 'atracado', stone: 'var(--av-ink3, #9aa3af)', d: 'M3 12h4l2-6 3 12 2.5-8 1.5 4h5', tone: 'var(--av-tele, #5ac8fa)' },
@@ -220,7 +242,7 @@ class Component extends DCLogic {
       ],
       filterLabel: labels[s.filter],
       chips: [['all', 'Todas'], ['atrasadas', 'Atrasadas'], ['d30', 'D-30'], ['emdia', 'Em dia']].map((c) => ({ l: c[1], onClick: setF(c[0]), active: active(c[0]), line: active(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: active(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: active(c[0]) ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
-      rows: filtered.map((t) => { const e = ex[t.task]; return Object.assign({}, t, { meta: t.eq + ' · ' + t.who + ' · ' + t.date, done: !!e, notDone: !e, doneLabel: e ? 'EXECUTADO ' + e.d : '', onDone: () => this.markDone(t.task), dd: e ? 'feito · ' + e.d : t.dd, chipTone: e ? 'var(--av-ok, #34c77a)' : t.tone, chipWash: e ? 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' : t.wash }); }),
+      rows: filtered.map((t) => { const e = ex[t.task]; return Object.assign({}, t, { meta: t.eq + ' · ' + t.who + ' · ' + t.date, done: !!e, notDone: !e, doneLabel: e ? 'EXECUTADO ' + e.d : '', onDone: () => this.markDone(t.task), canUndo: !!e && s.last === t.task, onUndo: () => this.undo(t.task), dd: e ? 'feito · ' + e.d : t.dd, chipTone: e ? 'var(--av-ok, #34c77a)' : t.tone, chipWash: e ? 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' : t.wash }); }),
       showRest: s.filter === 'all' || s.filter === 'emdia',
       restLabel: 'Mais 28 tarefas em dia, sem vencimento nos próximos 90 dias — lista completa na agenda preditiva (Data Table).'
     };

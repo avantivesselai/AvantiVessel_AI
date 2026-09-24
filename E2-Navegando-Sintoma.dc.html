@@ -12,6 +12,7 @@
 <helmet>
 <script src="./avanti-app.js"></script>
 <script src="./avanti-theme.js"></script>
+<script src="./avanti-brain.js"></script>
 <style>
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); }
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
@@ -26,7 +27,7 @@ button { font: inherit; }
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px;">
-      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em;">Sintoma registrado</span>
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em;">Triagem de sintoma</span>
       <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af);">gatilho disparado às 10:19 · em navegação</span>
     </span>
     <span style="display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14);">
@@ -61,44 +62,55 @@ button { font: inherit; }
       <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 10px; color: var(--av-ink3, #9aa3af); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">22°55,3'S 043°09,8'W · SOG 1,3 nós · vento 14 nós NW</span>
     </div>
 
-    <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-left: 3px solid var(--av-warn, #f0a63a); border-radius: 18px; display: flex; flex-direction: column; gap: 9px; min-height: 0; overflow: hidden;">
-      <span style="font-size: 16px; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em;">Leituras normais. {{kindTitle}} sem alarme de motor: verifique nesta ordem.</span>
+    <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-left: 3px solid {{acc}}; border-radius: 18px; display: flex; flex-direction: column; gap: 9px; min-height: 0; overflow-y: auto;">
+      <span style="font-size: 16px; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em;">{{titulo}}</span>
       <div style="display: flex; flex-direction: column; gap: 9px;">
         <sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
           <span style="display: flex; gap: 11px; align-items: flex-start;">
-            <span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); color: var(--av-warn, #f0a63a); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{st.n}}</span>
+            <span style="width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: {{accWash}}; color: {{acc}}; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">{{st.n}}</span>
             <span style="font-size: 12.5px; line-height: 1.4; padding-top: 2px;">{{st.t}}</span>
           </span>
         </sc-for>
       </div>
       <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
-        <span style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.10); border-radius: 12px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ok, var(--av-ok, #34c77a));"></path></svg>
-          <span style="font-size: 12px; font-weight: 600; color: var(--av-ok, #34c77a);">Gravado no diário de bordo · sistema: propulsão</span>
-        </span>
-        <span style="font-size: 10.5px; line-height: 1.4; color: var(--av-ink3, #9aa3af);">Fonte: protocolo de triagem do agente Anomalia · faixas do manual 47707890 · persistindo, escalar ao dealer com estes dados.</span>
+        <sc-if value="{{triagem}}" hint-placeholder-val="{{true}}">
+          <a href="G3-Diario-Mobile.dc.html" aria-label="Registrar no diário de bordo · {{sistema}} — abre o Diário" style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); border-radius: 12px; color: var(--av-accent, #409cff); text-decoration: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+            <span style="flex-grow: 1; font-size: 12px; font-weight: 700;">Registrar no diário <span style="font-weight: 500; color: var(--av-ink3, #9aa3af);">· {{sistema}}</span></span>
+            <span aria-hidden="true" style="font-size: 14px; font-weight: 700;">›</span>
+          </a>
+        </sc-if>
+        <span style="font-size: 10.5px; line-height: 1.4; color: var(--av-ink3, #9aa3af);">{{fonte}}</span>
       </div>
     </div>
 
     <div style="display: flex; gap: 8px; flex-shrink: 0;">
-      <a href="H2-Home-Mobile.dc.html#mode=video" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h11v10H3z M14 11l6-3.5v9L14 13z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
-        Gravar 10 s
-      </a>
-      <a href="G4-Equipe-Mobile.dc.html" style="flex-grow: 1; height: 52px; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
-        Ligar para o dealer
-      </a>
+      <sc-if value="{{triagem}}" hint-placeholder-val="{{true}}">
+        <a href="H2-Home-Mobile.dc.html#mode=video" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7h11v10H3z M14 11l6-3.5v9L14 13z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+          Gravar 10 s
+        </a>
+        <a href="{{dealer.href}}" aria-label="{{dealer.aria}}" style="flex-grow: 1; height: 52px; border-radius: 14px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+          {{dealer.n}}
+        </a>
+      </sc-if>
+      <sc-if value="{{sos}}" hint-placeholder-val="{{false}}">
+        <a href="S2-SOS-Mobile.dc.html" aria-label="{{sosAria}}" style="flex-grow: 1; min-width: 72px; height: 52px; border-radius: 14px; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; box-shadow: 0 0 0 3px rgba(var(--av-crit-rgb, 255,59,48), 0.28);">
+          <span style="font-size: 17px; font-weight: 800; letter-spacing: 0.12em; line-height: 1;">SOS</span>
+          <sc-if value="{{fogo}}" hint-placeholder-val="{{false}}"><span style="width: 1px; height: 22px; background: rgba(255,255,255,0.4);"></span><span style="font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em;">PROTOCOLO DE INCÊNDIO</span></sc-if>
+        </a>
+      </sc-if>
     </div>
   </div>
 
   <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; border-top: 1px solid var(--av-line, #1d2229); display: flex; align-items: center; gap: 12px;">
-    <a href="H2-Home-Mobile.dc.html#mode=voz" aria-label="Continuar por voz" style="width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+    <a href="H2-Home-Mobile.dc.html#mode=voz" onClick="{{armaVoz}}" aria-label="Continuar por voz" style="width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
       <span style="font-size: 13px; font-weight: 700;">Respondendo em voz</span>
-      <span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">"Reduza para lenta e me diga se a vibração some."</span>
+      <span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">{{fala}}</span>
     </span>
   </div>
 
@@ -106,11 +118,53 @@ button { font: inherit; }
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  state = { kind: 'Vibração' };
+  state = { kind: 'Vibração', fones: {} };
+  componentDidMount() { this.whenBrain(() => this.setState({ fones: window.AvantiBrain.loadEquipe().fones })); }
+  componentWillUnmount() { clearInterval(this._b); }
+  whenBrain(cb) {
+    if (window.AvantiBrain) return cb();
+    let n = 0;
+    this._b = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(this._b); if (window.AvantiBrain) cb(); return; }
+      if (n === 6 && !document.querySelector('script[data-avanti-brain]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
   renderVals() {
-    const k = this.state.kind;
+    const k = this.state.kind; const fogo = k === 'Fumaça'; const fd = this.state.fones['Dealer Volvo Penta'];
+    const aviso = 'Leituras normais. ' + k + ' sem alarme de motor: verifique nesta ordem.';
+    const triagem = 'Fonte: protocolo de triagem do agente Anomalia · faixas do manual 47707890 · persistindo, escalar ao dealer com estes dados.';
+    // Esta tela não grava no diário: o botão "Registrar no diário" só abre o G3 (sem escrita automática), então nada aqui afirma "gravado".
+    // Fumaça fora do escapamento segue o protocolo de incêndio do SOS (mesmo texto do S1/S2) — nunca abrir a praça de máquinas.
+    // Fumaça só no escapamento é assunto de motor (como no chat): triagem + dealer, sem MAYDAY.
+    const T = {
+      'Vibração': { titulo: aviso, sistema: 'sistema: propulsão', fonte: triagem, fala: '"Reduza para lenta e me diga se a vibração some."', steps: [
+        { n: '1', t: 'Reduza para marcha lenta. Se a vibração sumir, é hélice ou pod IPS, não o motor.' },
+        { n: '2', t: 'Compare BB e BE no mesmo giro — vibração só de um lado aponta o lado a inspecionar.' },
+        { n: '3', t: 'Confira a praça de máquinas: vazamento, fixação e cheiro. Vazamento de óleo ou combustível: não dê nova partida.' }
+      ] },
+      'Barulho': { titulo: aviso, sistema: 'sintoma: barulho', fonte: triagem, fala: '"Reduza para lenta e me diga se o barulho muda."', steps: [
+        { n: '1', t: 'Reduza para marcha lenta e observe se o barulho muda ou some.' },
+        { n: '2', t: 'Compare BB e BE no mesmo giro — barulho só de um lado aponta o lado a inspecionar.' },
+        { n: '3', t: 'Grave 10 s do som e confira a praça de máquinas: vazamento e fixação. Vazamento de óleo ou combustível: não dê nova partida.' }
+      ] },
+      'Cheiro': { titulo: aviso, sistema: 'sintoma: cheiro', fonte: triagem, fala: '"É cheiro de queimado ou de combustível?"', steps: [
+        { n: '1', t: 'Cheiro de queimado: trate como incêndio — SOS e painel Sea-Fire do salão. Não abra a praça de máquinas.' },
+        { n: '2', t: 'Cheiro de combustível ou óleo: confira vazamento na praça de máquinas. Vazamento: não dê nova partida.' },
+        { n: '3', t: 'Persistindo: escale ao dealer com estes dados.' }
+      ] },
+      'Fumaça': { titulo: 'Fumaça fora do escapamento: trate como incêndio.', sistema: '', fonte: 'Fonte: manual Sea-Fire SMAC (Drive) · protocolo de emergência Avanti', fala: '"Não abra a praça de máquinas. Abra o SOS."', steps: [
+        { n: '1', t: 'Alarme no painel Sea-Fire do salão: o sistema corta motores e ventilação e descarrega o agente na praça de máquinas.' },
+        { n: '2', t: 'Reserva: cabo de descarga manual SMAC. Não abra a praça de máquinas até esfriar — reabastece o fogo.' },
+        { n: '3', t: 'Emergência — abra o SOS: VHF canal 16 · MAYDAY (roteiro com MMSI e posição).' },
+        { n: '4', t: 'Só no escapamento (preta, branca ou azul) não é incêndio: reduza, volte à triagem e acione o dealer.' }
+      ] }
+    }[k];
     return {
-      kindTitle: k,
+      titulo: T.titulo, steps: T.steps, fonte: T.fonte, fala: T.fala, sistema: T.sistema,
+      triagem: !fogo, fogo: fogo, sos: fogo || k === 'Cheiro', sosAria: fogo ? 'SOS — protocolo de incêndio' : 'SOS — emergência',
+      acc: fogo ? 'var(--av-crit, #ff3b30)' : 'var(--av-warn, #f0a63a)', accWash: fogo ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' : 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)',
+      dealer: fd ? { n: 'Ligar para o dealer', href: 'tel:' + String(fd).replace(/[^+\d]/g, ''), aria: 'Ligar para o dealer Volvo Penta · ' + fd } : { n: 'Cadastrar tel. do dealer', href: 'G4-Equipe-Mobile.dc.html', aria: 'Telefone do dealer não cadastrado — abrir Equipe para cadastrar' },
+      armaVoz: () => { try { sessionStorage.setItem('avanti.modo', 'voz'); } catch (e) {} },
       kinds: ['Vibração', 'Barulho', 'Cheiro', 'Fumaça'].map((n) => ({ n: n, active: k === n, onClick: () => this.setState({ kind: n }), bg: k === n ? 'var(--av-warn, #f0a63a)' : 'var(--av-card, #0f131a)', line: k === n ? 'var(--av-warn, #f0a63a)' : 'var(--av-line, #1d2229)', ink: k === n ? 'var(--av-bg, #05070b)' : 'var(--av-ink, #e9edf2)' })),
       kindsOld: [
         { n: 'Vibração', bg: 'var(--av-warn, #f0a63a)', line: 'var(--av-warn, #f0a63a)', ink: 'var(--av-on-accent, #05070b)' },
@@ -125,11 +179,6 @@ class Component extends DCLogic {
         { k: 'Temp. óleo', v: '90 °C', n: 'normal', tone: 'var(--av-ok, #34c77a)' },
         { k: 'Arrefec.', v: '77 °C', n: 'normal', tone: 'var(--av-ok, #34c77a)' },
         { k: 'Carga', v: '29%', n: 'cruzeiro leve', tone: 'var(--av-ink, #e9edf2)' }
-      ],
-      steps: [
-        { n: '1', t: 'Reduza para marcha lenta. Se a vibração sumir, é hélice ou pod IPS, não o motor.' },
-        { n: '2', t: 'Compare BB e BE no mesmo giro — vibração só de um lado aponta o lado a inspecionar.' },
-        { n: '3', t: 'Confira a praça de máquinas: vazamento, fixação e cheiro. Vazamento de óleo ou combustível: não dê nova partida.' }
       ]
     };
   }

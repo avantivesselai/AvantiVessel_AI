@@ -50,13 +50,16 @@
   function resetShortcuts() { try { localStorage.removeItem(K.atalhos); } catch (e) {} return loadShortcuts(); }
   function bankFor(list) { var ids = list.map(function (x) { return x.id; }); return ALL.filter(function (x) { return ids.indexOf(x.id) === -1; }); }
 
-  // Usuário logado (avanti-auth.js). Sem sessão — ex.: dentro do editor — cai no proprietário.
-  function quem() { try { var u = window.AvantiAuth && window.AvantiAuth.usuario(); if (u && u.nome) return u.nome; } catch (e) {} return 'Otto'; }
+  // Usuário logado (avanti-auth.js): AvantiAuth.nome() devolve quem entrou, manda ao login se a sessão expirou e só dá 'Otto' dentro do editor.
+  // 'Otto' aqui só quando avanti-auth.js não está na página.
+  function quem() { if (!window.AvantiAuth) return 'Otto'; try { return String(window.AvantiAuth.nome()); } catch (e) { return 'sem sessão'; } }
   function now() { var d = new Date(); var p = function (n) { return (n < 10 ? '0' : '') + n; }; return { d: p(d.getDate()) + '/' + p(d.getMonth() + 1), t: p(d.getHours()) + ':' + p(d.getMinutes()), iso: d.toISOString() }; }
   function loadDiario() { var v = read(K.diario, []); return Array.isArray(v) ? v.filter(function (e) { return e && typeof e.t === 'string'; }) : []; }
   function addDiario(e) { var n = now(); var list = loadDiario(); var entry = Object.assign({ d: n.d, t: n.t, iso: n.iso, sys: 'Diário', tone: 'var(--av-accent, #409cff)', who: quem(), src: 'app · texto' }, e); list.unshift(entry); write(K.diario, list); return entry; }
   function loadExec() { var v = read(K.exec, {}); return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
   function markExec(task) { var m = loadExec(); m[task] = now(); write(K.exec, m); return m; }
+  // Desfaz um Executado: relê a lista, tira só essa tarefa e grava (sem a tarefa ou com dado ruim, não grava nada)
+  function unmarkExec(task) { var m = loadExec(); if (task != null && Object.prototype.hasOwnProperty.call(m, String(task))) { delete m[String(task)]; write(K.exec, m); } return m; }
   function loadEquipe() { var v = read(K.equipe, null); var o = v && typeof v === 'object' ? v : {}; return { fones: o.fones && typeof o.fones === 'object' && !Array.isArray(o.fones) ? o.fones : {}, convites: Array.isArray(o.convites) ? o.convites.filter(function (c) { return c && typeof c.nome === 'string'; }) : [] }; }
   function saveEquipe(v) { write(K.equipe, v); }
   function loadDocs() { var v = read(K.docs, []); return Array.isArray(v) ? v.filter(function (d) { return d && typeof d.n === 'string'; }) : []; }
@@ -64,17 +67,111 @@
 
   var SNAP = { pos: "22°57,09'S 043°10,23'W", hora: '20/09 23:01', diesel: 'BB 34,0 % · BE 34,8 % (≈ 516 L de 1.500)', dieselHora: 'última leitura com motores ligados · 20/09 13:23' };
 
+  // Frase normalizada com espaço nas pontas (palavra inteira = ' x ').
+  function pad(s) { return ' ' + norm(s).replace(/[?!.,;:()"“”]+/g, ' ').replace(/\s+/g, ' ').trim() + ' '; }
+  var SOS = ['mayday', 'emergenc', 'incendio', ' fogo', 'homem ao mar', ' mob ', ' sos ', 'socorro', 'naufrag', 'caiu no mar', 'caiu ao mar', 'caiu na agua', 'pessoa na agua', 'alguem na agua', 'crianca na agua', 'afogad', 'afogand',
+    'afund', 'entrando agua', 'agua entrando', 'entrada de agua', 'alagad', 'alagand', 'inundad', 'inundand', 'abandon', 'colisao', 'colidi', 'abalroa', 'encalh', 'explos',
+    'vazamento de combustivel', 'vazando combustivel', 'vazamento de diesel', 'vazando diesel', 'vazamento de gas', 'vazando gas', 'cheiro de combustivel', 'cheiro de diesel', 'cheiro de gas', 'cheiro de queimado'];
+  function emergencia(q) { return has(q, SOS) || (has(q, ['fumaca']) && !has(q, ['escap'])); } // fumaça no escapamento é do motor, não SOS
+  // Óleo: 1 = queda/alarme relatado (passo a passo); 2 = só pergunta de pressão (SEM LEITURA); 0 = outro assunto.
+  // Exige "óleo" na frase (nunca "pressão baixa" sozinha: barômetro, água, chuveiro). Conservador: pressão do óleo sem ser pergunta simples
+  // (qual/como/normal/faixa…) já é relato → passo a passo. Porão/vazamento só saem daqui sem pressão/alarme/luz; gerador, só sem "motor".
+  var OLEO_QUEDA = / (?:baix|abaixo|cai |caiu|caind|cair|qued|alarm|alert|luz|acend|acesa|sem |zer|perd|despenc|sum|diminu|oscil|vermelh|fora d|nao esta |nao ta |saiu|menor|anormal)/;
+  var OLEO_SINAL = / (?:pressao|alarm|alert|luz|acend|acesa)/, OLEO_NEUTRO = / (?:qual|quais|quanto|quanta|como|normal|faixa|alta|alto|ok|esta boa|ta boa|esta bom|ta bom) /;
+  var OLEO_TOPICO = /^ (?:e )?(?:a )?pressao d[eo] oleo(?: d[oa]s? motor(?:es)?)?(?: (?:de )?(?:bb|be|bombordo|boreste))? $/;
+  function oleo(q) {
+    q = q.replace(/ oleo (?:diesel|combustivel)(?= )/g, ' diesel'); // "óleo diesel" é combustível, não óleo do motor
+    if (!has(q, [' oleo']) || has(q, ['barometr', 'atmosf', 'hpa', 'pneu', 'hidraul'])) return 0;
+    if (!OLEO_SINAL.test(q) && has(q, ['porao', 'vazament', 'vazand', 'pingand'])) return 0; // óleo no porão / vazamento: rota própria
+    if (has(q, ['gerador', 'onan']) && !has(q, ['motor'])) return 0; // óleo do gerador: rota do gerador
+    var pressao = has(q, ['pressao']);
+    if (OLEO_QUEDA.test(q)) return pressao || !has(q, ['troca']) ? 1 : 0;
+    if (!pressao) return 0;
+    return OLEO_NEUTRO.test(q) || OLEO_TOPICO.test(q) ? 2 : 1;
+  }
+  // Pedido de registro = comando explícito: imperativo (registre/registra/anote/anota; lance/grave só com "no diário") no começo da frase
+  // ou de uma oração (depois de , ; : . ! ?, "por favor" ou "e"); infinitivo só depois de pode/poderia/quero/queria/por favor.
+  // No meio, só "… registre no diário …" ou "…, anote aí" no fim, e nunca em pergunta. Não grava: negação antes do verbo ("não registre"),
+  // sujeito/modal antes ("vou registrar", "o Lucas registra"), "<verbo>?" solto e pergunta sobre o recurso ("Gravar no diário funciona…?").
+  var REG_VERBO = / ((?:(?:avanti|ok|sim|entao|agora|por favor|pode|poderia|quero|queria) (?:\| )?)*)(registre|registra|anote|anota|lance|lanca|grave|grava|registrar|anotar|gravar|lancar)((?: isso| aqui| ai| la)*)( no diario(?: de bordo)?)?(?= )/gi;
+  var REG_NEGA = / (?:nao|nunca|jamais|sem)(?: \|)?(?: [a-z]+){0,2} (?:registre|registra|anote|anota|lance|lanca|grave|grava|registrar|anotar|gravar|lancar) /i;
+  var REG_SUJEITO = /(?:^| )(?:vou|vamos|vai|tenho que|tem que|temos que|preciso|precisa|precisamos|pediu para|pediu pra|esqueci de|esqueceu de|a gente|ele|ela|eles|elas|eu|o lucas|o otto|o giovanni|lucas|otto|giovanni|eduardo)(?= |$)/i;
+  var REG_NOME = /(?:^| )(?:[Oo]s?|[Aa]s?) [A-Z][a-z]/, REG_VOCATIVO = /(?:^|\|) (?:o |a )?(?:lucas|otto|giovanni|eduardo) \|$/i;
+  var PERGUNTA = /^ (?:onde|quando|quem|como|qual|quais|quanto|quantos|quantas|o que|oque|que|por que|porque|pq|cade|sera|ja|eu ja|voce|voces) /;
+  function querRegistrar(qRaw, q) {
+    var raw = String(qRaw || '').slice(0, 2000), pergunta = /\?\s*$/.test(raw), m; // as telas já cortam em 500; teto contra texto enorme
+    // sem acento, com a caixa original; pontuação vira fronteira de oração " | "
+    var c = ' ' + raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/["“”«»()\[\]]/g, ' ').replace(/\s[-—–]+\s|[,;:.!?…—–]+/g, ' | ').replace(/\s+/g, ' ').trim() + ' ';
+    if (REG_NEGA.test(c)) return false; // "não registre", "Não, registre", "nunca anote", "não precisa registrar" (na mesma oração)
+    REG_VERBO.lastIndex = 0;
+    while ((m = REG_VERBO.exec(c))) {
+      var antes = c.slice(0, m.index), verbo = m[2].toLowerCase(), diario = !!m[4], resto = c.slice(m.index + m[0].length);
+      var inicio = /^[\s|]*$/.test(antes), duro = /\|$/.test(antes), mole = /(?:^| )(?:e|por favor)$/i.test(antes) || /^por favor/i.test(m[1]);
+      var oracao = (antes + ' ' + m[1]).split('|').pop(), cortesia = /(?:pode|poderia|quero|queria|por favor)[\s|]*$/i.test(antes + ' ' + m[1]);
+      if (!inicio && !duro && !mole) continue; // verbo no meio da oração: "vou registrar", "Lucas registra", "esqueci de registrar"
+      if (REG_SUJEITO.test(oracao) || REG_NOME.test(oracao) || (duro && REG_VOCATIVO.test(antes))) continue;
+      if (/r$/.test(verbo) && !cortesia) continue; // "Registrar no diário é obrigatório?", "Vamos registrar…"
+      if (!diario && !/^(?:registre|registra|anote|anota|anotar)$/.test(verbo)) continue; // "Grave problema no motor", "Lance a âncora"
+      if (!inicio && (pergunta || PERGUNTA.test(q) || (!diario && !/^[\s|]*(?:por favor[\s|]*)*$/i.test(resto)))) continue;
+      if (pergunta && (!cortesia || /^[\s|]*$/.test(resto))) continue; // "Anota?", "Registra aí?", "Pode anotar isso?"
+      return true;
+    }
+    return false;
+  }
+  // Texto do usuário sem o comando ("Registre no diário: X" / "X, anote aí" → X)
+  var CMD = '(?:registre|registra|registrar|anote|anota|anotar|lance|lança|lanca|lançar|lancar|grave|grava|gravar)(?![a-zà-ÿ])';
+  var LUGAR = '(?:\\s+(?:isso|aqui|aí|ai|por favor))*(?:\\s+(?:no|em)\\s+(?:o\\s+)?di[aá]rio(?:\\s+de\\s+bordo)?)?(?:\\s+(?:isso|aqui|aí|ai|por favor))*';
+  var CMD_INI = new RegExp('^[\\s,;:.!—–-]*(?:(?:por favor|pode|poderia|avanti|ok|sim|quero|queria|vamos)[\\s,;:.!—–-]+)*' + CMD + LUGAR + '(?:\\s*[:,;.!—–-]+|\\s+que(?=\\s|$))?\\s*', 'i');
+  var CMD_FIM = new RegExp('(?:^|[\\s,;:.!—–-]+)(?:e\\s+)?(?:(?:por favor|pode|poderia|quero|queria)[\\s,]+)*' + CMD + LUGAR + '[\\s.!]*$', 'i');
+  var NO_DIARIO = /\s+(?:no|em)\s+(?:o\s+)?di[aá]rio(?:\s+de\s+bordo)?[\s.!?]*$/i, POR_FAVOR_FIM = /[\s,;:—–-]+por favor[\s.!?]*$/i, SOBRA_INI = /^(?:(?:por favor|que)(?:[\s,;:.!—–-]+|$))+/i;
+  var DIARIO_INI = /^(?:no|em)\s+(?:o\s+)?di[aá]rio(?:\s+de\s+bordo)?(?:[\s,;:.!—–-]+|$)/i; // "Registre, no diário, a saída" → "a saída"
+  // "posição e hora", "posição, hora e rumo", "a posição atual", "o evento" (texto dos próprios avisos do app) = resumo da telemetria,
+  // que já traz posição, hora e proa
+  var ITEM_RESUMO = '(?:(?:o|a) )?(?:posicao|hora|horario|evento|rumo|proa)(?: (?:atual|de agora|agora|do barco|do evento))?';
+  var RESUMO = new RegExp('^(?:(?:o|a|um|uma) )?resumo(?: |$)|^' + ITEM_RESUMO + '(?:(?:,? e |, )' + ITEM_RESUMO + ')*$');
+  // "posição e hora do MOB", "posição e hora, homem ao mar": grava o resumo da telemetria junto com as palavras do usuário
+  var RESUMO_MAIS = new RegExp('^(?:' + ITEM_RESUMO + '(?:(?:,? e |, )' + ITEM_RESUMO + ')+,? |' + ITEM_RESUMO + ', )(?=[a-z0-9])');
+  function resumoMais(nota) { return !!nota && RESUMO_MAIS.test(norm(nota)); }
+  function notaDoUsuario(q) {
+    var s = String(q || '').replace(/^[\s"“”«»]+|[\s"“”«»]+$/g, ''); // “registre posição e hora” dito entre aspas
+    if (!s || norm(s).trim() === CANON.diario) return '';
+    s = s.replace(/[\s?]+$/, '').replace(POR_FAVOR_FIM, ''); // "…?" e "…, por favor" no fim
+    s = CMD_INI.test(s) ? s.replace(CMD_INI, '').replace(SOBRA_INI, '').replace(DIARIO_INI, '').replace(SOBRA_INI, '').replace(NO_DIARIO, '')
+      : s.replace(CMD_FIM, '').replace(POR_FAVOR_FIM, '').replace(NO_DIARIO, ''); // "…, por favor registre" / "posição e hora no diário, registre"
+    s = s.replace(/^[\s,;:.!—–"“”«»-]+|[\s,;:—–"“”«»-]+$/g, '');
+    if (!s || RESUMO.test(norm(s).replace(/[.!?;:]+/g, ' ').replace(/\s*,\s*/g, ', ').replace(/\s+/g, ' ').trim())) return ''; // "registre o resumo / posição e hora" = atalho
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
   function A(platform, key) { return (HREF[platform] || HREF.web)[key]; }
   function act(platform, pairs) { return pairs.map(function (p) { return { l: p[0], href: p[1].indexOf('.html') !== -1 || p[1].indexOf('#') === 0 ? p[1] : A(platform, p[1]) }; }); }
   function askHref(platform, q) { return A(platform, 'home') + '#q=' + encodeURIComponent(q); }
 
+  // Passos do SOS: resposta sos e, inteiros, no registro de diário que cita emergência. Chat nunca grava sozinho — só "registre no diário…".
+  // Posição do MAYDAY é a do plotter na hora da chamada — o GPS do snapshot é só o último fix.
+  var SOS_PASSOS = 'Ordem:\n1. VHF canal 16 · MAYDAY (roteiro com MMSI e a posição lida no plotter)\n2. MOB: segurar SOS/MOB na barra superior do plotter — marca a posição\n3. Incêndio na praça de máquinas: painel Sea-Fire no salão · corta motores · cabo de descarga manual SMAC\n4. EPIRB no flybridge · acionamento manual';
+  // Passos da pressão de óleo baixa: resposta oleo e, inteiros, no registro de diário que relata queda/alarme de pressão.
+  var OLEO_PASSOS = '1. Reduza para marcha lenta e observe se a pressão sobe.\n2. Compare BB e BE no mesmo giro — só um lado baixo aponta o motor.\n3. Praça de máquinas: vazamento visível, cheiro, nível de óleo (motor parado, 5 min).\n4. Persistindo: desligue o motor afetado, siga com o outro e acione o dealer com estes dados.';
+  // Os dois caminhos gravam de fato: o atalho e o comando falado "registre posição e hora" gravam o resumo da telemetria.
+  var GRAVAR_AGORA = 'Para gravar posição e hora: toque em DIÁRIO DE BORDO ou diga “registre posição e hora”.';
   var ANSWERS = {
     saudacao: function (p) { return { text: 'Olá, ' + quem() + '. Onde vamos hoje?\nPosso responder sobre telemetria ao vivo, manutenção, documentos, abastecimento, diário de bordo e os passos de cada equipamento — sempre citando a fonte.', src: 'Snapshot 20/09/2026 23:01 · coletor NMEA online', actions: act(p, [['Console completo', 'console'], ['FAQ de bordo', 'faq']]) }; },
-    diario: function (p, ctx) {
-      var n = now();
+    // Grava as palavras do usuário; sem texto (ou atalho DIÁRIO DE BORDO) grava o resumo da telemetria. commit:false (veio de link) não grava.
+    diario: function (p, ctx, q) {
+      var n = now(), grava = !ctx || ctx.commit !== false, nota = notaDoUsuario(q);
+      var como = 'Para registrar, diga ou digite aqui “registre no diário…” seguido do texto';
+      var junto = resumoMais(nota); // nota que pede posição/hora: resumo + nota numa linha só
+      if (nota && !junto) {
+        var alerta = emergencia(pad(nota)), pressao = oleo(pad(nota)) === 1; // relato de emergência / pressão de óleo: grava a nota e traz os passos
+        if (grava) addDiario({ sys: 'Diário', t: nota, who: quem(), src: 'chat · voz/texto' });
+        return { text: (grava ? 'Registrado no diário de bordo · ' + n.d + ' ' + n.t + ' · ' + quem() + '\n“' + nota + '”\nLinha nova — nada se apaga.' : 'Não registrado — pedido vindo de link não grava no diário:\n“' + nota + '”\n' + como + '.') + (alerta ? '\nSe a emergência é agora: abra o SOS. ' + SOS_PASSOS : '') + (pressao ? '\nSe a pressão de óleo está baixa agora, verifique nesta ordem:\n' + OLEO_PASSOS : ''), src: 'Fonte: anotação de ' + quem() + ' · diário de bordo do app' + (pressao ? ' · manual Volvo Penta 47707890' : ''), actions: act(p, (alerta ? [['Abrir SOS', 'sos']] : []).concat(pressao ? [['Contatos', 'equipe']] : [], [['Abrir diário', 'diario']])) };
+      }
       var t = 'Atracado · Rio de Janeiro · ' + SNAP.pos + ' · SOG 0,0 nós · proa 046° · motores desligados · banco 24 V 27,49 V · vento 5,3 nós de 025° · diesel ' + SNAP.diesel + ' (' + SNAP.dieselHora + ').';
-      if (ctx && ctx.commit !== false) addDiario({ sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: 'Resumo de agora registrado pelo atalho: ' + t, who: quem(), src: 'atalho · telemetria 20/09' });
-      return { text: 'Registrado no diário de bordo · ' + n.d + ' ' + n.t + ' · ' + quem() + '\n' + t + '\nLinha nova — nada se apaga.', src: 'Fonte: telemetria NMEA 20/09 23:01 · DIARIO_BORDO_OPERACIONAL.csv', actions: act(p, [['Abrir diário', 'diario']]) };
+      var al = junto && emergencia(pad(nota)), pr = junto && oleo(pad(nota)) === 1;
+      var passos = (al ? '\nSe a emergência é agora: abra o SOS. ' + SOS_PASSOS : '') + (pr ? '\nSe a pressão de óleo está baixa agora, verifique nesta ordem:\n' + OLEO_PASSOS : '');
+      var acoes = (al ? [['Abrir SOS', 'sos']] : []).concat(pr ? [['Contatos', 'equipe']] : [], [['Abrir diário', 'diario']]);
+      if (grava) addDiario({ sys: 'Navegação', tone: 'var(--av-tele, #5ac8fa)', t: (junto ? nota + ' · resumo de agora: ' : 'Resumo de agora registrado pelo atalho: ') + t, who: quem(), src: junto ? 'chat · voz/texto · telemetria 20/09' : 'atalho · telemetria 20/09' });
+      return { text: (grava ? 'Registrado no diário de bordo · ' + n.d + ' ' + n.t + ' · ' + quem() + '\n' + (junto ? '“' + nota + '”\n' : '') + t + '\nLinha nova — nada se apaga.' : 'Não registrado — pedido vindo de link não grava no diário.\n' + (junto ? '“' + nota + '”\n' : '') + 'Resumo de agora: ' + t + '\n' + como + ', ou toque no atalho DIÁRIO DE BORDO.') + passos, src: 'Fonte: telemetria NMEA 20/09 23:01 · DIARIO_BORDO_OPERACIONAL.csv' + (pr ? ' · manual Volvo Penta 47707890' : ''), actions: act(p, acoes) };
     },
     seguro: function (p) { return { text: 'Sim, com duas ressalvas.\n• Condições: vento 5,3 nós de 025° · barômetro 1014 hPa estável · 9 satélites · banco 24 V 27,49 V em flutuação.\n• Diesel ≈ 516 L (BB 34,0 % · BE 34,8 %) → ≈ 22 h a 8,4 nós com reserva de 10 %.\n• Ressalva 1: teste das bombas de porão e alarmes vencido há 95 dias — acione cada bomba no manual antes de largar.\n• Ressalva 2: sem previsão meteorológica carregada (SEM DADOS) — confira Marinha/DHN.\nMotores desligados: RPM, óleo e temperatura só aparecem após a partida.', src: 'Fonte: telemetria 20/09 23:01 · agenda preditiva (35 tarefas) · NF-e 002925', actions: act(p, [['Ver manutenção', 'manut'], ['Checklist de saída', askHref(p, 'Checklist de saída')]]) }; },
     destinos: function (p) { return { text: '3 destinos a partir da Marina da Glória, no regime observado (8,4 nós · 20,9 L/h), só ida:\n1. Ilhas Cagarras — ≈ 7 mn · ≈ 50 min · ≈ 17 L\n2. Itaipu / Itacoatiara (Niterói) — ≈ 10 mn · ≈ 1 h 10 · ≈ 25 L\n3. Ilha Grande (Abraão) — ≈ 60 mn · ≈ 7 h · ≈ 150 L; ida e volta ≈ 300 L — cabe nos 516 L com reserva, mas sem margem para gerador e manobra: abastecer antes.\nDistâncias em linha reta pela posição atual — confirme a rota no plotter.', src: 'Fonte: posição GPS 20/09 · consumo observado 14/08–20/09 · tanques 13:23', actions: act(p, [['Autonomia', askHref(p, 'Autonomia')], ['Abastecimento', 'abast']]) }; },
@@ -82,7 +179,7 @@
     autonomia: function (p) { return { text: '≈ 22 h · ≈ 185 mn a 8,4 nós (1.130 rpm · 20,9 L/h), com reserva de 10 %.\nA bordo ≈ 516 L de 1.500 (BB 34,0 % · BE 34,8 %) — ' + SNAP.dieselHora + '.\nEm marcha lenta (5,1 L/h) ≈ 91 h. Consumido desde os 500 L de 14/08: ≈ 186 L (10,2 h de motor + 22,6 h de gerador).', src: 'Fonte: telemetria (taxas dos dois motores 14/08–20/09) · NF-e 002925 — estimativa; a NF é a fonte oficial', actions: act(p, [['Abastecimento', 'abast']]) }; },
     mare: function (p) { return { text: 'SEM DADOS de maré a bordo: nenhuma tábua carregada para a posição atual (Baía de Guanabara · Rio de Janeiro).\nFonte oficial: DHN — Tábua de Marés do Porto do Rio de Janeiro (Ilha Fiscal). Quando a Data Table receber a tábua, esta resposta mostra altura, tendência e próximas preamar e baixa-mar.', src: 'Fonte: nenhuma — dado ausente (regra: sem dado → SEM DADOS)', actions: act(p, [['Registrar pendência', 'diario']]) }; },
     clima: function (p) { return { text: 'Sem previsão carregada (SEM DADOS). Leitura de agora pela estação meteorológica de bordo:\n• vento verdadeiro 5,3 nós de 025°\n• barômetro 1014 hPa · estável\n• externo 23,8 °C · praça de máquinas 24,5 °C\nFonte oficial para a previsão: Marinha do Brasil — Meteoromarinha (DHN).', src: 'Fonte: telemetria NMEA 20/09 23:01', actions: act(p, [['Telemetria', 'console']]) }; },
-    canal16: function (p) { return { text: 'VHF canal 16 (156,800 MHz) — socorro, urgência e chamada. Diran atende no canal 67 (24 h).\nMMSI 710400328 · indicativo PV4476 — programados no VHF 215.\nRoteiro MAYDAY (só perigo grave e iminente):\nMAYDAY, MAYDAY, MAYDAY — AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL — MMSI 710400328 — POSIÇÃO ' + SNAP.pos + ' — NATUREZA DO PERIGO — Nº DE PESSOAS A BORDO — AUXÍLIO NECESSÁRIO — CÂMBIO.\nUrgência sem perigo de vida: PAN-PAN ×3.', src: 'Fonte: registro EPIRB/MMSI (cert. 67827-001) · protocolo de emergência Avanti · RIPEAM', actions: act(p, [['Abrir SOS', 'sos']]) }; },
+    canal16: function (p) { return { text: 'VHF canal 16 (156,800 MHz) — socorro, urgência e chamada. Diran atende no canal 67 (24 h).\nMMSI 710400328 · indicativo PV4476 — programados no VHF 215.\nRoteiro MAYDAY (só perigo grave e iminente):\nMAYDAY, MAYDAY, MAYDAY — AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL — MMSI 710400328 — POSIÇÃO — LEIA NO PLOTTER AGORA (último fix ' + SNAP.pos + ' · GPS ' + SNAP.hora + ') — NATUREZA DO PERIGO — Nº DE PESSOAS A BORDO — AUXÍLIO NECESSÁRIO — CÂMBIO.\nUrgência sem perigo de vida: PAN-PAN ×3.', src: 'Fonte: registro EPIRB/MMSI (cert. 67827-001) · protocolo de emergência Avanti · RIPEAM', actions: act(p, [['Abrir SOS', 'sos']]) }; },
     checklist: function (p) { return { text: 'Checklist de saída — do que está catalogado:\n1. Gerador Onan: STOP/Prime 3 s (escorva) → START/Preheat · lâmpada âmbar→verde · partida em 20–60 s.\n2. Estabilizador Seakeeper 6: ligar com AC — 24 min para estabilizar · máx 40 min.\n3. Climatização: Enter habilita · Cool/Heat · setpoint 8–14 °C.\n4. Eletrônicos: plotter ligado · piloto em STBY até sair da marina · AIS transmitindo · VHF no 16.\n5. Bombas de porão: acionamento manual (teste vencido há 95 d).\n6. Diesel BB 34 % · BE 35 % — regra: abastecer antes de 15 % em qualquer tanque.\nAmarração, hidráulica e fechamento: A CONFIRMAR (sem checklist oficial no Drive).', src: 'Fonte: manuais Onan A046J602 · Seakeeper 90403 · Dometic L-3527 · FAQ de eletrônicos · agenda', actions: act(p, [['FAQ de bordo', 'faq']]) }; },
     checklistChegada: function (p) { return { text: 'Checklist de chegada — do que está catalogado:\n1. Estabilizador: desligar ao atracar — 4 h+ até parar totalmente; nunca mexer com o volante girando.\n2. Eletrônicos: piloto em STBY antes de manobrar na marina · plotter e AIS conforme uso.\n3. Gerador Onan: desligar cargas, depois STOP.\n4. Climatização: chiller com lockout de fluxo de 10 s — desligar pelo display.\n5. Fechar a viagem no diário: horas, consumo e custo.\nHidráulica, cuidados e fechamento: A CONFIRMAR (sem checklist oficial no Drive).', src: 'Fonte: manuais Seakeeper 90403 · Onan A046J602 · Dometic L-3527 · FAQ de eletrônicos', actions: act(p, [['Fechar no diário', 'diario']]) }; },
     consumo: function (p) { return { text: 'Consumo observado (telemetria 14/08–20/09):\n• cruzeiro leve — 20,9 L/h (média 1.130 rpm · 8,4 nós)\n• marcha lenta — 5,1 L/h (≤ 900 rpm)\n• gerador — +22,6 h desde 14/08 (280,7 h no horímetro)\nConsumido desde os 500 L: ≈ 186 L. Média por abastecimento aparece a partir do 2º registro — só 1 NF em 2026.', src: 'Fonte: telemetria (taxa de combustível dos dois motores) · NF-e 002925', actions: act(p, [['Abastecimento', 'abast']]) }; },
@@ -102,8 +199,11 @@
     dessalinizador: function (p) { return { text: 'SEM DADOS — dessalinizador não catalogado.\nEnvie a foto da etiqueta (modelo e número de série) para eu catalogar, localizar o manual e montar o passo a passo.', src: 'Fonte: nenhuma — pendência do catálogo', actions: act(p, [['Enviar foto', A(p, 'home') + '#mode=foto']]) }; },
     eletrico: function (p) { return { text: 'Banco 24 V: 27,49 V em flutuação · 7 dias entre 27,0 e 28,7 V · 38 h com dados.\nD-4 (24/09): verificação de tensões e conexões · Quick VRS / SBC NRG+ (Lucas). D-33: isolador galvânico ProMariner FS30/FS60.', src: 'Fonte: telemetria 7 dias · agenda preditiva', actions: act(p, [['Telemetria', 'console']]) }; },
     epirb: function (p) { return { text: 'EPIRB ACR GlobalFix V5 (RLB-44) · Cat I · flybridge · acionamento manual.\nCertificado Life Safety 67827-001 (26/01/2026) · SBM até jan/2031 · bateria até abr/2036 · MMSI 710400328 · indicativo PV4476.', src: 'Fonte: Drive › Documentos_Legais › EPIRB', actions: act(p, [['Documentos', 'docs']]) }; },
-    sos: function (p) { return { text: 'Emergência — abra o SOS. Ordem:\n1. VHF canal 16 · MAYDAY (roteiro com MMSI e posição)\n2. MOB: segurar SOS/MOB na barra superior do plotter — marca a posição\n3. Incêndio na praça de máquinas: painel Sea-Fire no salão · corta motores · cabo de descarga manual SMAC\n4. EPIRB no flybridge · acionamento manual\nPosição e hora são gravadas no diário.', src: 'Fonte: protocolo de emergência Avanti · manual Sea-Fire SMAC · registro EPIRB', actions: act(p, [['Abrir SOS', 'sos']]) }; },
-    oleo: function (p) { return { text: 'Pressão de óleo abaixo da faixa (manual 47707890: faixa em operação acima de 1.100 rpm). Verifique nesta ordem:\n1. Reduza para marcha lenta e observe se a pressão sobe.\n2. Compare BB e BE no mesmo giro — só um lado baixo aponta o motor.\n3. Praça de máquinas: vazamento visível, cheiro, nível de óleo (motor parado, 5 min).\n4. Persistindo: desligue o motor afetado, siga com o outro e acione o dealer com estes dados.\nEvento gravado no diário de bordo.', src: 'Fonte: agente Anomalia · faixas do manual Volvo Penta 47707890', actions: act(p, [['Contatos', 'equipe']]) }; },
+    // sos/óleo não gravam nada: pergunta informativa não vira linha permanente. Gravar = atalho DIÁRIO DE BORDO ou "registre posição e hora".
+    sos: function (p) { return { text: 'Emergência — abra o SOS. ' + SOS_PASSOS + '\n' + GRAVAR_AGORA, src: 'Fonte: protocolo de emergência Avanti · manual Sea-Fire SMAC · registro EPIRB', actions: act(p, [['Abrir SOS', 'sos'], ['Registrar no diário', 'diario']]) }; },
+    oleo: function (p) { return { text: 'Se a pressão de óleo cair abaixo da faixa (manual Volvo Penta 47707890: faixa em operação acima de 1.100 rpm) ou o alarme acender, verifique nesta ordem:\n' + OLEO_PASSOS + '\nNo snapshot de ' + SNAP.hora + ' os motores estão desligados: SEM LEITURA de pressão.\n' + GRAVAR_AGORA, src: 'Fonte: agente Anomalia · faixas do manual Volvo Penta 47707890 · telemetria ' + SNAP.hora, actions: act(p, [['Registrar no diário', 'diario'], ['Contatos', 'equipe']]) }; },
+    oleoLeitura: function (p) { return { text: 'Pressão do óleo: SEM LEITURA — motores desligados no snapshot de ' + SNAP.hora + '; a leitura aparece após a partida.\nFaixa normal: a do manual Volvo Penta 47707890, em operação acima de 1.100 rpm.\nSe cair abaixo da faixa ou o alarme acender, pergunte “pressão de óleo baixa” para o passo a passo.', src: 'Fonte: telemetria NMEA ' + SNAP.hora + ' · manual Volvo Penta 47707890', actions: act(p, [['Telemetria', 'console'], ['Pressão baixa: o que fazer', askHref(p, 'Pressão de óleo baixa: o que verificar primeiro?')]]) }; },
+    ancora: function (p) { return { text: 'Alarme de âncora (FAQ de eletrônicos): raio de 1,5 vez o cabo lançado.\nSem sensor de âncora na rede NMEA — SEM LEITURA do ferro. Posição agora: ' + SNAP.pos + '.', src: 'Fonte: FAQ de eletrônicos de bordo · GPS na rede NMEA 2000', actions: act(p, [['FAQ eletrônicos', 'f3']]) }; },
     manual: function (p) { return { text: 'Manuais catalogados no Drive:\n• Seakeeper 6 — Manuais_Baixados/seakeeper_stabilizer_5-6_operation-manual_en.pdf (90403 Rev.3)\n• Gerador Onan — manual A046J602 (§3.2 partida · §4.2.1)\n• Chiller Dometic — manual PLC L-3527 (display PGD1)\n• Piloto Reactor e GPSMAP 8x16 — Manuais_Equipamentos\n• Motores Volvo Penta D8/IPS15 — 7 manuais em Manuais_Equipamentos (47707890 = operação)\nSem link direto neste protótipo: abrir pelo Drive.', src: 'Fonte: catálogo de manuais · Drive', actions: act(p, [['FAQ de bordo', 'faq']]) }; },
     diarioLer: function (p) {
       var mine = loadDiario();
@@ -114,39 +214,53 @@
     fallback: function (p) { return { text: 'Não encontrei esse dado nas fontes de bordo — telemetria, agenda, notas, documentos e manuais catalogados. SEM DADOS.\nPosso registrar como pendência no diário, ou você envia uma foto (etiqueta, tela, nota) para eu identificar.', src: 'Fonte: nenhuma — hierarquia: manual › registro › laudo › diário › foto › nota informal', actions: act(p, [['Registrar pendência', 'diario'], ['FAQ de bordo', 'faq']]) }; }
   };
 
+  var EQUIP = ['seakeeper', 'estabilizador', 'chiller', 'climatiza', 'ar condicionado', 'ar-condicionado', 'dometic', 'mcgx', 'gerador', 'onan', 'piloto', 'plotter', 'radar', 'reactor', 'gpsmap', 'fantom', ' vhf', ' ais ', 'epirb', 'fusion', 'audio', 'dessaliniz', 'bomba', 'porao', 'casco', 'anodo', 'zinco', 'isolador', 'bateria', 'tensao', 'tensoes'];
   function route(qRaw) {
-    var q = ' ' + norm(qRaw).replace(/[?!.,;:()"“”]+/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+    var q = pad(qRaw);
     if (!q.trim()) return 'saudacao';
-    if (has(q, ['mayday', 'emergenc', 'incendio', ' fogo', 'homem ao mar', ' mob ', ' sos ', 'socorro', 'naufrag'])) return 'sos';
-    if (has(q, ['pressao de oleo', 'oleo baixo', 'pressao baixa'])) return 'oleo';
-    if (has(q, ['registre', ' anote', ' anotar', 'registrar no diario', 'lance no diario', 'lancar no diario'])) return 'diario';
-    if (has(q, ['seguro para sair', 'posso sair', 'da pra sair', 'seguro sair', 'avalie vento', 'sair hoje'])) return 'seguro';
-    if (has(q, ['anomalia', 'pendencia', 'problema aberto'])) return 'anomalias';
+    if (querRegistrar(qRaw, q)) return 'diario';
+    if (emergencia(q)) return 'sos';
+    var ol = oleo(q);
+    if (ol) return ol === 1 ? 'oleo' : 'oleoLeitura';
+    if (has(q, ['seguro para sair', 'posso sair', 'da pra sair', 'da para sair', 'seguro sair', 'avalie vento', 'sair hoje', 'seguro navegar', 'seguro para navegar', 'posso navegar', 'podemos sair', 'podemos navegar', 'da pra navegar', 'da para navegar'])) return 'seguro';
+    if (has(q, ['anomalia', 'pendencia', 'problema aberto', 'tlaloc', 'estofad'])) return 'anomalias';
     if (has(q, ['diario'])) return 'diarioLer';
-    if (has(q, [' mare', 'corrente'])) return 'mare';
-    if (has(q, ['clima', 'previsao', 'tempo hoje', 'vento', 'chuva', 'meteor'])) return 'clima';
-    if (has(q, ['para onde', 'destino', 'passeio', 'onde vamos'])) return 'destinos';
+    if (has(q, [' mare', 'correnteza', 'corrente de mare']) || (has(q, [' corrente']) && !has(q, ['bateria', 'carregador', 'eletric', 'tensao', 'amper', 'alternada', 'continua', 'shore', 'tomada', ' ac ', ' dc ', 'ancora', 'amarra']))) return 'mare';
+    if (has(q, [' clima ', 'climatic', 'tempo hoje', ' vento', 'chuva', 'meteor']) || (has(q, ['previsao']) && !has(q, [' revisao', 'manutenc', 'devoluc', 'entrega', 'chegada']))) return 'clima';
+    if (has(q, ['para onde', 'destino', 'passeio', 'onde vamos', 'melhor rota', 'rota para', 'rota ate'])) return 'destinos';
     if (has(q, ['checklist de chegada', 'chegada'])) return 'checklistChegada';
     if (has(q, ['checklist', 'check list', ' saida'])) return 'checklist';
-    if (has(q, ['autonomia', 'alcance'])) return 'autonomia';
+    if (has(q, ['autonomia']) || (has(q, ['alcance']) && !has(q, [' vhf', ' radio', 'radar', ' ais ', 'antena', 'sinal', 'wifi', 'wi-fi', 'bluetooth', 'celular']))) return 'autonomia';
+    // "Situação e vencimento do documento: NF-e 002925 (500 L)…" é documento: a palavra documento/licença/vencimento vence a do combustível
+    if (has(q, ['document', 'licenc', 'vencimento']) && has(q, ['consumo', 'l/h', 'litros por hora', 'abastec', 'diesel', 'combustivel', 'nota fiscal', 'nf-e'])) return 'docsvenc';
     if (has(q, ['consumo', 'l/h', 'litros por hora'])) return 'consumo';
     if (has(q, ['abastec', 'diesel', 'combustivel', 'nota fiscal', 'nf-e'])) return 'autonomia';
     if (has(q, ['tanque', 'agua doce', 'cinzas', 'negras'])) return 'tanques';
-    if (has(q, ['horimetro', 'horas de motor', 'horas do motor', 'horas dos motores'])) return 'horimetros';
+    // "próxima revisão" sem equipamento = motores; com equipamento, a rota dele (Seakeeper, chiller, gerador…)
+    if (has(q, ['horimetro', 'horas de motor', 'horas do motor', 'horas dos motores']) || (has(q, ['proxima revisao']) && !has(q, EQUIP))) return 'horimetros';
     if (has(q, ['epirb'])) return 'epirb';
-    if (has(q, ['canal 16', ' vhf', ' radio', ' ais ', 'mmsi', ' dsc'])) return 'canal16';
+    // documento/licença antes do rádio: "Licença do VHF 115" é documento, não MAYDAY
     if (has(q, ['document', 'licenc', 'fistel', 'anatel', ' tie ', 'homolog', 'vencendo', 'certificado', 'garantia'])) return 'docsvenc';
+    if (has(q, ['canal 16', ' vhf', ' radio', ' ais ', 'mmsi', ' dsc'])) return 'canal16';
     if (has(q, ['contato', 'telefone', 'equipe', 'giovanni', 'lucas', 'dealer', 'quem chamar', 'eduardo', 'marina'])) return 'contatos';
     if (has(q, ['porao', 'bomba'])) return 'porao';
     if (has(q, ['gerador', 'onan'])) return 'gerador';
     if (has(q, ['quantas horas'])) return 'horimetros';
-    if (has(q, ['estabilizador', 'seakeeper', ' giro'])) return 'estabilizador';
+    if (has(q, ['estabilizador', 'seakeeper'])) return 'estabilizador';
+    if (has(q, ['rotacao', 'rotacoes', ' rpm ', 'giro do motor', 'giro dos motores', 'giro de motor'])) return 'motores';
+    if (has(q, [' giro', 'giroscop'])) return 'estabilizador';
     if (has(q, ['climatiza', 'chiller', 'ar condicionado', 'ar-condicionado', 'dometic', 'mcgx', 'setpoint'])) return 'climatizacao';
-    if (has(q, ['piloto', 'plotter', 'radar', 'gpsmap', 'reactor', 'fantom', 'eletronic', 'autopilot', ' rota', 'stby'])) return 'eletronicos';
+    if (has(q, [' ancora ', 'garrand', 'garrou'])) return 'ancora';
+    if (has(q, ['piloto', 'plotter', 'radar', 'gpsmap', 'reactor', 'fantom', 'eletronic', 'autopilot', ' rota ', ' rotas ', 'stby'])) return 'eletronicos';
     if (has(q, ['audio', 'fusion', ' som ', 'bluetooth', 'musica'])) return 'audio';
     if (has(q, ['dessalinizador', 'watermaker', 'water maker'])) return 'dessalinizador';
     if (has(q, ['manual'])) return 'manual';
-    if (has(q, ['motor', 'partida', 'volvo', ' ips', 'joystick', ' evc', 'revisao'])) return 'motores';
+    // revisão/inspeção de casco, anodos, zincos, isolador → agenda (D-53 / D-33); de bateria/tensões → elétrico (D-4) — não é revisão dos motores
+    if (has(q, [' revisao', 'inspec'])) {
+      if (has(q, ['casco', 'anodo', 'zinco', 'isolador'])) return 'manutencao';
+      if (has(q, ['bateria', 'tensao', 'tensoes'])) return 'eletrico';
+    }
+    if (has(q, ['motor', 'partida', 'volvo', ' ips', 'joystick', ' evc', ' revisao'])) return 'motores';
     if (has(q, ['manutenc', 'vence', 'atrasad', 'agenda', 'tarefa'])) return 'manutencao';
     if (has(q, ['bateria', '24 v', '24v', 'eletric', 'tensao', 'voltagem', 'quick', 'carregador'])) return 'eletrico';
     if (has(q, ['posicao', 'onde estou', 'coordenada', ' gps', ' proa', 'velocidade'])) return 'posicao';
@@ -163,7 +277,7 @@
     if (!key) key = route(q);
     if (!ANSWERS[key]) key = 'fallback';
     var a;
-    try { a = ANSWERS[key](p, ctx); } catch (e) { key = 'fallback'; a = ANSWERS.fallback(p, ctx); }
+    try { a = ANSWERS[key](p, ctx, String(q || '').trim()); } catch (e) { key = 'fallback'; a = ANSWERS.fallback(p, ctx); }
     a.key = key;
     return a;
   }
@@ -172,10 +286,10 @@
     var p = (ctx && ctx.platform) || 'web';
     var name = file && file.name ? file.name : (kind === 'video' ? 'vídeo' : 'foto');
     var kb = file && file.size ? Math.round(file.size / 1024) + ' KB' : '';
-    var n = now();
-    addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: (kind === 'video' ? 'Vídeo' : 'Foto') + ' anexada pelo chat: ' + name + (kb ? ' (' + kb + ')' : '') + ' — identificação A CONFIRMAR.', who: quem(), src: 'app · ' + kind });
-    if (kind === 'video') return { key: 'video', text: 'Vídeo recebido (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo o som e o comportamento não são analisados automaticamente: anexei ao diário como anomalia A CONFIRMAR, com a telemetria do instante (motores desligados · sem leitura de RPM).\nDescreva em uma frase o que você viu ou ouviu — respondo com o que verificar primeiro.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario']]) };
-    return { key: 'foto', text: 'Foto recebida (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo a leitura da imagem não é automática: anexei ao diário como A CONFIRMAR. Para etiqueta ou tela de alarme, digite o modelo/código que aparece e eu localizo o manual; para nota fiscal, digite litros e valor e eu registro o abastecimento.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario'], ['Documentos', 'docs']]) };
+    var n = now(), grava = !ctx || ctx.commit !== false, nao = 'não anexei ao diário (pedido vindo de link).';
+    if (grava) addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: (kind === 'video' ? 'Vídeo' : 'Foto') + ' anexada pelo chat: ' + name + (kb ? ' (' + kb + ')' : '') + ' — identificação A CONFIRMAR.', who: quem(), src: 'app · ' + kind });
+    if (kind === 'video') return { key: 'video', text: 'Vídeo recebido (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo o som e o comportamento não são analisados automaticamente: ' + (grava ? 'anexei ao diário como anomalia A CONFIRMAR, com a telemetria do instante (motores desligados · sem leitura de RPM).' : nao) + '\nDescreva em uma frase o que você viu ou ouviu — respondo com o que verificar primeiro.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario']]) };
+    return { key: 'foto', text: 'Foto recebida (' + name + (kb ? ' · ' + kb : '') + ') · ' + n.d + ' ' + n.t + '.\nNeste protótipo a leitura da imagem não é automática: ' + (grava ? 'anexei ao diário como A CONFIRMAR.' : nao) + ' Para etiqueta ou tela de alarme, digite o modelo/código que aparece e eu localizo o manual; para nota fiscal, digite litros e valor e eu registro o abastecimento.', src: 'Fonte: anexo · diário de bordo', actions: act(p, [['Abrir diário', 'diario'], ['Documentos', 'docs']]) };
   }
 
   function safeDecode(s) { try { return decodeURIComponent(String(s).replace(/\+/g, '%20')); } catch (e) { return String(s); } }
@@ -230,7 +344,7 @@
     [new RegExp('(\\d)\\s*×\\s*(?=[' + LET + '])', 'g'), '$1 '], [/×\s*(\d+)/g, '$1 vezes'], [/\s*×\s*/g, ' vezes '],
     [/\s+\+\s+/g, ' mais '], [/(^|\s)\+(?=\d)/g, '$1mais '], [/\s*%/g, ' por cento'],
     [new RegExp('([' + LET + '])→(?=[' + LET + '])', 'g'), '$1 para '], [/\s*[•·→›|—–=()\[\]]\s*/g, ', '],
-    [/\.(pdf|csv|jsonl?|jpe?g|png|mp4|mov|txt)(?![A-Za-z])/gi, function (m, e) { return ' ' + e.toUpperCase(); }], [/_/g, ' '],
+    [/\.(pdf|csv|jsonl?|jpe?g|png|mp4|mov|txt)(?![A-Za-z])/gi, function (m, e) { return ' ' + e.toUpperCase(); }], [/(?:\s*_)+\s*/g, ' '],
     [new RegExp('([' + LET + '])\\s*/\\s*(?=\\d)', 'g'), '$1 ou '], [/\s*\/\s*/g, ', ']
   ];
   // MAIÚSCULAS de 4+ letras viram minúsculas (senão o TTS soletra), com as palavrinhas do mesmo trecho; siglas lidas como tal ficam.
@@ -245,13 +359,19 @@
       return a + ws.map(function (w) { return grande(w) || MIUDAS.indexOf(' ' + w + ' ') !== -1 ? w.toLowerCase() : w; }).join(' ');
     });
   }
+  var FRACAO = { '1/2': 'meio', '1/3': 'um terço', '2/3': 'dois terços', '1/4': 'um quarto', '3/4': 'três quartos' };
+  var DATA_ANTES = new RegExp('(?:^|[^' + LET + '])(?:em|dia|até|ate|desde|de|data|prazo|vence|venceu|vencimento) $', 'i'), DATA_FRACA = new RegExp('(?:^|[^' + LET + '])(?:de|até|ate) $', 'i');
+  // fração antes de unidade: 1/2 h → meia hora, 1/2 L → meio litro, 1/2 milha → meia milha, 1/4 L → um quarto de litro, 1/3 hora → um terço de hora
+  var FRACAO_UNID = { 'L/h': 'litro por hora', L: 'litro', h: 'hora', mn: 'milha náutica', NM: 'milha náutica', hora: 'hora', milha: 'milha', volta: 'volta', polegada: 'polegada' }, FEM = /^(?:hora|milha|volta|polegada)/;
+  var FRACAO_UN = new RegExp('(^|[^\\d\\/,.])([123])\\/([234]) ?(L\\/h|L|h|mn|NM|hora|milha|volta|polegada)(?![' + LET + '\\d\\/])', 'g');
   function hora(h) { return h + (h < 2 ? ' hora' : ' horas'); }
   // Horário: "13:23" → "13 horas e 23 minutos" (":00" → "13 horas"); duração "1 h 10" → "1 hora e 10 minutos".
   function falavel(text) {
-    var s = String(text == null ? '' : text).replace(/[“”"«»]/g, '').replace(/[\u00a0\t]/g, ' ').replace(/…/g, ', ');
+    // teto de 4.000 letras (fala longa não trava a tela); espaços repetidos viram um só antes das regras
+    var s = String(text == null ? '' : text).slice(0, 4000).replace(/[“”"«»]/g, '').replace(/[\u00a0\t]/g, ' ').replace(/…/g, ', ');
     // linha = frase; marcador de lista no começo da linha some (a quebra já é pausa)
-    s = s.split(/\r?\n/).map(function (l) { return l.replace(/^[\s•·→›—–]+/, '').replace(/\s+$/, ''); }).filter(Boolean)
-      .map(function (l, i, a) { return i < a.length - 1 && !/[.!?:;,]$/.test(l) ? l + '.' : l; }).join(' ');
+    s = s.split(/\r?\n/).map(function (l) { return l.replace(/^[\s•·→›—–]+/, '').trim(); }).filter(Boolean)
+      .map(function (l, i, a) { return i < a.length - 1 && !/[.!?:;,]$/.test(l) ? l + '.' : l; }).join(' ').replace(/\s+/g, ' ');
     // coordenadas 22°57,09'S → 22 graus e 57 vírgula 09 minutos sul
     s = s.replace(/(\d{1,3}) ?° ?(\d{1,2})(?:,(\d+))? ?['′] ?([NSLOEW])(?![A-Za-z])/g, function (m, g, mi, fr, h) {
       g = +g; mi = +mi;
@@ -262,17 +382,31 @@
       var cv = c ? +c : 0, cent = cv ? cv + (cv === 1 ? ' centavo' : ' centavos') : '';
       return r === '0' && cent ? cent : r + (r === '1' ? ' real' : ' reais') + (cent ? ' e ' + cent : '');
     });
-    // intervalos 8–14 → 8 a 14; data + hora ganha "às"
-    s = s.replace(/(\d) ?– ?(?=\d)/g, '$1 a ').replace(/(\d{1,2}\/\d{1,2}(?:\/\d{4})?) (?=\d{1,2}:\d{2}(?!\d))/g, '$1 às ');
-    // datas 20/09 → 20 de setembro; 16/07/2026; jan/2031
-    s = s.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?(?![\d\/])/g, function (m, a, d, me, y) {
-      d = +d; me = +me;
-      return d < 1 || d > 31 || me < 1 || me > 12 ? m : a + (d === 1 ? 'primeiro' : d) + ' de ' + MESES[me - 1] + (y ? ' de ' + y : '');
+    // intervalos 8–14 / 8-14 → 8 a 14 (hífen só entre números curtos; 07895-25-01493 fica como código); escala 1:50.000 → 1 para 50.000; data + hora ganha "às"
+    s = s.replace(/(\d) ?– ?(?=\d)/g, '$1 a ').replace(new RegExp('(^|[^' + LET + '\\d-])(\\d{1,3})-(\\d{1,3})(?![\\d-])', 'g'), '$1$2 a $3')
+      .replace(/(^|[^\d:,.])(\d+):(\d{1,3}(?:\.\d{3})+|\d{3,})(?![\d:])/g, '$1$2 para $3').replace(/(\d{1,2}\/\d{1,2}(?:\/\d{4})?) (?=\d{1,2}:\d{2}(?!\d))/g, '$1 às ');
+    s = s.replace(FRACAO_UN, function (m, a, d, me, u) {
+      var fr = FRACAO[d + '/' + me], nome = FRACAO_UNID[u];
+      if (!fr) return m;
+      return a + (fr === 'meio' ? (FEM.test(nome) ? 'meia ' : 'meio ') + nome : fr + ' de ' + nome);
+    });
+    // datas 20/09 → 20 de setembro; 16/07/2026; jan/2031. d/m de um dígito só é data com ano, hora ou palavra de data antes;
+    // 1/4 de volta → um quarto de volta; 24/7 → 24 por 7; outro par curto → 5 barra 6. Com palavra de data antes (dia, em, desde, prazo, vence…)
+    // fica a data ("dia 1/2 de manhã"); a fração só vence depois de "de"/"até" seguida de " do/da/de " ("até 3/4 do tanque")
+    s = s.replace(/(^|[^\d\/])(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?(?![\d\/])/g, function (m, a, d, me, y, i, all) {
+      var dd = +d, mm = +me, data = dd >= 1 && dd <= 31 && mm >= 1 && mm <= 12, fr = d.length === 1 && me.length === 1 && FRACAO[d + '/' + me];
+      var ctx = (i > 24 ? 'x' : '') + all.slice(Math.max(0, i - 24), i + a.length), antes = DATA_ANTES.test(ctx), depois = all.slice(i + m.length, i + m.length + 12);
+      if (!y && !antes && d === '24' && me === '7') return a + '24 por 7';
+      if (!y && d.length === 1 && me.length === 1 && !/^ às? \d/.test(depois)) {
+        if (fr && /^ d(?:e|o|a|os|as) (?!\d)/.test(depois) && (!antes || DATA_FRACA.test(ctx))) return a + fr;
+        if (!antes || !data) return a + (fr || d + ' barra ' + me);
+      }
+      return data ? a + (dd === 1 ? 'primeiro' : dd) + ' de ' + MESES[mm - 1] + (y ? ' de ' + y : '') : m;
     }).replace(new RegExp('(^|[^' + LET + '])(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/(\\d{4})(?!\\d)', 'gi'), function (m, a, me, y) {
       return a + MESES['janfevmarabrmaijunjulagosetoutnovdez'.indexOf(me.toLowerCase()) / 3] + ' de ' + y;
     });
     // horário 13:23 / 23h01 (nunca razão) e duração 1 h 10 / 6 h 58 min
-    s = s.replace(/(^|[^\d:,.])(\d{1,2})(?::|h)(\d{2})(?:min(?![A-Za-z]))?(?![\d:])/g, function (m, a, h, mi) {
+    s = s.replace(/(^|[^\d:,.])(\d{1,2})(?::|h)(\d{2})(?:min(?![A-Za-z]))?(?![\d:]|\.\d)/g, function (m, a, h, mi) {
       h = +h; mi = +mi;
       return h > 23 || mi > 59 ? m : a + hora(h) + (mi ? ' e ' + mi + (mi === 1 ? ' minuto' : ' minutos') : '');
     }).replace(/ às ([01] hora)(?!s)/g, ' à $1').replace(/(^|[^\d,.])(\d+) ?h ?(\d{1,2})(?: ?min(?![A-Za-z])|(?![\d,.:\/]\d|\d| ?[A-Za-z%°]))/g, function (m, a, h, mi) {
@@ -280,8 +414,8 @@
       return a + hora(+h) + (mi ? ' e ' + mi + (mi === 1 ? ' minuto' : ' minutos') : '');
     });
     // graus: 23,8 °C → graus Celsius; proa 046° → 46 graus
-    s = s.replace(/(\d+(?:,\d+)?) ?° ?C(?![A-Za-z])/g, function (m, n) { return n + (n === '1' ? ' grau' : ' graus') + ' Celsius'; })
-      .replace(/(\d+)(,\d+)? ?°/g, function (m, n, f) { n = +n + (f || ''); return n + (n === '1' ? ' grau' : ' graus'); });
+    s = s.replace(/(^|[^\d,])(\d+(?:,\d+)?) ?° ?C(?![A-Za-z])/g, function (m, a, n) { return a + n + (n === '1' ? ' grau' : ' graus') + ' Celsius'; })
+      .replace(/(^|[^\d,])(\d+)(,\d+)? ?°/g, function (m, a, n, f) { n = +n + (f || ''); return a + n + (n === '1' ? ' grau' : ' graus'); });
     // D-4 (dias até) → D menos 4; MMSI dígito a dígito, como no rádio
     s = s.replace(new RegExp('(^|[^' + LET + '\\d])D-(\\d+)(?!\\d)', 'g'), '$1D menos $2')
       .replace(/MMSI:? ?(\d{9})(?!\d)/g, function (m, n) { return 'MMSI ' + n.split('').join(' '); });
@@ -290,10 +424,11 @@
     UNID.forEach(function (u) { s = s.replace(u.re, function (m, a, n, mais) { return a + n + ' ' + (n === '1' ? u.um : u.varios) + (mais ? ' ou mais' : ''); }); });
     SIGLAS.forEach(function (x) { s = s.replace(x[0], x[1]); });
     s = s.replace(/°/g, ' graus');
+    s = s.replace(/\s+/g, ' ');
     SIMB.forEach(function (x) { s = s.replace(x[0], x[1]); });
     s = minusculas(s);
     // 3.2 → 3 ponto 2 (milhar 1.500 fica); 27,49 → 27 vírgula 49
-    s = s.replace(/\d+(?:\.\d+)+/g, function (m) { var g = m.split('.'); return g.slice(1).every(function (x) { return x.length === 3; }) ? m : g.join(' ponto '); })
+    s = s.replace(/(^|[^\d.])(\d+(?:\.\d+)+)/g, function (m, a, n) { var g = n.split('.'); return a + (g.slice(1).every(function (x) { return x.length === 3; }) ? n : g.join(' ponto ')); })
       .replace(/(\d),(?=\d)/g, '$1 vírgula ');
     // pontuação: um só sinal por pausa (o mais forte), sem ". ." nem ", :"
     return s.replace(/\s+/g, ' ').replace(/\s*([,;:.!?](?:\s*[,;:.!?])*)\s*/g, function (m, p, i, all) {
@@ -386,6 +521,6 @@
   }
   function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
 
-  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, speak: speak, stopSpeaking: stopSpeaking, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
+  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, speak: speak, stopSpeaking: stopSpeaking, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();

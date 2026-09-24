@@ -26,7 +26,7 @@ button { font: inherit; }
       <a href="H2-Home-Mobile.dc.html" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px;">✕</a>
     </div>
     <span style="font-size: 30px; font-weight: 800; letter-spacing: 0.06em; line-height: 1;">EMERGÊNCIA</span>
-    <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; color: #ffd6d3;">22°57,09'S 043°10,23'W · 23:01 · gravado no diário de bordo</span>
+    <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; color: #ffd6d3;">{{marca}}</span>
   </div>
 
   <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
@@ -64,8 +64,9 @@ button { font: inherit; }
     <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; padding-top: 4px;">
       <button type="button" onClick="{{toggleMayday}}" aria-pressed="{{mayday}}" style="height: 60px; border-radius: 16px; border: none; background: #e9edf2; color: #05070b; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; flex-shrink: 0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-size: 16px; font-weight: 800; letter-spacing: 0.06em;">{{maydayLabel}}</span></button>
       <div style="display: flex; gap: 8px;">
-        <a href="G4-Equipe-Mobile.dc.html" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid #2a3240; background: #0f131a; color: #e9edf2; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 700;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Dealer</a>
-        <a href="G4-Equipe-Mobile.dc.html" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid #2a3240; background: #0f131a; color: #e9edf2; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 700;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg> Giovanni</a>
+        <sc-for list="{{chamar}}" as="c" hint-placeholder-count="2">
+          <a href="{{c.href}}" aria-label="{{c.aria}}" title="{{c.aria}}" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid #2a3240; background: #0f131a; color: #e9edf2; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 700;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{c.d}}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="display: flex; flex-direction: column; line-height: 1.15;"><span>{{c.n}}</span><span style="font-size: 10px; font-weight: 600; color: {{c.subTone}};">{{c.sub}}</span></span></a>
+        </sc-for>
         <button type="button" onClick="{{silence}}" aria-pressed="{{muted}}" style="flex-grow: 1; height: 52px; border-radius: 14px; border: 1px solid {{silenceLine}}; background: #0f131a; color: {{silenceTone}}; font-size: 13px; font-weight: 700; cursor: pointer;">{{silenceLabel}}</button>
       </div>
       <a href="H2-Home-Mobile.dc.html" style="text-align: center; font-size: 12.5px; font-weight: 600; color: #9aa3af; text-decoration: none; padding: 8px; min-height: 28px;">Voltar ao início</a>
@@ -76,8 +77,29 @@ button { font: inherit; }
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  state = { open: -1, mayday: false, left: 0 };
-  componentWillUnmount() { clearInterval(this._t); }
+  state = { open: -1, mayday: false, left: 0, reg: null, fones: {} };
+  componentDidMount() { this.whenBrain((B) => this.setState({ reg: this.registrar(B), fones: B.loadEquipe().fones }), () => this.setState({ reg: { falhou: true } })); }
+  componentWillUnmount() { clearInterval(this._t); clearInterval(this._b); }
+  whenBrain(cb, fail) {
+    if (window.AvantiBrain) return cb(window.AvantiBrain);
+    let n = 0;
+    this._b = setInterval(() => {
+      if (window.AvantiBrain || ++n > 120) { clearInterval(this._b); if (window.AvantiBrain) cb(window.AvantiBrain); else fail(); return; }
+      if (n === 1 && !document.querySelector('script[src*="avanti-brain.js"]')) { const s = document.createElement('script'); s.src = './avanti-brain.js'; s.setAttribute('data-avanti-brain', '1'); document.head.appendChild(s); }
+    }, 50);
+  }
+  // SOS acionado: uma linha no diário por acionamento (10 min · vale também para a tela web). Só diz "gravado" se a linha está no diário.
+  registrar(B) {
+    const K = 'avanti.sos.v1'; let prev = null;
+    try { prev = JSON.parse(sessionStorage.getItem(K) || 'null'); } catch (e) {}
+    if (prev && prev.t && Date.now() - prev.em < 600e3) return prev;
+    const n = B.now(); let e = null;
+    try { e = B.addDiario({ sys: 'Segurança', tone: 'var(--av-crit, #ff3b30)', t: 'SOS acionado no app às ' + n.t + " · última posição 22°57,09'S 043°10,23'W (GPS 20/09 23:01).", who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · SOS' }); } catch (x) {}
+    if (!e || !B.loadDiario().some((x) => x.iso === e.iso && x.src === 'app · SOS')) return { falhou: true };
+    const r = { em: Date.now(), t: n.t };
+    try { sessionStorage.setItem(K, JSON.stringify(r)); } catch (x) {}
+    return r;
+  }
   silence() {
     if (this.state.left > 0) { clearInterval(this._t); this.setState({ left: 0 }); return; }
     this.setState({ left: 60 }); clearInterval(this._t);
@@ -91,10 +113,19 @@ class Component extends DCLogic {
       { n: 'Sea-Fire — incêndio na praça de máquinas', s: 'Painel do salão · corta motores · cabo de descarga manual SMAC', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: '#e9edf2', wash: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)', line: 'rgba(255,255,255,0.08)', steps: [{ n: '1', t: 'Alarme no painel Sea-Fire do salão: o sistema corta motores e ventilação e descarrega o agente na praça de máquinas.' }, { n: '2', t: 'Reserva: cabo de descarga manual SMAC. Não abra a praça de máquinas até esfriar — reabastece o fogo.' }, { n: '3', t: 'Sequência completa do manual Sea-Fire SMAC: MANUAL NO DRIVE · passo a passo A CONFIRMAR.' }], src: 'Fonte: manual Sea-Fire SMAC (Drive) · protocolo de emergência Avanti', href: '', hl: '' },
       { n: 'EPIRB', s: 'Flybridge · acionamento manual · registro válido até 2036', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6', tone: '#e9edf2', wash: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)', line: 'rgba(255,255,255,0.08)', steps: [{ n: '1', t: 'ACR GlobalFix V5 (RLB-44) · Cat I · no flybridge · acionamento manual conforme o manual ACR (MANUAL NO DRIVE).' }, { n: '2', t: 'Transmite MMSI 710400328 · indicativo PV4476 · posição GPS — abandonar só com o EPIRB junto.' }, { n: '3', t: 'Certificado Life Safety 67827-001 · SBM até jan/2031 · bateria até abr/2036.' }], src: 'Fonte: Drive › Documentos_Legais › EPIRB · cert. 67827-001', href: docs, hl: 'Documentos' }
     ];
+    const pos = "22°57,09'S 043°10,23'W"; const r = s.reg; const eq = 'G4-Equipe-Mobile.dc.html';
+    const liga = (id, n, d, quem) => { const f = s.fones[id]; return f ? { n: n, sub: 'ligar', subTone: '#34c77a', href: 'tel:' + String(f).replace(/[^+\d]/g, ''), aria: 'Ligar para ' + quem + ' · ' + f, d: d } : { n: n, sub: 'cadastrar tel.', subTone: '#9aa3af', href: eq, aria: 'Telefone ' + (id === 'Giovanni' ? 'do Giovanni' : 'do dealer') + ' não cadastrado — abrir Equipe para cadastrar', d: d }; };
     return {
+      // Posição é o último fix (20/09 23:01), não a hora do SOS: a hora do acionamento vem rotulada à parte
+      marca: pos + ' (GPS 20/09 23:01) · ' + (!r ? 'gravando no diário de bordo…' : r.falhou ? 'não gravado — registre posição e hora no diário' : 'SOS ' + r.t + ' · gravado no diário de bordo'),
+      chamar: [
+        liga('Dealer Volvo Penta', 'Dealer', 'M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z', 'o dealer Volvo Penta'),
+        liga('Giovanni', 'Giovanni', 'M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M5 20a7 7 0 0 1 14 0', 'Giovanni')
+      ],
       proto: P.map((p, i) => Object.assign({}, p, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), chev: s.open === i ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6' })),
       mayday: s.mayday, toggleMayday: () => this.setState({ mayday: !s.mayday }), maydayLabel: s.mayday ? 'FECHAR ROTEIRO' : 'CANAL 16 · MAYDAY',
-      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO 22°57,09'S 043°10,23'W · BAÍA DE GUANABARA, RIO DE JANEIRO", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
+      // Roteiro lido no canal 16: a posição salva é o último fix (20/09 23:01), não a atual — manda ler o plotter
+      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 20/09 23:01)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
       silence: () => this.silence(), muted: s.left > 0, silenceLabel: s.left > 0 ? 'Silenciado · ' + s.left + ' s' : 'Silenciar 60 s', silenceLine: s.left > 0 ? 'rgba(240,166,58,0.55)' : '#2a3240', silenceTone: s.left > 0 ? '#f0a63a' : '#e9edf2'
     };
   }
