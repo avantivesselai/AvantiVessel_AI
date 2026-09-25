@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Console · Abastecimento (web)</title>
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -45,7 +46,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
       </span>
       <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
     </div>
   </header>
 
@@ -149,6 +150,14 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 class Component extends DCLogic {
   state = { extra: [], note: '', noteTone: 'var(--av-ok, #34c77a)' };
   nfRef = React.createRef();
+  componentDidMount() { this.setState({ extra: this.loadAbast() }); }
+  // NF enviadas e ainda A CONFIRMAR: guardadas neste aparelho (avanti.abast.v1), mais nova primeiro
+  loadAbast() {
+    let v = null; try { v = JSON.parse(localStorage.getItem('avanti.abast.v1') || '[]'); } catch (e) {}
+    const txt = (x) => typeof x === 'string' ? x : '—';
+    return Array.isArray(v) ? v.filter((h) => h && typeof h.d === 'string' && typeof h.local === 'string').map((h) => ({ d: h.d, local: h.local, nf: txt(h.nf), l: txt(h.l), pl: txt(h.pl), total: txt(h.total), hor: txt(h.hor), nivel: txt(h.nivel), pending: true, iso: h.iso, who: h.who })) : [];
+  }
+  addAbast(h) { const list = this.loadAbast(); list.unshift(h); try { localStorage.setItem('avanti.abast.v1', JSON.stringify(list)); } catch (e) {} return list; }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -160,9 +169,10 @@ class Component extends DCLogic {
   toast(msg, tone) { this.setState({ note: msg, noteTone: tone || 'var(--av-ok, #34c77a)' }); clearTimeout(this._n); this._n = setTimeout(() => this.setState({ note: '' }), 4000); }
   onNf(e) {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
-    const B = window.AvantiBrain; const n = B ? B.now() : { d: 'hoje', t: '' };
-    if (B) B.addDiario({ sys: 'Combustível', tone: 'var(--av-warn, #f0a63a)', t: 'Foto da NF enviada pelo console: ' + f.name + ' — extração de litros, preço e horímetro pendente (A CONFIRMAR).', who: 'Otto', src: 'console · foto da NF' });
-    this.setState({ extra: [{ d: n.d + '/2026', local: 'A CONFIRMAR · ' + f.name, nf: 'extração de litros, preço e total pendente · ' + n.t, l: '—', pl: '—', total: '—', hor: 'horímetro do minuto: a casar na telemetria', nivel: '—', pending: true }].concat(this.state.extra) });
+    const B = window.AvantiBrain; const who = (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto');
+    const dt = new Date(); const p2 = (x) => (x < 10 ? '0' : '') + x; // data e ano de agora, não fixos
+    if (B) B.addDiario({ sys: 'Combustível', tone: 'var(--av-warn, #f0a63a)', t: 'Foto da NF enviada pelo console: ' + f.name + ' — extração de litros, preço e horímetro pendente (A CONFIRMAR).', who: who, src: 'console · foto da NF' });
+    this.setState({ extra: this.addAbast({ d: p2(dt.getDate()) + '/' + p2(dt.getMonth() + 1) + '/' + dt.getFullYear(), local: 'A CONFIRMAR · ' + f.name, nf: 'extração de litros, preço e total pendente · ' + p2(dt.getHours()) + ':' + p2(dt.getMinutes()) + ' · ' + who, l: '—', pl: '—', total: '—', hor: 'horímetro do minuto: a casar na telemetria', nivel: '—', pending: true, iso: dt.toISOString(), who: who }) });
     this.toast('NF recebida — linha criada como A CONFIRMAR e registrada no diário');
   }
   renderVals() {

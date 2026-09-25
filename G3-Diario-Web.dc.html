@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Console · Diário de bordo (web)</title>
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -45,7 +46,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
       </span>
       <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
     </div>
   </header>
 
@@ -135,7 +136,7 @@ class Component extends DCLogic {
   state = { filter: 'Todos', extra: [], showAll: false, listening: false, note: '', noteTone: 'var(--av-ok, #34c77a)' };
   inputRef = React.createRef(); fotoRef = React.createRef();
   componentDidMount() { this.whenBrain(() => this.setState({ extra: window.AvantiBrain.loadDiario() })); }
-  componentWillUnmount() { if (this.rec) { try { this.rec.onend = null; this.rec.stop(); } catch (e) {} } }
+  componentWillUnmount() { this.calarVoz(); }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
     let n = 0;
@@ -149,27 +150,32 @@ class Component extends DCLogic {
     const B = window.AvantiBrain; if (!B) return;
     text = (text || (this.inputRef.current ? this.inputRef.current.value : '')).trim();
     if (!text) return this.toast('Escreva, fale ou fotografe o que registrar', 'var(--av-warn, #f0a63a)');
-    B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: 'Otto', src: src || 'console · texto' });
+    if (this.rec) this.calarVoz(); // gravou digitando no meio do ditado: resultado tardio não volta ao campo
+    B.addDiario({ sys: 'Diário', tone: 'var(--av-accent, #409cff)', t: text, who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: src || 'console · texto' });
     if (this.inputRef.current) this.inputRef.current.value = '';
-    this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Linha nova no diário — nada se apaga');
+    this.setState({ extra: B.loadDiario(), filter: 'Todos', listening: false }); this.toast('Linha nova no diário — nada se apaga');
   }
+  calarVoz() { clearTimeout(this._vt); const r = this.rec; this.rec = null; if (!r) return; r.onresult = r.onend = r.onerror = null; try { r.abort(); } catch (e) {} }
   onFoto(e) {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
     const B = window.AvantiBrain; if (!B) return;
     const txt = this.inputRef.current ? this.inputRef.current.value.trim() : '';
-    B.addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: 'Foto anexada: ' + f.name + (txt ? ' — ' + txt : '') + ' · identificação A CONFIRMAR.', who: 'Otto', src: 'console · foto' });
+    B.addDiario({ sys: 'Equipamentos', tone: 'var(--av-accent, #409cff)', t: 'Foto anexada: ' + f.name + (txt ? ' — ' + txt : '') + ' · identificação A CONFIRMAR.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · foto' });
     if (this.inputRef.current) this.inputRef.current.value = '';
     this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Foto anexada ao diário como A CONFIRMAR');
   }
   toggleVoz() {
     const B = window.AvantiBrain;
-    if (this.rec) { const r = this.rec; this.rec = null; try { r.onend = null; r.stop(); } catch (e) {} this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); return; }
+    // Parar à mão: o stop() ainda entrega o resultado final — quem grava é o fim(), uma vez só (timer se o onend não vier).
+    // Toque enquanto para é ignorado: gravar agora salvaria o texto parcial.
+    if (this.rec) { const r = this.rec; if (r.parando) return; r.parando = true; this.setState({ listening: false }); clearTimeout(this._vt); this._vt = setTimeout(r.fim, 3000); try { r.stop(); } catch (e) { r.fim(); } return; }
     const r = B && B.recognizer({ continuous: false });
     if (!r) return this.toast('Microfone indisponível neste navegador — digite o registro', 'var(--av-warn, #f0a63a)');
     this.rec = r; let finalText = '';
     r.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; } if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim(); };
-    r.onend = () => { if (this.rec !== r) return; this.rec = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); };
-    r.onerror = (ev) => { this.rec = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Permissão de microfone negada — digite o registro' : 'Voz indisponível agora — digite o registro', 'var(--av-warn, #f0a63a)'); };
+    r.fim = () => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); };
+    r.onend = r.fim;
+    r.onerror = (ev) => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Permissão de microfone negada — digite o registro' : 'Voz indisponível agora — digite o registro', 'var(--av-warn, #f0a63a)'); };
     try { r.start(); this.setState({ listening: true }); } catch (e) { this.rec = null; }
   }
   renderVals() {

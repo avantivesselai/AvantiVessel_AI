@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Console · Documentos (web)</title>
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -45,7 +46,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <span style="font-size: 12.5px; font-weight: 600; color: var(--av-ok, #34c77a);">Ao vivo · 10 s</span>
       </span>
       <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
     </div>
   </header>
 
@@ -172,8 +173,8 @@ class Component extends DCLogic {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
     const B = window.AvantiBrain; if (!B) return;
     const n = B.now();
-    const extra = B.addDoc({ n: f.name, s: 'enviado ' + n.d + ' ' + n.t + ' por Otto (' + kind + ') · o agente de Documentos extrai vencimento e valor · original vai para Drive › Documentos_Legais', dd: 'a extrair', st: 'A CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'notas', fonte: 'Upload ' + kind + ' · ' + f.name + ' · ' + n.d + ' ' + n.t + ' · leitura pendente' });
-    B.addDiario({ sys: 'Documentação', tone: 'var(--av-accent, #409cff)', t: 'Documento enviado pelo console (' + kind + '): ' + f.name + ' — linha criada como A CONFERIR até a extração.', who: 'Otto', src: 'console · documentos' });
+    const extra = B.addDoc({ n: f.name, s: 'enviado ' + n.d + ' ' + n.t + ' por ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' (' + kind + ') · o agente de Documentos extrai vencimento e valor · original vai para Drive › Documentos_Legais', dd: 'a extrair', st: 'A CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'notas', fonte: 'Upload ' + kind + ' · ' + f.name + ' · ' + n.d + ' ' + n.t + ' · leitura pendente' });
+    B.addDiario({ sys: 'Documentação', tone: 'var(--av-accent, #409cff)', t: 'Documento enviado pelo console (' + kind + '): ' + f.name + ' — linha criada como A CONFERIR até a extração.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · documentos' });
     this.setState({ extra: extra, filter: 'all', open: 0 }); this.toast('Documento recebido — linha criada como A CONFERIR');
   }
   renderVals() {
@@ -193,11 +194,11 @@ class Component extends DCLogic {
     ];
     const all = (s.extra || []).concat(DOCS);
     const pendSt = ['RENOVAR', 'CONFERIR', 'A CONFIRMAR', 'A ENVIAR', 'PENDENTE', 'A CONFERIR'];
-    const match = (x) => s.filter === 'all' ? true : s.filter === 'vencendo' ? x.st !== 'OK' : s.filter === 'radio' ? x.cat === 'radio' : s.filter === 'notas' ? (x.cat === 'notas' || x.cat === 'garantia') : s.filter === 'ok' ? x.st === 'OK' : s.filter === 'conferir' ? pendSt.indexOf(x.st) !== -1 && x.st !== 'RENOVAR' : true;
+    const match = (x) => s.filter === 'all' ? true : s.filter === 'vencendo' ? x.st !== 'OK' : s.filter === 'radio' ? x.cat === 'radio' : s.filter === 'notas' ? (x.cat === 'notas' || x.cat === 'garantia') : s.filter === 'ok' ? x.st === 'OK' : s.filter === 'conferir' ? pendSt.indexOf(x.st) !== -1 && x.st !== 'RENOVAR' : s.filter === 'renovar' ? x.st === 'RENOVAR' : s.filter === 'pleito' ? x.st === 'A ENVIAR' : true;
     const filtered = all.filter(match);
     const setF = (k) => () => this.setState({ filter: k, open: -1 });
     const act = (k) => s.filter === k;
-    const titles = { all: 'Registro, licenças, garantias e notas', vencendo: 'Vencendo, a renovar ou a conferir', radio: 'Rádio · ANATEL', notas: 'Notas, contratos e garantias', ok: 'Documentos válidos', conferir: 'A conferir, confirmar ou enviar' };
+    const titles = { all: 'Registro, licenças, garantias e notas', vencendo: 'Vencendo, a renovar ou a conferir', radio: 'Rádio · ANATEL', notas: 'Notas, contratos e garantias', ok: 'Documentos válidos', conferir: 'A conferir, confirmar ou enviar', renovar: 'Vence em 180 dias · renovar', pleito: 'Pleito aberto · a enviar' };
     return {
       nav: [
         { l: 'Início', href: 'Main.dc.html', d: 'M4 11l8-7 8 7v9H4z', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' },
@@ -214,12 +215,12 @@ class Component extends DCLogic {
       listTitle: titles[s.filter] + ' · ' + filtered.length + ' de ' + all.length,
       kpis: [
         { l: 'Documentos válidos', v: String(all.filter((x) => x.st === 'OK').length), s: 'registro, rádio, EPIRB, laudos', tone: 'var(--av-ok, #34c77a)', k: 'ok' },
-        { l: 'Vence em 180 dias', v: '1', s: 'FISTEL + licença · 23/01/2027', tone: 'var(--av-warn, #f0a63a)', k: 'vencendo' },
+        { l: 'Vence em 180 dias', v: String(all.filter((x) => x.st === 'RENOVAR').length), s: 'FISTEL + licença · 23/01/2027', tone: 'var(--av-warn, #f0a63a)', k: 'renovar' },
         { l: 'A conferir / confirmar', v: String(all.filter((x) => pendSt.indexOf(x.st) !== -1 && x.st !== 'RENOVAR').length), s: 'VHF 115 · Seakeeper · Tlaloc · uploads', tone: 'var(--av-warn, #f0a63a)', k: 'conferir' },
-        { l: 'Pleito aberto', v: '1', s: 'garantia Azimut · teto do cockpit', tone: 'var(--av-crit, #ff3b30)', k: 'conferir' }
+        { l: 'Pleito aberto', v: String(all.filter((x) => x.st === 'A ENVIAR').length), s: 'garantia Azimut · teto do cockpit', tone: 'var(--av-crit, #ff3b30)', k: 'pleito' }
       ].map((k) => Object.assign(k, { onClick: setF(k.k), active: act(k.k), go: act(k.k) ? 'filtro ativo' : 'filtrar ›', line: act(k.k) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' : 'var(--av-line, #1d2229)' })),
       filtros: [['all', 'Todos'], ['vencendo', 'Vencendo'], ['radio', 'Rádio · ANATEL'], ['notas', 'Notas e contratos']].map((c) => ({ l: c[1], onClick: setF(c[0]), active: act(c[0]), line: act(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'var(--av-line2, #2a3240)', bg: act(c[0]) ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' : 'transparent', tone: act(c[0]) ? 'var(--av-accent, #409cff)' : 'var(--av-ink2, #aeb6c2)' })),
-      rows: filtered.map((x, i) => Object.assign({}, x, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), line: s.open === i ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'transparent', ask: 'Main.dc.html#q=' + encodeURIComponent(x.n), fonte: x.fonte || 'Drive › Documentos_Legais' })),
+      rows: filtered.map((x, i) => Object.assign({}, x, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), line: s.open === i ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'transparent', ask: 'Main.dc.html#q=' + encodeURIComponent('Situação e vencimento do documento: ' + x.n), fonte: x.fonte || 'Drive › Documentos_Legais' })),
       emptyList: filtered.length === 0,
       showVencendo: setF('vencendo'),
       pickFoto: () => this.fotoRef.current && this.fotoRef.current.click(), pickPdf: () => this.pdfRef.current && this.pdfRef.current.click(),

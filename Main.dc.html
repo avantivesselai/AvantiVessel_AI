@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -38,7 +39,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
   <span style="color: var(--av-ink3, #9aa3af); font-weight: 600;">REG. 3813927725 · CASCO 51BR153</span>
   <b style="font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: 0.04em;">23:01</b>
   <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="34" hint-size="34px,34px"></x-import>
-      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil de Otto — equipe e acessos" title="Equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: border-color .3s, box-shadow .3s;" style-hover="border-color: var(--av-plat, #d9dee6); box-shadow: 0 0 0 4px rgba(var(--av-plat-rgb, 217,222,230), 0.12);">OL</a>
+      <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" title="Equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: border-color .3s, box-shadow .3s;" style-hover="border-color: var(--av-plat, #d9dee6); box-shadow: 0 0 0 4px rgba(var(--av-plat-rgb, 217,222,230), 0.12);"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
 </header>
   <main style="position: relative; flex-grow: 1; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px 40px 20px;">
     <sc-if value="{{idle}}" hint-placeholder-val="{{true}}">
@@ -52,7 +53,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l10 10-10 10L2 12z M2 12h20 M12 2v20" stroke-width="1.6" stroke-linejoin="round" style="stroke: var(--av-plat, var(--av-plat, #d9dee6));"></path></svg>
         <span style="width: 150px; height: 1px; background: linear-gradient(90deg, rgba(var(--av-plat-rgb, 217,222,230), 0.6) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 100%);"></span>
       </div>
-      <div style="font-style: italic; font-size: 21px; color: var(--av-greet, #8b94a1); margin: 12px 0 22px; font-weight: 400;">“Olá, Otto. Onde vamos hoje?”</div>
+      <div style="font-style: italic; font-size: 21px; color: var(--av-greet, #8b94a1); margin: 12px 0 22px; font-weight: 400;">“Olá, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import>. Onde vamos hoje?”</div>
       <div style="display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr)); gap: 14px; width: 1250px;">
         <sc-for list="{{buttons}}" as="b" hint-placeholder-count="5">
           <a href="{{b.href}}" title="{{b.tip}}" style="box-sizing: border-box; min-height: 150px; padding: 16px 16px 14px; background: {{b.bg}}; border: 1px solid {{b.line}}; border-radius: 16px; text-decoration: none; color: var(--av-ink, #e9edf2); display: flex; flex-direction: column; justify-content: space-between; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 30px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.35 * var(--av-shadow-k, 1))); transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, box-shadow .35s;" style-hover="transform: translateY(-4px); border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.55); box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 22px 44px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.5 * var(--av-shadow-k, 1))), 0 0 0 1px rgba(var(--av-plat-rgb, 217,222,230), 0.16);">
@@ -117,7 +118,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <label for="pergunta" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Pergunta</label>
         <input id="pergunta" maxlength="500" ref="{{inputRef}}" onKeyDown="{{onKey}}" onFocus="{{onFocus}}" onBlur="{{onBlur}}" placeholder="Pergunte qualquer coisa sobre sua embarcação…" autocomplete="off" style="flex-grow: 1; background: none; border: none; outline: none; color: var(--av-ink, #e9edf2); font-size: 16.5px; font-family: inherit; min-width: 0; padding: 12px 0;">
         <sc-for list="{{modes}}" as="m" hint-placeholder-count="4">
-          <button type="button" onClick="{{m.onClick}}" aria-label="{{m.aria}}" title="{{m.aria}}" style="width: 64px; height: 52px; border-radius: 12px; border: 1px solid {{m.line}}; background: {{m.bg}}; color: {{m.tone}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 0; flex-shrink: 0; transition: border-color .3s, color .3s, transform .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.5); color: var(--av-ink, #e9edf2); transform: translateY(-2px);">
+          <button type="button" onClick="{{m.onClick}}" aria-label="{{m.aria}}" title="{{m.aria}}" style="width: 64px; height: 52px; border-radius: 12px; border: 1px solid {{m.line}}; background: {{m.bg}}; color: {{m.tone}}; animation: {{m.anim}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; padding: 0; flex-shrink: 0; transition: border-color .3s, color .3s, transform .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.5); color: var(--av-ink, #e9edf2); transform: translateY(-2px);">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{m.d}}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span style="font-size: 8px; letter-spacing: 0.10em; font-weight: 700;">{{m.l}}</span>
           </button>
@@ -159,12 +160,16 @@ class Component extends DCLogic {
   handleHash() {
     const B = window.AvantiBrain; if (!B) return;
     const h = B.parseHash();
+    // Microfone só liga sozinho vindo de link interno: a tela de origem grava 'avanti.modo' = modo logo antes de navegar (uso único). Link de fora só realça o botão.
+    let armado = null;
+    try { armado = sessionStorage.getItem('avanti.modo'); sessionStorage.removeItem('avanti.modo'); } catch (e) {}
     if (!h.q && !h.mode) return;
     B.clearHash();
-    if (h.q) this.ask(h.q);
-    if (h.mode === 'voz') { if (!this.rec) this.toggleVoice(); }
+    if (h.q) this.ask(h.q, null, true);
+    if ((h.mode === 'voz' || h.mode === 'conversa') && armado !== h.mode) this.flash(h.mode === 'voz' ? 'Toque em VOZ para falar a pergunta — o microfone só liga com o seu toque.' : 'Toque em CONVERSA para começar — o microfone só liga com o seu toque.', 8000, h.mode);
+    else if (h.mode === 'voz') { if (!this.rec) this.toggleVoice(); }
     else if (h.mode === 'conversa') { if (!this.state.conversa) this.toggleConversa(); }
-    else if (h.mode === 'foto' || h.mode === 'video') this.flash(h.mode === 'foto' ? 'Toque em FOTO para escolher a imagem — etiqueta, tela de alarme, nota ou página de manual.' : 'Toque em VÍDEO para escolher o clipe de 10 s.');
+    else if (h.mode === 'foto' || h.mode === 'video') this.flash(h.mode === 'foto' ? 'Toque em FOTO para escolher a imagem — etiqueta, tela de alarme, nota ou página de manual.' : 'Toque em VÍDEO para escolher o clipe de 10 s.', 0, h.mode);
     else if (h.mode === 'texto' && this.inputRef.current) this.inputRef.current.focus();
   }
   componentWillUnmount() {
@@ -173,7 +178,7 @@ class Component extends DCLogic {
     this.stopRec();
     (this._pend || []).forEach(clearTimeout); clearTimeout(this._fl);
     if (this._raf) cancelAnimationFrame(this._raf);
-    if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+    this._fala = null; if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
   }
   whenBrain(cb) {
     if (window.AvantiBrain) return cb();
@@ -201,16 +206,17 @@ class Component extends DCLogic {
     if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; el.style.background = 'radial-gradient(560px circle at ' + x + 'px ' + y + 'px, rgba(var(--av-plat-rgb, 217,222,230), 0.085), rgba(var(--av-accent-rgb, 64,156,255), 0.055) 35%, rgba(var(--av-bg-rgb, 5,7,11), 0) 65%)'; el.style.opacity = '1'; });
   }
   onLeave() { const el = this.spotRef.current; if (el) el.style.opacity = '0'; }
-  flash(msg, ms) { this.setState({ note: msg }); clearTimeout(this._fl); this._fl = setTimeout(() => this.setState({ note: '' }), ms || 4000); }
+  flash(msg, ms, realce) { this.setState({ note: msg, realce: realce || '' }); clearTimeout(this._fl); this._fl = setTimeout(() => this.setState({ note: '', realce: '' }), ms || 4000); }
   scrollThread() { const el = this.threadRef.current; if (el) el.scrollTop = el.scrollHeight; }
-  ask(q, id) {
+  // link = pergunta vinda do endereço (#q=): só leitura — não grava no diário, não leva o anexo nem apaga o que foi digitado.
+  ask(q, id, link) {
     const B = window.AvantiBrain; if (!B) return;
     q = String(q || '').trim().slice(0, 500);
-    const att = this.state.attachment;
+    const att = link ? null : this.state.attachment;
     if (!q && !att) { this.flash('Digite ou fale a pergunta — ou toque em um atalho.'); return; }
-    if (this.inputRef.current) this.inputRef.current.value = '';
+    if (!link && this.inputRef.current) this.inputRef.current.value = '';
     const userText = (att ? '[' + (att.kind === 'video' ? 'vídeo' : 'foto') + ' · ' + att.name + '] ' : '') + q;
-    this.setState((s) => ({ thread: s.thread.concat([{ role: 'user', text: userText }]), pending: (s.pending || 0) + 1, thinking: true, attachment: null, note: '' }), () => this.scrollThread());
+    this.setState((s) => ({ thread: s.thread.concat([{ role: 'user', text: userText }]), pending: (s.pending || 0) + 1, thinking: true, attachment: link ? s.attachment : null, note: '' }), () => this.scrollThread());
     const t = setTimeout(() => {
       this._pend = (this._pend || []).filter((x) => x !== t);
       if (this._dead) return;
@@ -219,21 +225,23 @@ class Component extends DCLogic {
         if (att) {
           a = B.answerAttachment(att.kind, att.file, { platform: 'web' });
           if (q) { const b = B.answer(q, { platform: 'web' }); if (b.key !== 'fallback' && b.key !== 'saudacao') a = { text: a.text + '\n\n' + b.text, src: b.src, actions: b.actions }; }
-        } else a = B.answer(q, { platform: 'web', id: id });
+        } else a = B.answer(q, link ? { platform: 'web', id: id, commit: false } : { platform: 'web', id: id });
       } catch (e) { a = { text: 'Não consegui responder agora — SEM DADOS. Tente de novo.', src: '', actions: [] }; }
       this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(a.text); });
     }, 650);
     this._pend = (this._pend || []).concat([t]);
   }
   clearThread() {
-    this.stopRec(); if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
+    this.stopRec(); this._fala = null; if (window.AvantiBrain) window.AvantiBrain.stopSpeaking();
     (this._pend || []).forEach(clearTimeout); this._pend = [];
     this.setState({ thread: [], thinking: false, pending: 0, conversa: false, listening: false });
   }
+  // Só a fala mais recente reabre o microfone, e só sem outra resposta a caminho — senão ele ouve a voz do próprio app.
   speakAndResume(text) {
     const B = window.AvantiBrain; if (!B) return;
     this.stopRec(); this.setState({ listening: false });
-    B.speak(text, () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); });
+    const k = this._fala = {};
+    B.speak(text, () => { if (this._fala !== k) return; this._fala = null; if (!this._dead && this.state.conversa && !this.rec && !this.state.pending) this.startVoice(true); });
   }
   pick(kind) { const r = kind === 'video' ? this.videoRef.current : this.fotoRef.current; if (r) r.click(); }
   onFile(kind, e) {
@@ -277,10 +285,10 @@ class Component extends DCLogic {
   }
   toggleConversa() {
     const B = window.AvantiBrain;
-    if (this.state.conversa) { this.stopRec(); if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
+    if (this.state.conversa) { this.stopRec(); this._fala = null; if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
     if (this.rec) { this.stopRec(); this.setState({ listening: false }); }
     if (!B || !B.recognizer({ continuous: true })) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
-    this.setState({ conversa: true }, () => { B.speak('Conversa ativa. Pode falar.', () => { if (!this._dead && this.state.conversa && !this.rec) this.startVoice(true); }); });
+    this.setState({ conversa: true }, () => this.speakAndResume('Conversa ativa. Pode falar.'));
   }
   renderVals() {
     const s = this.state; const fx = this.fx();
@@ -291,6 +299,8 @@ class Component extends DCLogic {
     const on = { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' };
     const hot = { tone: 'var(--av-crit, #ff3b30)', bg: 'rgba(var(--av-crit-rgb, 255,59,48), 0.12)', line: 'rgba(var(--av-crit-rgb, 255,59,48), 0.55)' };
     const CARD = 'linear-gradient(180deg, rgba(var(--av-card3-rgb, 22,27,36), 0.92) 0%, rgba(var(--av-card2-rgb, 12,15,21), 0.94) 100%)';
+    const re = s.note ? s.realce : ''; // botão indicado pela dica do link (#mode=)
+    const pulso = (m) => (re === m ? 'avantiPulse 1.6s ease-in-out infinite' : 'none');
     return {
       sweep: fx.sweep, led: fx.led, orbit: fx.orbit, spot: fx.spot,
       onMove: (e) => this.onMove(e), onLeave: () => this.onLeave(),
@@ -309,7 +319,7 @@ class Component extends DCLogic {
       onFoto: (e) => this.onFile('foto', e), onVideo: (e) => this.onFile('video', e),
       status: s.conversa ? 'CONVERSA ATIVA · OUVINDO · RESPONDO EM VOZ · TOQUE EM CONVERSA PARA ENCERRAR' : s.listening ? 'OUVINDO… FALE A PERGUNTA · TOQUE DE NOVO PARA ENVIAR' : s.note ? s.note.toUpperCase() : att ? 'ANEXO PRONTO · DESCREVA EM UMA FRASE E ENVIE' : 'ATALHOS · UM TOQUE ENVIA · EDITÁVEIS',
       statusTone: s.conversa || s.listening ? 'var(--av-accent, #409cff)' : s.note ? 'var(--av-warn, #f0a63a)' : 'var(--av-ink4, #7d8796)',
-      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : CARD, line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.10)', k: m.role === 'user' ? 'OTTO' : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
+      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : CARD, line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.10)', k: m.role === 'user' ? (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto').toUpperCase() : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
       chips: atalhos.map((a) => ({ l: a.l, q: a.q, onClick: () => this.ask(a.q, a.id) })),
       buttons: [
         { n: '1 · CONSOLE', eq: 'Telemetria · manutenção · documentos · diário', tip: 'Console completo — telemetria ao vivo, manutenção, documentos, abastecimento e diário de bordo', chip: '2 ATRASADAS', href: 'A1-Ponte-Web.dc.html', d: 'M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5', tone: 'var(--av-accent, #409cff)', bg: 'linear-gradient(180deg, rgba(var(--av-accent-rgb, 64,156,255), 0.16) 0%, rgba(var(--av-accent-rgb, 64,156,255), 0.06) 100%)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)', ctone: 'var(--av-crit, #ff3b30)', cline: 'rgba(var(--av-crit-rgb, 255,59,48), 0.45)', cwash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.10)' },
@@ -319,10 +329,10 @@ class Component extends DCLogic {
         { n: '5 · ELETRÔNICOS', eq: 'Plotter · piloto · radar · AIS', tip: 'Eletrônicos do leme — plotter, piloto automático, radar, AIS, VHF e áudio', chip: '19 FAQ', href: 'F3-FAQ-Piloto-Web.dc.html', d: 'M4 5h16v11H4z M9 20h6 M12 16v4 M7 9l3 3-3 3 M12 15h3', tone: 'var(--av-accent, #409cff)', bg: CARD, line: 'rgba(var(--av-hl-rgb, 255,255,255), 0.09)', ctone: 'var(--av-ok, #34c77a)', cline: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', cwash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.08)' }
       ],
       modes: [
-        Object.assign({ l: att && att.kind === 'foto' ? 'FOTO ✓' : 'FOTO', aria: 'Enviar foto — etiqueta, alarme na tela, nota fiscal ou página de manual', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z', onClick: () => this.pick('foto') }, att && att.kind === 'foto' ? on : modeBase),
-        Object.assign({ l: att && att.kind === 'video' ? 'VÍDEO ✓' : 'VÍDEO', aria: 'Enviar vídeo de 10 s — som ou comportamento anormal', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z', onClick: () => this.pick('video') }, att && att.kind === 'video' ? on : modeBase),
-        Object.assign({ l: s.listening && !s.conversa ? 'OUVINDO' : 'VOZ', aria: 'Falar — a pergunta é transcrita e respondida em texto e voz', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3', onClick: () => this.toggleVoice() }, s.listening && !s.conversa ? hot : modeBase),
-        Object.assign({ l: s.conversa ? 'ATIVA' : 'CONVERSA', aria: 'Conversa contínua por voz — sem tocar na tela', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2', onClick: () => this.toggleConversa() }, s.conversa ? { tone: 'var(--av-bg, #05070b)', bg: 'var(--av-accent, #409cff)', line: 'var(--av-accent, #409cff)' } : { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' })
+        Object.assign({ l: att && att.kind === 'foto' ? 'FOTO ✓' : 'FOTO', aria: 'Enviar foto — etiqueta, alarme na tela, nota fiscal ou página de manual', d: 'M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z', onClick: () => this.pick('foto'), anim: pulso('foto') }, (att && att.kind === 'foto') || re === 'foto' ? on : modeBase),
+        Object.assign({ l: att && att.kind === 'video' ? 'VÍDEO ✓' : 'VÍDEO', aria: 'Enviar vídeo de 10 s — som ou comportamento anormal', d: 'M3 7h11v10H3z M14 11l6-3.5v9L14 13z', onClick: () => this.pick('video'), anim: pulso('video') }, (att && att.kind === 'video') || re === 'video' ? on : modeBase),
+        Object.assign({ l: s.listening && !s.conversa ? 'OUVINDO' : 'VOZ', aria: 'Falar — a pergunta é transcrita e respondida em texto e voz', d: 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3', onClick: () => this.toggleVoice(), anim: pulso('voz') }, s.listening && !s.conversa ? hot : re === 'voz' ? on : modeBase),
+        Object.assign({ l: s.conversa ? 'ATIVA' : 'CONVERSA', aria: 'Conversa contínua por voz — sem tocar na tela', d: 'M3 12h2 M7 8v8 M11 5v14 M15 8v8 M19 11v2', onClick: () => this.toggleConversa(), anim: s.conversa ? 'none' : pulso('conversa') }, s.conversa ? { tone: 'var(--av-bg, #05070b)', bg: 'var(--av-accent, #409cff)', line: 'var(--av-accent, #409cff)' } : re === 'conversa' ? on : { tone: 'var(--av-accent, #409cff)', bg: 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' })
       ]
     };
   }

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./avanti-auth.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -61,7 +62,7 @@ button { font: inherit; }
       <span style="font-size: 13px; font-weight: 700;">Banco de blocos</span>
       <span style="display: flex; gap: 12px; align-items: baseline;"><span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af);">{{bankLabel}}</span><button type="button" onClick="{{reset}}" style="border: none; background: transparent; color: var(--av-accent, #409cff); font-size: 11.5px; font-weight: 700; cursor: pointer; padding: 0;">Restaurar padrão</button></span>
     </div>
-    <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 7px; max-height: 104px; overflow-y: auto;">
       <sc-for list="{{bank}}" as="b" hint-placeholder-count="10">
         <button type="button" onClick="{{b.add}}" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 13px; border-radius: 999px; border: 1px solid {{bankLine}}; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); font-size: 12.5px; font-weight: 600; cursor: pointer;">
           <span style="color: var(--av-accent, #409cff); font-size: 16px; line-height: 1;">+</span>{{b.label}}
@@ -97,8 +98,18 @@ class Component extends DCLogic {
   ];
   BANK_ALL = ['Porão', 'Baterias', 'Gerador', 'Climatização', 'Estabilizador', 'Âncora', 'Maré', 'Canal 16', 'Autonomia', 'Garantias', 'Contatos', 'Checklist de saída', 'Anomalias', 'Horímetros', 'Tanques', 'Clima', 'Posição'];
   state = { tiles: null, moving: -1, note: '', noteTone: 'var(--av-ink3, #9aa3af)', bankHi: false };
-  componentDidMount() { try { const v = JSON.parse(localStorage.getItem(this.KEY) || 'null'); if (Array.isArray(v)) { const ok = this.DEFAULTS.map((d) => d.label).concat(this.BANK_ALL); const seen = {}; this.setState({ tiles: v.filter((t) => t && typeof t.label === 'string' && ok.indexOf(t.label) !== -1 && typeof t.icon === 'number' && !seen[t.label] && (seen[t.label] = 1)).slice(0, 8) }); } } catch (e) {} }
+  // Lê e valida o que está salvo; null = padrão
+  load() { try { const v = JSON.parse(localStorage.getItem(this.KEY) || 'null'); if (Array.isArray(v)) { const ok = this.DEFAULTS.map((d) => d.label).concat(this.BANK_ALL); const seen = {}; return v.filter((t) => t && typeof t.label === 'string' && ok.indexOf(t.label) !== -1 && typeof t.icon === 'number' && !seen[t.label] && (seen[t.label] = 1)).slice(0, 8); } } catch (e) {} return null; }
+  componentDidMount() {
+    this.setState({ tiles: this.load() });
+    // Outra aba/tela salvou: recarrega os blocos
+    this._st = (e) => { if (!e || e.key === null || e.key === this.KEY) this.setState({ tiles: this.load(), moving: -1 }); };
+    window.addEventListener('storage', this._st);
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this._st); clearTimeout(this._n); }
   tiles() { return this.state.tiles || this.DEFAULTS; }
+  // Lê de novo antes de gravar (ler-alterar-gravar): nada salvo em outra aba se perde
+  fresh() { return (this.load() || this.DEFAULTS).map((t) => Object.assign({}, t)); }
   commit(tiles, note, tone) {
     try { localStorage.setItem(this.KEY, JSON.stringify(tiles)); } catch (e) {}
     this.setState({ tiles: tiles, note: note || '', noteTone: tone || 'var(--av-ok, #34c77a)', moving: -1, bankHi: false });
@@ -106,25 +117,34 @@ class Component extends DCLogic {
   }
   renderVals() {
     const s = this.state; const tiles = this.tiles(); const labels = tiles.map((t) => t.label);
-    const bank = this.BANK_ALL.filter((b) => labels.indexOf(b) === -1);
+    // Blocos padrão removidos também voltam ao banco
+    const bank = this.DEFAULTS.map((d) => d.label).concat(this.BANK_ALL).filter((b) => labels.indexOf(b) === -1);
     const ICON_OF = { 'Porão': 6, 'Baterias': 7, 'Gerador': 7, 'Climatização': 4, 'Estabilizador': 5, 'Âncora': 5, 'Maré': 2, 'Canal 16': 3, 'Autonomia': 6, 'Garantias': 8, 'Contatos': 4, 'Checklist de saída': 8, 'Anomalias': 1, 'Horímetros': 0, 'Tanques': 6, 'Clima': 2, 'Posição': 5 };
     const iconFor = (label) => (label in ICON_OF ? ICON_OF[label] : 4);
     return {
-      subtitle: s.note || ('Perfil de Otto · ' + tiles.length + ' de 8 blocos · aparece igual no painel'), noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      subtitle: s.note || ('Perfil de ' + (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto') + ' · ' + tiles.length + ' de 8 blocos · aparece igual no painel'), noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
       hint: s.moving >= 0 ? 'Movendo "' + tiles[s.moving].label + '": toque no destino para trocar de lugar · toque de novo para cancelar.' : 'Toque em ⋮⋮ e depois no destino para reordenar · − remove (volta ao banco) · toque no ícone para trocar. Salvo na hora.',
       hintLine: s.moving >= 0 ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' : 'var(--av-line, #1d2229)',
       tiles: tiles.map((t, i) => Object.assign({}, this.ICONS[t.icon % this.ICONS.length], {
         label: t.label, moving: s.moving === i,
         line: s.moving === i ? 'var(--av-accent, #409cff)' : (s.moving >= 0 ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.35)' : 'var(--av-dash, #3a4454)'), bg: s.moving === i ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : 'var(--av-card, #0f131a)', handleTone: s.moving === i ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)',
-        cycle: () => { const l = tiles.slice(); l[i] = Object.assign({}, t, { icon: (t.icon + 1) % this.ICONS.length }); this.commit(l, 'Ícone de ' + t.label + ' trocado'); },
-        remove: () => { const l = tiles.slice(); l.splice(i, 1); this.commit(l, t.label + ' removido — voltou ao banco'); },
-        pick: () => { if (s.moving === i) return this.setState({ moving: -1 }); if (s.moving < 0) return this.setState({ moving: i }); const l = tiles.slice(); const a = l[s.moving]; l[s.moving] = l[i]; l[i] = a; this.commit(l, 'Ordem salva'); }
+        cycle: () => { const l = this.fresh(); const k = l.findIndex((x) => x.label === t.label); if (k < 0) return this.setState({ tiles: l, moving: -1 }); l[k] = Object.assign({}, l[k], { icon: (l[k].icon + 1) % this.ICONS.length }); this.commit(l, 'Ícone de ' + t.label + ' trocado'); },
+        remove: () => { const l = this.fresh().filter((x) => x.label !== t.label); this.commit(l, t.label + ' removido — voltou ao banco'); },
+        pick: () => {
+          if (s.moving === i) return this.setState({ moving: -1 }); if (s.moving < 0 || !tiles[s.moving]) return this.setState({ moving: i });
+          const l = this.fresh(); const a = l.findIndex((x) => x.label === tiles[s.moving].label); const b = l.findIndex((x) => x.label === t.label);
+          if (a < 0 || b < 0) return this.setState({ tiles: l, moving: -1 }); const x = l[a]; l[a] = l[b]; l[b] = x; this.commit(l, 'Ordem salva');
+        }
       })),
       canAdd: tiles.length < 8,
       focusBank: () => this.setState({ bankHi: true, note: 'Toque em + no banco para adicionar (máximo 8)', noteTone: 'var(--av-accent, #409cff)' }),
       bankLine: s.bankHi ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)' : 'var(--av-line, #1d2229)',
       bankLabel: bank.length + ' disponíveis',
-      bank: bank.map((b) => ({ label: b, add: () => { if (tiles.length >= 8) { this.setState({ note: 'Máximo de 8 blocos — remova um para adicionar', noteTone: 'var(--av-warn, #f0a63a)' }); return; } this.commit(tiles.concat([{ label: b, icon: iconFor(b) }]), b + ' adicionado ao console'); } })),
+      bank: bank.map((b) => ({ label: b, add: () => {
+        const l = this.fresh(); if (l.some((x) => x.label === b)) return this.setState({ tiles: l, moving: -1 });
+        if (l.length >= 8) { this.setState({ tiles: l, note: 'Máximo de 8 blocos — remova um para adicionar', noteTone: 'var(--av-warn, #f0a63a)' }); return; }
+        const def = this.DEFAULTS.find((d) => d.label === b); this.commit(l.concat([{ label: b, icon: def ? def.icon : iconFor(b) }]), b + ' adicionado ao console');
+      } })),
       reset: () => this.commit(this.DEFAULTS.slice(), 'Padrão restaurado')
     };
   }
