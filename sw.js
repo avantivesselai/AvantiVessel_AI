@@ -1,7 +1,7 @@
 /* Avanti Vessel AI — service worker (rede primeiro; cache só como reserva offline).
    Instala já com todas as telas: a 1ª tela aberta carrega antes do SW e nunca entraria no cache.
    Offline sem a página no cache → aviso fixo (nunca o index.html, que redireciona e podia entrar em laço). */
-const CACHE = 'avanti-site-v1.2.0';
+const CACHE = 'avanti-site-v1.3.0';
 const TELAS = [
   'Main', 'H2-Home-Mobile', 'S1-SOS-Web', 'S2-SOS-Mobile', 'C3-Leme-Alerta', 'Manual-Avanti-Vessel-AI', 'D-Botoes',
   'A1-Ponte-Web', 'A2-Ponte-Mobile', 'A3-Ponte-Editar', 'B1-Carta-Web', 'B2-Carta-Mobile', 'B3-Carta-Resposta',
@@ -12,7 +12,7 @@ const TELAS = [
   'G3-Diario-Web', 'G3-Diario-Mobile', 'G4-Equipe-Web', 'G4-Equipe-Mobile', 'H3-Atalhos-Editar-Web', 'H3-Atalhos-Editar'
 ];
 const CORE = [
-  './', './index.html', './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js',
+  './', './index.html', './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './avanti-clima.js', './avanti-voz.js',
   './deck-stage.js', './manifest.webmanifest',
   './assets/logo_white.png', './assets/icon-192.png', './assets/favicon_64.png', './assets/apple-touch-icon.png', './assets/app_icon_1024.png'
 ].concat(TELAS.map((t) => './' + t + '.dc.html'));

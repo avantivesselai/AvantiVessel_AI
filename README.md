@@ -6,7 +6,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.2.0 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.3.0 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -45,7 +45,10 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Console:** telemetria ao vivo e histórico, gestão, manutenção (com o botão Executado), documentos, abastecimento, diário de bordo e equipe.
 - **FAQ de bordo:** passo a passo por equipamento: gerador, climatização, estabilizador e eletrônicos.
 - **SOS:** canal 16 com roteiro MAYDAY, homem ao mar (MOB), incêndio e EPIRB. Está em todas as telas.
-- **Conversa por voz:** voz natural do aparelho, em velocidade normal (1×). Só responde depois que você termina de falar (pausa de 2,5 s); no voz→texto, pausa de 3 s ou toque de novo para enviar. Unidades e siglas são lidas por extenso (L/h → litros por hora, kt → nós, BB → bombordo).
+- **Conversa por voz:** botão CONVERSA em destaque no centro da barra do app. Durante a conversa um diamante brilhante ocupa a tela: azul enquanto ouve a pergunta (mostra o que está sendo transcrito), gira enquanto pensa e fica branco-platina enquanto responde (mostra a frase dita). Tocar no diamante envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga. O SOS continua no canto. Voz natural, em velocidade normal (1×). Só responde depois que você termina de falar (pausa de 2,5 s); no voz→texto, pausa de 3 s ou toque de novo para enviar. Unidades e siglas são lidas por extenso (L/h → litros por hora, kt → nós, BB → bombordo).
+- **Cabeçalho ao vivo (início e SOS):** hora local do barco atualizada sozinha · máxima/mínima do dia (modelo ECMWF, o padrão do windy.com) · maré agora (ex.: +0,6m). Tocar abre o windy.com na posição do barco.
+- **Saudação:** uma frase marinheira sorteada a cada vez que a página abre (“Terra à vista!”, “À frente e AVANTI!”…).
+- **Base de conhecimento:** quando o chat não tem o dado, oferece o botão para abrir a base completa no NotebookLM.
 - **Tema claro/escuro:** botão sol/lua ao lado do avatar.
 
 ## Telas
@@ -80,6 +83,32 @@ Também há duas pranchetas de apoio:
   - Limpar os dados do navegador apaga tudo isso.
 - **Fotos, vídeos e PDFs enviados não saem do aparelho.** Cada um vira uma linha A CONFERIR no diário.
 
+## Clima e maré
+
+- **Previsão:** máxima e mínima de hoje do modelo **ECMWF** (o mesmo que o windy.com mostra por padrão), pela API gratuita do Open-Meteo. O windy.com não tem uma API gratuita que um site público possa usar sem expor a chave.
+- **Maré:** altura agora em relação ao **nível médio do mar** (Open-Meteo Marine). É um modelo de 8 km, **não é a tábua oficial da DHN** (Ilha Fiscal): serve de referência rápida, não para passar em canal raso.
+- Sem internet, mostra a última leitura salva no aparelho; sem nenhuma, mostra “—”.
+
+## Voz do Otto (sotaque carioca)
+
+A voz padrão é a do próprio aparelho (a melhor pt-BR disponível, masculina de preferência). Para falar com a **voz do Otto**:
+
+1. **Gravar:** o Otto grava de 1 a 3 min falando naturalmente (clonagem rápida) ou 30 min+ (clonagem profissional, mais fiel ao sotaque), em lugar silencioso, com o celular perto da boca.
+2. **Clonar no [ElevenLabs](https://elevenlabs.io):** Voices › Add voice › Instant (ou Professional) Voice Clone. O próprio Otto confirma o consentimento. Copie o **Voice ID**. Plano Starter ou acima.
+3. **Publicar o proxy** (a chave não pode ficar no site, que é público): conta grátis no Cloudflare, pasta `voz-worker/`:
+   - `npx wrangler secret put ELEVENLABS_API_KEY`
+   - preencha `ELEVENLABS_VOICE_ID` no `wrangler.toml`
+   - `npx wrangler deploy` → gera um endereço `https://avanti-voz.<conta>.workers.dev`
+4. **Ligar no site:** coloque esse endereço em `VOZ_NUVEM` no `avanti-brain.js`. Para testar antes em um aparelho só: no console do navegador, `localStorage.setItem('avanti.voz.nuvem.v1', 'https://…workers.dev')`.
+
+Sem internet, erro ou demora (> 9 s), a fala cai na voz do aparelho. O proxy só aceita chamadas do site publicado, até 1.200 letras por fala e 30 falas por minuto. Defina também um limite de gasto no ElevenLabs.
+
+> **Sem gravar o Otto:** na Voice Library do ElevenLabs há vozes masculinas de português do Brasil com sotaque carioca; basta usar o Voice ID de uma delas no passo 3.
+
+## Base de conhecimento (NotebookLM)
+
+A base completa (manuais, laudos, notas e histórico) está no [NotebookLM](https://notebook.google.com/notebook/f8238fa6-ff5e-4cc8-b0f1-e664927a42a6). O Google não libera consulta automática a cadernos pessoais do NotebookLM (a API existe só no plano Enterprise), então o site não lê o caderno sozinho: quando o chat não encontra o dado, mostra o botão **Base de conhecimento**, que abre o caderno. O acesso depende do compartilhamento do caderno no Google.
+
 ## Requisitos
 
 - **Internet na primeira visita:** a biblioteca da interface e a fonte vêm de servidores externos. Depois da primeira visita com internet, todas as telas abrem sem internet (inclusive o SOS).
@@ -97,9 +126,12 @@ avanti-auth.js          login, usuário logado, versão e rodapé
 avanti-brain.js         respostas do chat, atalhos, diário e voz
 avanti-theme.js         tema claro/escuro e botão sol/lua
 avanti-app.js           configuração de app, ajuste à janela, cache offline
+avanti-clima.js         hora local, previsão do dia e maré no cabeçalho
+avanti-voz.js           animação do diamante na conversa por voz
 deck-stage.js           apresentação do manual
 manifest.webmanifest    app instalável
 sw.js                   cache offline
+voz-worker/             proxy da voz do Otto (Cloudflare Worker + ElevenLabs)
 assets/                 logo e ícones
 .nojekyll               publica os arquivos exatamente como estão
 ```
@@ -110,6 +142,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.3.0 | 25/09/2026 | Conversa por voz com diamante animado (pergunta e resposta) · CONVERSA no centro da barra do app · voz do Otto pela nuvem (ElevenLabs, opcional) com voz masculina do aparelho como reserva · hora local ao vivo, máx/mín do dia e maré no cabeçalho · saudação sorteada · SOS com sirene vermelha, luz de alerta e EMERGÊNCIA centralizada (sem “alarme sonoro”) · botão da base NotebookLM no chat |
 | 1.2.0 | 25/09/2026 | Voz a 1× · voz→texto e conversa esperam a pessoa terminar de falar · usuária Amanda · convite pela Equipe envia por WhatsApp ou e-mail · tablet em pé e janelas estreitas abrem o app · SOS flutuante no celular quando o SOS da tela fica fora da vista · Equipe web com 4 perfis sem sobreposição |
 | 1.1.0 | 24/09/2026 | Login (Otto, Lucas, Giovanni) e nome do usuário no chat e no diário · rodapé com versão e crédito · voz natural a 1,25× lendo unidades e siglas por extenso · celular abre o app mesmo por link direto de tela web · correções da auditoria |
 | 1.0.0 | 24/09/2026 | Primeira publicação: 37 telas web e app, chat, console, FAQ e SOS |

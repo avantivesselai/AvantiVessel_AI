@@ -15,6 +15,7 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
 button { font: inherit; }
+@keyframes avantiVivo { 0%, 100% { opacity: 1; box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22), 0 0 10px rgba(var(--av-accent-rgb, 64,156,255), 0.7); } 50% { opacity: 0.18; box-shadow: 0 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0), 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0); } }
 input::placeholder { color: var(--av-ph, #4c5666); }
 @keyframes avantiSweep { 0% { transform: translateX(-160%) skewX(-16deg); } 42% { transform: translateX(760%) skewX(-16deg); } 100% { transform: translateX(760%) skewX(-16deg); } }
 @keyframes avantiPulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22); } 50% { box-shadow: 0 0 0 7px rgba(var(--av-accent-rgb, 64,156,255), 0.06); } }
@@ -22,6 +23,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <script src="./avanti-brain.js"></script>
+<script src="./avanti-voz.js"></script>
 </helmet>
 <div onMouseMove="{{onMove}}" onMouseLeave="{{onLeave}}" style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2);">
 <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 62% 46% at 50% -6%, rgba(var(--av-plat-rgb, 217,222,230), 0.14) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 62%), conic-gradient(from 152deg at 50% -14%, rgba(var(--av-hl-rgb, 255,255,255), 0) 0deg, rgba(var(--av-hl-rgb, 255,255,255), 0.05) 6deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 10deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 17deg, rgba(var(--av-accent-rgb, 64,156,255), 0.075) 24deg, rgba(var(--av-accent-rgb, 64,156,255), 0) 31deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 38deg, rgba(var(--av-hl-rgb, 255,255,255), 0.04) 44deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 49deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 56deg), linear-gradient(rgba(var(--av-hl-rgb, 255,255,255), 0.022) 1px, transparent 1px) 0 0 / 100% 88px, linear-gradient(90deg, rgba(var(--av-hl-rgb, 255,255,255), 0.018) 1px, transparent 1px) 0 0 / 88px 100%;"></div>
@@ -37,7 +39,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
   <span style="flex-grow: 1;"></span>
   <span style="display: flex; align-items: center; gap: 8px; color: var(--av-ink3, #9aa3af); font-weight: 600;">{{led}}AO VIVO · 10 S</span>
   <span style="color: var(--av-ink3, #9aa3af); font-weight: 600;">REG. 3813927725 · CASCO 51BR153</span>
-  <b style="font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: 0.04em;">23:01</b>
+  <x-import component-from-global-scope="avanti-hora-clima" from="./avanti-clima.js" tamanho="13" hint-size="190px,24px"></x-import>
   <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="34" hint-size="34px,34px"></x-import>
       <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" title="Equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: border-color .3s, box-shadow .3s;" style-hover="border-color: var(--av-plat, #d9dee6); box-shadow: 0 0 0 4px rgba(var(--av-plat-rgb, 217,222,230), 0.12);"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
 </header>
@@ -53,7 +55,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l10 10-10 10L2 12z M2 12h20 M12 2v20" stroke-width="1.6" stroke-linejoin="round" style="stroke: var(--av-plat, var(--av-plat, #d9dee6));"></path></svg>
         <span style="width: 150px; height: 1px; background: linear-gradient(90deg, rgba(var(--av-plat-rgb, 217,222,230), 0.6) 0%, rgba(var(--av-plat-rgb, 217,222,230), 0) 100%);"></span>
       </div>
-      <div style="font-style: italic; font-size: 21px; color: var(--av-greet, #8b94a1); margin: 12px 0 22px; font-weight: 400;">“Olá, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import>. Onde vamos hoje?”</div>
+      <div style="font-style: italic; font-size: 21px; color: var(--av-greet, #8b94a1); margin: 12px 0 22px; font-weight: 400; text-align: center;"><x-import component-from-global-scope="avanti-saudacao"></x-import></div>
       <div style="display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr)); gap: 14px; width: 1250px;">
         <sc-for list="{{buttons}}" as="b" hint-placeholder-count="5">
           <a href="{{b.href}}" title="{{b.tip}}" style="box-sizing: border-box; min-height: 150px; padding: 16px 16px 14px; background: {{b.bg}}; border: 1px solid {{b.line}}; border-radius: 16px; text-decoration: none; color: var(--av-ink, #e9edf2); display: flex; flex-direction: column; justify-content: space-between; gap: 12px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 30px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.35 * var(--av-shadow-k, 1))); transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, box-shadow .35s;" style-hover="transform: translateY(-4px); border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.55); box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 22px 44px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.5 * var(--av-shadow-k, 1))), 0 0 0 1px rgba(var(--av-plat-rgb, 217,222,230), 0.16);">
@@ -95,7 +97,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
               <sc-if value="{{m.hasActions}}" hint-placeholder-val="{{false}}">
                 <span style="display: flex; gap: 8px; flex-wrap: wrap; padding-top: 2px;">
                   <sc-for list="{{m.actions}}" as="x" hint-placeholder-count="1">
-                    <a href="{{x.href}}" style="height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); color: var(--av-accent, #409cff); font-size: 11px; letter-spacing: 0.12em; font-weight: 700; display: flex; align-items: center; text-decoration: none; transition: border-color .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.6);">{{x.l}} ›</a>
+                    <a href="{{x.href}}" target="{{x.target}}" rel="{{x.rel}}" style="height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.45); background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); color: var(--av-accent, #409cff); font-size: 11px; letter-spacing: 0.12em; font-weight: 700; display: flex; align-items: center; text-decoration: none; transition: border-color .3s;" style-hover="border-color: rgba(var(--av-plat-rgb, 217,222,230), 0.6);">{{x.l}} ›</a>
                   </sc-for>
                 </span>
               </sc-if>
@@ -155,6 +157,9 @@ class Component extends DCLogic {
   componentDidMount() {
     this._onHash = () => this.handleHash();
     window.addEventListener('hashchange', this._onHash);
+    // ENCERRAR no overlay de voz (avanti-voz.js): desliga a conversa ou o voz→texto em andamento.
+    this._onEncerra = () => { if (this.state.conversa) this.toggleConversa(); else if (this.rec) { this.stopRec(); this.setState({ listening: false }); } };
+    window.addEventListener('avanti-voz-encerrar', this._onEncerra);
     this.whenBrain(() => { this.setState({ atalhos: window.AvantiBrain.loadShortcuts() }); this.handleHash(); });
   }
   handleHash() {
@@ -175,6 +180,7 @@ class Component extends DCLogic {
   componentWillUnmount() {
     this._dead = true;
     window.removeEventListener('hashchange', this._onHash);
+    window.removeEventListener('avanti-voz-encerrar', this._onEncerra);
     this.stopRec();
     (this._pend || []).forEach(clearTimeout); clearTimeout(this._fl);
     if (this._raf) cancelAnimationFrame(this._raf);
@@ -193,7 +199,7 @@ class Component extends DCLogic {
     const h = React.createElement;
     this._fx = {
       sweep: h('div', { key: 'sweep', 'aria-hidden': 'true', style: { position: 'absolute', top: 0, bottom: 0, left: 0, width: '16%', background: 'linear-gradient(90deg, rgba(var(--av-hl-rgb, 255,255,255), 0) 0%, rgba(var(--av-hl-rgb, 255,255,255), 0.55) 50%, rgba(var(--av-hl-rgb, 255,255,255), 0) 100%)', mixBlendMode: 'overlay', animation: 'avantiSweep 6.5s cubic-bezier(.3,.1,.2,1) infinite', pointerEvents: 'none' } }),
-      led: h('span', { key: 'led', 'aria-hidden': 'true', style: { width: 8, height: 8, borderRadius: '50%', background: 'var(--av-accent, #409cff)', animation: 'avantiPulse 2.4s ease-in-out infinite', display: 'inline-block' } }),
+      led: h('span', { key: 'led', 'aria-hidden': 'true', style: { width: 8, height: 8, borderRadius: '50%', background: 'var(--av-accent, #409cff)', animation: 'avantiVivo 2s ease-in-out infinite', display: 'inline-block' } }),
       orbit: h('span', { key: 'orbit', 'aria-hidden': 'true', style: { width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(var(--av-plat-rgb, 217,222,230), 0.18)', borderTopColor: 'var(--av-plat, #d9dee6)', animation: 'avantiOrbit 1s linear infinite', display: 'inline-block' } }),
       spot: h('div', { key: 'spot', ref: this.spotRef, 'aria-hidden': 'true', style: { position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0, transition: 'opacity .5s', background: 'radial-gradient(560px circle at 50% 30%, rgba(var(--av-plat-rgb, 217,222,230), 0.08), rgba(var(--av-accent-rgb, 64,156,255), 0.05) 35%, rgba(var(--av-bg-rgb, 5,7,11), 0) 65%)' } })
     };
@@ -313,7 +319,7 @@ class Component extends DCLogic {
       onFoto: (e) => this.onFile('foto', e), onVideo: (e) => this.onFile('video', e),
       status: s.conversa ? 'CONVERSA ATIVA · OUVINDO · RESPONDO EM VOZ · TOQUE EM CONVERSA PARA ENCERRAR' : s.listening ? 'OUVINDO… FALE A PERGUNTA · TOQUE DE NOVO PARA ENVIAR' : s.note ? s.note.toUpperCase() : att ? 'ANEXO PRONTO · DESCREVA EM UMA FRASE E ENVIE' : 'ATALHOS · UM TOQUE ENVIA · EDITÁVEIS',
       statusTone: s.conversa || s.listening ? 'var(--av-accent, #409cff)' : s.note ? 'var(--av-warn, #f0a63a)' : 'var(--av-ink4, #7d8796)',
-      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: m.actions || [], hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : CARD, line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.10)', k: m.role === 'user' ? (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto').toUpperCase() : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
+      thread: s.thread.map((m) => ({ text: m.text, src: m.src || '', actions: (m.actions || []).map((x) => ({ l: x.l, href: x.href, target: x.ext ? '_blank' : '_self', rel: x.ext ? 'noopener' : '' })), hasActions: !!(m.actions && m.actions.length), justify: m.role === 'user' ? 'flex-end' : 'flex-start', bg: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.10)' : CARD, line: m.role === 'user' ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' : 'rgba(var(--av-hl-rgb, 255,255,255), 0.10)', k: m.role === 'user' ? (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto').toUpperCase() : 'AVANTI VESSEL AI', ktone: m.role === 'user' ? 'var(--av-accent, #409cff)' : 'var(--av-ink3, #9aa3af)' })),
       chips: atalhos.map((a) => ({ l: a.l, q: a.q, onClick: () => this.ask(a.q, a.id) })),
       buttons: [
         { n: '1 · CONSOLE', eq: 'Telemetria · manutenção · documentos · diário', tip: 'Console completo — telemetria ao vivo, manutenção, documentos, abastecimento e diário de bordo', chip: '2 ATRASADAS', href: 'A1-Ponte-Web.dc.html', d: 'M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5', tone: 'var(--av-accent, #409cff)', bg: 'linear-gradient(180deg, rgba(var(--av-accent-rgb, 64,156,255), 0.16) 0%, rgba(var(--av-accent-rgb, 64,156,255), 0.06) 100%)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.55)', ctone: 'var(--av-crit, #ff3b30)', cline: 'rgba(var(--av-crit-rgb, 255,59,48), 0.45)', cwash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.10)' },

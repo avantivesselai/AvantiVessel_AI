@@ -15,18 +15,34 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #05070b; -webkit-font-smoothing: antialiased; }
 a { color: #409cff; } a:hover { color: #6fb3ff; }
 button { font: inherit; }
+@keyframes avantiSirene { 0%, 100% { opacity: 0.10; } 50% { opacity: 1; } }
+@keyframes avantiGiro { to { transform: rotate(360deg); } }
+@keyframes avantiFaroE { 0%, 50%, 100% { opacity: 0.12; } 12%, 34% { opacity: 1; } }
+@keyframes avantiFaroD { 0%, 50%, 100% { opacity: 1; } 62%, 84% { opacity: 0.12; } }
+@keyframes avantiCupula { 0%, 100% { fill-opacity: 0.45; } 50% { fill-opacity: 1; } }
+@keyframes avantiHalo { 0%, 100% { transform: scale(0.72); opacity: 0.12; } 50% { transform: scale(1.12); opacity: 0.7; } }
+@keyframes avantiBrilho { 0%, 100% { box-shadow: 0 0 0 1px rgba(255,90,80,0.25), 0 10px 30px rgba(255,40,30,0.25); } 50% { box-shadow: 0 0 0 1px rgba(255,120,110,0.6), 0 0 46px rgba(255,40,30,0.75); } }
+.av-sirene { animation: avantiSirene 1.4s ease-in-out infinite; }
+.av-giro { animation: avantiGiro 2.8s linear infinite; }
+.av-faro-e { animation: avantiFaroE 1.4s linear infinite; }
+.av-faro-d { animation: avantiFaroD 1.4s linear infinite; }
+.av-cupula { animation: avantiCupula 1.4s ease-in-out infinite; }
+.av-halo { transform-box: fill-box; transform-origin: center; animation: avantiHalo 1.4s ease-in-out infinite; }
+.av-brilho { animation: avantiBrilho 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .av-sirene, .av-faro-e, .av-faro-d, .av-cupula, .av-halo, .av-brilho { animation-duration: 3.2s; } .av-giro { animation: none; } }
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #05070b; color: #e9edf2; overflow: hidden; padding: 14px 16px 18px; gap: 10px;">
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #05070b; color: #e9edf2; overflow: hidden; position: relative; isolation: isolate; padding: 14px 16px 18px; gap: 10px;">
+  <div aria-hidden="true" style="position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; opacity: {{sireneOp}}; transition: opacity .5s;">
+    <div class="av-sirene" style="position: absolute; inset: 0; background: radial-gradient(ellipse 120% 50% at 50% 0%, rgba(255,40,30,0.62) 0%, rgba(255,40,30,0) 72%), radial-gradient(ellipse 120% 42% at 50% 100%, rgba(255,40,30,0.42) 0%, rgba(255,40,30,0) 72%), rgba(150,8,4,0.30);"></div>
+    <div class="av-giro" style="position: absolute; left: 50%; top: 11%; width: 1300px; height: 1300px; margin: -650px 0 0 -650px; background: conic-gradient(rgba(255,60,45,0) 0deg, rgba(255,60,45,0.30) 18deg, rgba(255,60,45,0) 44deg, rgba(255,60,45,0) 180deg, rgba(255,60,45,0.30) 198deg, rgba(255,60,45,0) 224deg, rgba(255,60,45,0) 360deg);"></div>
+  </div>
 
-  <div style="flex-shrink: 0; box-sizing: border-box; padding: 16px 16px 18px; background: #d32f27; border-radius: 22px; display: flex; flex-direction: column; gap: 12px; color: #ffffff;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span style="width: 12px; height: 12px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 0 5px rgba(255,255,255,0.28);"></span>
-      <span style="flex-grow: 1; font-size: 12px; font-weight: 800; letter-spacing: 0.10em;">ALARME SONORO ATIVO</span>
-      <a href="H2-Home-Mobile.dc.html" aria-label="Fechar" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px;">✕</a>
-    </div>
-    <span style="font-size: 30px; font-weight: 800; letter-spacing: 0.06em; line-height: 1;">EMERGÊNCIA</span>
-    <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; color: #ffd6d3;">{{marca}}</span>
+  <div class="av-brilho" style="position: relative; flex-shrink: 0; box-sizing: border-box; padding: 16px 16px 16px; background: #d32f27; border-radius: 22px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #ffffff; text-align: center;">
+    <a href="H2-Home-Mobile.dc.html" aria-label="Fechar" style="position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.18); color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px;">✕</a>
+    <svg width="56" height="56" viewBox="0 0 64 64" fill="none" role="img" aria-label="Luz de alerta" style="display: block; overflow: visible; flex-shrink: 0;"><circle class="av-halo" cx="32" cy="34" r="24" style="fill: rgba(255,255,255,0.55);"></circle><path class="av-faro-e" d="M14 23L6 18 M12 33H3 M14 43L6 48" stroke-width="3.2" stroke-linecap="round" style="stroke: #ffffff;"></path><path class="av-faro-d" d="M50 23L58 18 M52 33H61 M50 43L58 48" stroke-width="3.2" stroke-linecap="round" style="stroke: #ffffff;"></path><path class="av-cupula" d="M20 46V32a12 12 0 0 1 24 0v14z" style="fill: #ffffff;"></path><path d="M20 46V32a12 12 0 0 1 24 0v14z" stroke-width="2" stroke-linejoin="round" style="stroke: #ffffff;"></path><path d="M26 32a6 6 0 0 1 6-6" stroke-width="2.4" stroke-linecap="round" style="stroke: rgba(255,255,255,0.85);"></path><rect x="13" y="46" width="38" height="8" rx="2.5" style="fill: rgba(255,255,255,0.92);"></rect></svg>
+    <span style="font-size: 30px; font-weight: 800; letter-spacing: 0.08em; line-height: 1;">EMERGÊNCIA</span>
+    <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; color: #ffd6d3; line-height: 1.4;">{{marca}}</span>
   </div>
 
   <div style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
@@ -126,7 +142,7 @@ class Component extends DCLogic {
       mayday: s.mayday, toggleMayday: () => this.setState({ mayday: !s.mayday }), maydayLabel: s.mayday ? 'FECHAR ROTEIRO' : 'CANAL 16 · MAYDAY',
       // Roteiro lido no canal 16: a posição salva é o último fix (20/09 23:01), não a atual — manda ler o plotter
       roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 20/09 23:01)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
-      silence: () => this.silence(), muted: s.left > 0, silenceLabel: s.left > 0 ? 'Silenciado · ' + s.left + ' s' : 'Silenciar 60 s', silenceLine: s.left > 0 ? 'rgba(240,166,58,0.55)' : '#2a3240', silenceTone: s.left > 0 ? '#f0a63a' : '#e9edf2'
+      silence: () => this.silence(), muted: s.left > 0, silenceLabel: s.left > 0 ? 'Sirene pausada · ' + s.left + ' s' : 'Pausar sirene 60 s', sireneOp: s.left > 0 ? 0 : 1, silenceLine: s.left > 0 ? 'rgba(240,166,58,0.55)' : '#2a3240', silenceTone: s.left > 0 ? '#f0a63a' : '#e9edf2'
     };
   }
   renderVals() { return this.protoVals(); }

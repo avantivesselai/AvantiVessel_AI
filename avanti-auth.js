@@ -6,7 +6,7 @@
 (function () {
   if (window.AvantiAuth) return;
 
-  var VERSAO = { v: '1.2.0', data: '25/09/2026' };
+  var VERSAO = { v: '1.3.0', data: '25/09/2026' };
   var CREDITO = 'designed by Wonder BOAT | Wonder HUB.AI';
 
   // Senha verificada por PBKDF2 (210.000 iterações, SHA-256, 32 bytes). Trocar senha = gerar sal e hash novos.
@@ -142,8 +142,23 @@
     if (e && e.persisted && !ehLogin() && !noEditor() && !lerSessao()) paraLogin();
   });
 
+  // Saudação: uma frase sorteada a cada carregamento de página (nunca a mesma da vez anterior neste aparelho).
+  var FRASES = ['Isso é High Tech!', 'Navegar é preciso.', 'Vamos navegar em mares desconhecidos hoje?', 'Terra à vista!',
+    'Hoje está um verdadeiro mar de almirante.', 'À frente e AVANTI!', 'Hoje o mar não está pra peixe…', 'Quem tem um não tem nenhum.',
+    'Avançar, marujos!', 'Mar calmo nunca fez bom marinheiro!'];
+  var fraseDaVez = null;
+  function frase() {
+    if (fraseDaVez) return fraseDaVez;
+    var KS = 'avanti.saudacao.v1', ant = -1;
+    try { ant = parseInt(localStorage.getItem(KS), 10); } catch (e) {}
+    var i = Math.floor(Math.random() * (FRASES.length - 1));
+    if (i >= ant && ant >= 0 && ant < FRASES.length) i++; // pula a anterior sem viciar o sorteio
+    try { localStorage.setItem(KS, String(i)); } catch (e) {}
+    return (fraseDaVez = FRASES[i]);
+  }
+
   function logado() { return !!lerSessao(); }
-  window.AvantiAuth = { VERSAO: VERSAO, CREDITO: CREDITO, usuario: usuario, nome: nome, logado: logado, entrar: entrar, sair: sair, destinoSeguro: destinoSeguro, bloqueadoAte: bloqueadoAte, ehLogin: ehLogin };
+  window.AvantiAuth = { VERSAO: VERSAO, CREDITO: CREDITO, usuario: usuario, nome: nome, logado: logado, entrar: entrar, sair: sair, destinoSeguro: destinoSeguro, bloqueadoAte: bloqueadoAte, ehLogin: ehLogin, frase: frase, FRASES: FRASES };
 
   // Porta: sem sessão → login, antes de qualquer desenho.
   if (!ehLogin() && !noEditor() && !lerSessao()) { paraLogin(); return; }
@@ -158,6 +173,17 @@
     render() {
       var u = usuario() || publico('otto');
       var c = this.getAttribute('campo'); var t = c === 'ini' ? u.ini : c === 'completo' ? u.completo : u.nome;
+      if (this.textContent !== t) this.textContent = t;
+    }
+  });
+
+  // <avanti-saudacao> — “Olá, Otto. Terra à vista!”: nome do usuário logado + a frase sorteada neste carregamento.
+  if (!customElements.get('avanti-saudacao')) customElements.define('avanti-saudacao', class extends HTMLElement {
+    connectedCallback() { this._on = this.render.bind(this); window.addEventListener('avanti-sessao', this._on); this.render(); }
+    disconnectedCallback() { window.removeEventListener('avanti-sessao', this._on); }
+    render() {
+      var u = usuario() || publico('otto');
+      var t = '“Olá, ' + u.nome + '. ' + frase() + '”';
       if (this.textContent !== t) this.textContent = t;
     }
   });

@@ -17,6 +17,22 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
 button { font: inherit; }
+@keyframes avantiSirene { 0%, 100% { opacity: 0.10; } 50% { opacity: 1; } }
+@keyframes avantiGiro { to { transform: rotate(360deg); } }
+@keyframes avantiFaroE { 0%, 50%, 100% { opacity: 0.12; } 12%, 34% { opacity: 1; } }
+@keyframes avantiFaroD { 0%, 50%, 100% { opacity: 1; } 62%, 84% { opacity: 0.12; } }
+@keyframes avantiCupula { 0%, 100% { fill-opacity: 0.45; } 50% { fill-opacity: 1; } }
+@keyframes avantiHalo { 0%, 100% { transform: scale(0.72); opacity: 0.12; } 50% { transform: scale(1.12); opacity: 0.7; } }
+@keyframes avantiBrilho { 0%, 100% { box-shadow: 0 0 0 1px rgba(255,90,80,0.25), 0 10px 30px rgba(255,40,30,0.25); } 50% { box-shadow: 0 0 0 1px rgba(255,120,110,0.6), 0 0 46px rgba(255,40,30,0.75); } }
+.av-sirene { animation: avantiSirene 1.4s ease-in-out infinite; }
+.av-giro { animation: avantiGiro 2.8s linear infinite; }
+.av-faro-e { animation: avantiFaroE 1.4s linear infinite; }
+.av-faro-d { animation: avantiFaroD 1.4s linear infinite; }
+.av-cupula { animation: avantiCupula 1.4s ease-in-out infinite; }
+.av-halo { transform-box: fill-box; transform-origin: center; animation: avantiHalo 1.4s ease-in-out infinite; }
+.av-brilho { animation: avantiBrilho 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .av-sirene, .av-faro-e, .av-faro-d, .av-cupula, .av-halo, .av-brilho { animation-duration: 3.2s; } .av-giro { animation: none; } }
+@keyframes avantiVivo { 0%, 100% { opacity: 1; box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22), 0 0 10px rgba(var(--av-accent-rgb, 64,156,255), 0.7); } 50% { opacity: 0.18; box-shadow: 0 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0), 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0); } }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 </helmet>
@@ -29,15 +45,15 @@ button { font: inherit; }
     <b style="font-weight: 700;">AVANTI VESSEL</b>
   </a>
   <span style="flex-grow: 1;"></span>
-  <span style="display: flex; align-items: center; gap: 8px; color: var(--av-ink3, #9aa3af); font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--av-accent, #409cff); box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22);"></span>AO VIVO · 10 S</span>
+  <span style="display: flex; align-items: center; gap: 8px; color: var(--av-ink3, #9aa3af); font-weight: 600;"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: var(--av-accent, #409cff); animation: avantiVivo 2s ease-in-out infinite;"></span>AO VIVO · 10 S</span>
   <span style="color: var(--av-ink3, #9aa3af); font-weight: 600;">REG. 3813927725 · CASCO 51BR153</span>
-  <b style="font-variant-numeric: tabular-nums; font-size: 13px; letter-spacing: 0.04em;">23:01</b>
+  <x-import component-from-global-scope="avanti-hora-clima" from="./avanti-clima.js" tamanho="13" hint-size="190px,24px"></x-import>
   <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="34" hint-size="34px,34px"></x-import>
       <a href="G4-Equipe-Web.dc.html" aria-label="Perfil — equipe e acessos" style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); color: var(--av-accent, #409cff); font-size: 12px; font-weight: 800; letter-spacing: 0; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
 </header>
   <main style="flex-grow: 1; min-height: 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 40px 22px; background: radial-gradient(ellipse 55% 60% at 50% 0%, rgba(var(--av-accent-rgb, 64,156,255), 0.06) 0%, rgba(var(--av-bg-rgb, 5,7,11), 0) 60%);">
     <div style="display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 8px 30px 10px;"><svg viewBox="0 0 590 100" width="614" height="104" role="img" aria-label="AVANTI" style="display: block;"><defs><linearGradient id="wmS1SOSW104" x1="0" y1="0" x2="0" y2="1"><stop offset="0.12" style="stop-color: var(--av-wm-top, var(--av-wm-top, #ffffff));"></stop><stop offset="0.46" style="stop-color: var(--av-plat, var(--av-plat, #d9dee6));"></stop><stop offset="0.96" style="stop-color: var(--av-wm-bot, var(--av-wm-bot, #5d6673));"></stop></linearGradient></defs><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M112 0 L140 0 L168 67 L196 0 L223 0 L179 100 L156 100 Z M219 100 L265 0 L288 0 L334 100 L308 100 L277 27 L255 76 L277 76 L277 100 Z M348 0 L373 0 L421 58.6 L421 0 L447 0 L447 100 L421 100 L421 94.6 L373 39.4 L373 100 L348 100 Z M459 0 L551 0 L551 26 L518 26 L518 100 L491 100 L491 26 L459 26 Z M563 0 L590 0 L590 100 L563 100 Z" fill="url(#wmS1SOSW104)"></path></svg><div style="display: flex; align-items: baseline; gap: 0.34em; padding-left: 0.34em; font-size: 44px;"><span style="font-family: Montserrat, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: 0.34em; line-height: 1; color: var(--av-ink, #e9edf2); white-space: nowrap;">VESSEL</span><svg viewBox="0 0 156 100" width="48" height="31" role="img" aria-label="AI" style="display: block;"><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M129 0 L156 0 L156 100 L129 100 Z" style="fill: var(--av-accent, var(--av-accent, #409cff));"></path></svg></div></div>
-    <div style="font-style: italic; font-size: 22px; color: var(--av-greet, #8b94a1); margin: 10px 0 28px; font-weight: 400;">“Olá, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import>. Onde vamos hoje?”</div>
+    <div style="font-style: italic; font-size: 22px; color: var(--av-greet, #8b94a1); margin: 10px 0 28px; font-weight: 400; text-align: center;"><x-import component-from-global-scope="avanti-saudacao"></x-import></div>
 
     <div style="display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr)); gap: 14px; width: 1250px;">
       <sc-for list="{{buttons}}" as="b" hint-placeholder-count="5">
@@ -82,14 +98,17 @@ button { font: inherit; }
 <a href="S1-SOS-Web.dc.html" aria-label="SOS — emergência" style="position: absolute; right: 26px; bottom: 62px; width: 78px; height: 78px; border-radius: 50%; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 0 0 4px rgba(var(--av-crit-rgb, 255,59,48), 0.30), 0 0 0 10px rgba(var(--av-crit-rgb, 255,59,48), 0.10), 0 12px 32px rgba(var(--av-critfill-rgb, 211,47,39), 0.45); z-index: 30;"><span style="font-size: 18px; font-weight: 800; letter-spacing: 0.10em; line-height: 1;">SOS</span></a>
 
   <div style="position: absolute; inset: 0; background: rgba(var(--av-bg-rgb, 5,7,11), 0.86); backdrop-filter: blur(10px); z-index: 40; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto;">
-    <div style="width: 540px; flex-shrink: 0; margin: auto; box-sizing: border-box; background: var(--av-modal, #10141b); border: 2px solid rgba(var(--av-crit-rgb, 255,59,48), 0.6); border-radius: 18px; padding: 26px 28px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 80px rgba(var(--av-shadow-rgb, 0,0,0), calc(0.6 * var(--av-shadow-k, 1)));">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--av-crit, #ff3b30); box-shadow: 0 0 0 5px rgba(var(--av-crit-rgb, 255,59,48), 0.25);"></span>
-        <b style="font-size: 18px; letter-spacing: 0.12em; color: var(--av-crit, #ff3b30);">EMERGÊNCIA</b>
-        <span style="font-size: 10px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-crit, #ff3b30); border: 1px solid rgba(var(--av-crit-rgb, 255,59,48), 0.45); border-radius: 5px; padding: 3px 7px; display: flex; align-items: center; gap: 6px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z M15.5 8.5a5 5 0 0 1 0 7 M18.5 5.5a9 9 0 0 1 0 13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-crit, var(--av-crit, #ff3b30));"></path></svg> ALARME SONORO ATIVO</span>
-        <a href="Main.dc.html" aria-label="Fechar" style="margin-left: auto; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--av-ink3, #9aa3af); font-size: 20px; text-decoration: none; background: rgba(var(--av-hl-rgb, 255,255,255), 0.04);">✕</a>
+    <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
+      <div class="av-sirene" style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,40,30,0.55) 0%, rgba(255,40,30,0) 70%), radial-gradient(ellipse 60% 70% at 0% 100%, rgba(255,40,30,0.38) 0%, rgba(255,40,30,0) 70%), radial-gradient(ellipse 60% 70% at 100% 100%, rgba(255,40,30,0.38) 0%, rgba(255,40,30,0) 70%), rgba(150,8,4,0.26);"></div>
+      <div class="av-giro" style="position: absolute; left: 50%; top: 50%; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; background: conic-gradient(rgba(255,60,45,0) 0deg, rgba(255,60,45,0.22) 16deg, rgba(255,60,45,0) 40deg, rgba(255,60,45,0) 180deg, rgba(255,60,45,0.22) 196deg, rgba(255,60,45,0) 220deg, rgba(255,60,45,0) 360deg);"></div>
+    </div>
+    <div class="av-brilho" style="position: relative; z-index: 1; width: 540px; flex-shrink: 0; margin: auto; box-sizing: border-box; background: var(--av-modal, #10141b); border: 2px solid rgba(var(--av-crit-rgb, 255,59,48), 0.6); border-radius: 18px; padding: 26px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <svg width="60" height="60" viewBox="0 0 64 64" fill="none" role="img" aria-label="Luz de alerta" style="display: block; overflow: visible; flex-shrink: 0;"><circle class="av-halo" cx="32" cy="34" r="24" style="fill: rgba(var(--av-crit-rgb, 255,59,48), 0.55);"></circle><path class="av-faro-e" d="M14 23L6 18 M12 33H3 M14 43L6 48" stroke-width="3.2" stroke-linecap="round" style="stroke: var(--av-crit, #ff3b30);"></path><path class="av-faro-d" d="M50 23L58 18 M52 33H61 M50 43L58 48" stroke-width="3.2" stroke-linecap="round" style="stroke: var(--av-crit, #ff3b30);"></path><path class="av-cupula" d="M20 46V32a12 12 0 0 1 24 0v14z" style="fill: var(--av-crit, #ff3b30);"></path><path d="M20 46V32a12 12 0 0 1 24 0v14z" stroke-width="2" stroke-linejoin="round" style="stroke: var(--av-crit, #ff3b30);"></path><path d="M26 32a6 6 0 0 1 6-6" stroke-width="2.4" stroke-linecap="round" style="stroke: rgba(255,255,255,0.85);"></path><rect x="13" y="46" width="38" height="8" rx="2.5" style="fill: var(--av-ink3, #9aa3af);"></rect></svg>
+        <b style="font-size: 24px; letter-spacing: 0.14em; color: var(--av-crit, #ff3b30); line-height: 1;">EMERGÊNCIA</b>
+        <a href="Main.dc.html" aria-label="Fechar" style="position: absolute; top: -8px; right: -10px; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--av-ink3, #9aa3af); font-size: 20px; text-decoration: none; background: rgba(var(--av-hl-rgb, 255,255,255), 0.04);">✕</a>
       </div>
-      <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; color: var(--av-ink3, #9aa3af); letter-spacing: 0.04em;">{{marca}}</span>
+      <span style="font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; color: var(--av-ink3, #9aa3af); letter-spacing: 0.04em; text-align: center;">{{marca}}</span>
       <div style="display: flex; flex-direction: column; gap: 9px;">
         <sc-for list="{{proto}}" as="p" hint-placeholder-count="4">
           <button type="button" onClick="{{p.toggle}}" aria-expanded="{{p.open}}" style="display: flex; align-items: center; gap: 14px; padding: 13px 16px; background: {{p.bg}}; border: 1px solid {{p.line}}; border-radius: 12px; color: var(--av-ink, #e9edf2); min-height: 44px; cursor: pointer; text-align: left; font-family: inherit; width: 100%; box-sizing: border-box;">

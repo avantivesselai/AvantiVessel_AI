@@ -1,0 +1,10 @@
+# Publicar: npx wrangler deploy   (dentro desta pasta)
+# Segredo:  npx wrangler secret put ELEVENLABS_API_KEY
+name = "avanti-voz"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+ELEVENLABS_VOICE_ID = ""
+MODELO = "eleven_multilingual_v2"
+ORIGENS = "https://avantivesselai.github.io"
