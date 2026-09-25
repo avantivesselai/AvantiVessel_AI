@@ -477,8 +477,8 @@
     })(s.replace(/([.!?;])\s+/g, '$1\n').split('\n'), ' ', 0);
     return out;
   }
-  // Vigia de cada bloco a 1.25x (base antiga: 85 ms/letra a ~1x → 70) + 200 ms/dígito, porque número falado é longo.
-  function estimaMs(t) { return Math.min(45000, 1500 + t.length * 70 + (t.match(/\d/g) || []).length * 200); }
+  // Vigia de cada bloco a 1x: 95 ms/letra (folga sobre ~85 medidos) + 250 ms/dígito, porque número falado é longo.
+  function estimaMs(t) { return Math.min(60000, 2000 + t.length * 95 + (t.match(/\d/g) || []).length * 250); }
   var FALA = { gen: 0, timer: null, vivo: null, fila: [] };
   function calaTimers() { clearTimeout(FALA.timer); clearInterval(FALA.vivo); FALA.timer = FALA.vivo = null; }
   // onEnd dispara uma única vez, depois do último bloco (ou por erro/vigia). Nova fala ou stopSpeaking() trocam a geração: o onEnd antigo nunca dispara.
