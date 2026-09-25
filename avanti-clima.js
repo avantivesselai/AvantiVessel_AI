@@ -8,7 +8,7 @@
    Tocar no clima ou na maré abre o windy.com na posição do barco. */
 (function () {
   if (window.AvantiClima) return;
-  // Último fix do GPS (snapshot 20/09 23:01): 22°57,09'S 043°10,23'W
+  // Último fix do GPS (snapshot 25/09 13:40): 22°57,09'S 043°10,23'W
   var POS = { lat: -22.9515, lon: -43.1705 };
   // A grade do modelo de mar (≈ 8 km) pode tratar a baía como terra: tenta o barco, a entrada da baía e o mar aberto, nessa ordem.
   var MAR = [[-22.9515, -43.1705], [-22.945, -43.135], [-23.0, -43.15]];
