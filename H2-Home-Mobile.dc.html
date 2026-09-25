@@ -15,8 +15,8 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
 button { font: inherit; }
-@keyframes avantiNucleo { 0%, 100% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 12px rgba(53,224,255,0.30), inset 0 0 10px rgba(53,224,255,0.15); } 50% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 24px rgba(53,224,255,0.65), inset 0 0 14px rgba(53,224,255,0.30); } }
-@keyframes avantiNucleoOn { 0%, 100% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 20px rgba(53,224,255,0.7), inset 0 0 16px rgba(53,224,255,0.4); } 50% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 38px rgba(53,224,255,1), inset 0 0 22px rgba(53,224,255,0.6); } }
+@keyframes avantiNucleo { 0%, 100% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 10px rgba(53,224,255,0.22); } 50% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 16px rgba(53,224,255,0.38); } }
+@keyframes avantiNucleoOn { 0%, 100% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 14px rgba(53,224,255,0.45); } 50% { box-shadow: 0 0 0 3px rgb(var(--av-card2-rgb, 12,15,21)), 0 0 22px rgba(53,224,255,0.65); } }
 @keyframes avantiNucleoGira { to { transform: rotate(360deg); } }
 @keyframes avantiVivo { 0%, 100% { opacity: 1; box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22), 0 0 10px rgba(var(--av-accent-rgb, 64,156,255), 0.7); } 50% { opacity: 0.18; box-shadow: 0 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0), 0 0 0 rgba(var(--av-accent-rgb, 64,156,255), 0); } }
 input::placeholder { color: var(--av-ph, #4c5666); }
@@ -110,9 +110,9 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           </sc-for>
           <div style="position: relative; height: 58px; box-sizing: border-box; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 7px;">
             <button type="button" onClick="{{conv.onClick}}" aria-label="{{conv.aria}}" aria-pressed="{{conv.on}}" title="{{conv.aria}}" style="position: absolute; left: 50%; top: -27px; margin-left: -31px; width: 62px; height: 62px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(53,224,255,0.6); background: radial-gradient(circle, #0c2533 0%, #050b12 72%); animation: {{conv.anim}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; overflow: hidden;">
-              <span aria-hidden="true" style="position: absolute; inset: 3px; border-radius: 50%; background: conic-gradient(rgba(53,224,255,0) 0deg, rgba(53,224,255,0.95) 70deg, rgba(53,224,255,0) 92deg, rgba(53,224,255,0) 180deg, rgba(64,156,255,0.95) 250deg, rgba(64,156,255,0) 272deg); -webkit-mask: radial-gradient(circle, transparent 60%, #000 63%); mask: radial-gradient(circle, transparent 60%, #000 63%); animation: avantiNucleoGira {{conv.giro}} linear infinite;"></span>
-              <svg width="62" height="62" viewBox="0 0 62 62" aria-hidden="true" style="position: absolute; inset: -1px;"><circle cx="31" cy="31" r="20" fill="none" stroke="rgba(53,224,255,0.55)" stroke-width="1" stroke-dasharray="1.5 3"></circle><circle cx="31" cy="31" r="14.5" fill="rgba(53,224,255,0.10)" stroke="rgba(53,224,255,0.8)" stroke-width="1"></circle></svg>
-              <svg width="19" height="12.2" viewBox="0 0 156 100" aria-hidden="true" style="position: relative; filter: drop-shadow(0 0 4px rgba(53,224,255,0.95));"><path d="M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M129 0 L156 0 L156 100 L129 100 Z" fill="#ffffff"></path></svg>
+              <span aria-hidden="true" style="position: absolute; inset: 3px; border-radius: 50%; background: conic-gradient(rgba(53,224,255,0) 0deg, rgba(53,224,255,0.7) 80deg, rgba(53,224,255,0) 100deg, rgba(53,224,255,0) 360deg); -webkit-mask: radial-gradient(circle, transparent 64%, #000 66%); mask: radial-gradient(circle, transparent 64%, #000 66%); animation: avantiNucleoGira {{conv.giro}} linear infinite;"></span>
+              <span aria-hidden="true" style="position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(53,224,255,0.08); border: 1px solid rgba(53,224,255,0.45);"></span>
+              <img src="assets/logo_white.png" alt="" aria-hidden="true" style="position: relative; width: 40px; height: 9px; object-fit: contain; filter: drop-shadow(0 0 3px rgba(53,224,255,0.7));">
             </button>
             <span style="font-size: 9px; letter-spacing: 0.14em; font-weight: 800; color: var(--av-tele, #35c8f0); white-space: nowrap;">{{conv.l}}</span>
           </div>
@@ -247,7 +247,7 @@ class Component extends DCLogic {
           if (q) { const b = B.answer(q, { platform: 'app' }); if (b.key !== 'fallback' && b.key !== 'saudacao') a = { text: a.text + '\n\n' + b.text, src: b.src, actions: b.actions }; }
         } else a = B.answer(q, link ? { platform: 'app', id: id, commit: false } : { platform: 'app', id: id });
       } catch (e) { a = { text: 'Não consegui responder agora — SEM DADOS. Tente de novo.', src: '', actions: [] }; }
-      this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(a.text); });
+      this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(B.falaCurta ? B.falaCurta(a) : a.text); });
     }, 650);
     this._pend = (this._pend || []).concat([t]);
   }
@@ -349,7 +349,7 @@ class Component extends DCLogic {
       ],
       modesL: [dock(texto, 0), dock(modes[2], 1)], modesR: [dock(modes[0], 1), dock(modes[1], 2)],
       conv: { l: s.conversa ? 'ATIVA' : 'CONVERSA', on: s.conversa ? 'true' : 'false', aria: modes[3].aria, onClick: modes[3].onClick,
-        giro: s.conversa ? '0.9s' : '3.2s', anim: s.conversa ? 'avantiNucleoOn 1.1s ease-in-out infinite' : re === 'conversa' ? 'avantiNucleoOn 1.6s ease-in-out infinite' : 'avantiNucleo 3s ease-in-out infinite' }
+        giro: s.conversa ? '5s' : '14s', anim: s.conversa ? 'avantiNucleoOn 2.4s ease-in-out infinite' : re === 'conversa' ? 'avantiNucleoOn 2.4s ease-in-out infinite' : 'avantiNucleo 4s ease-in-out infinite' }
     };
   }
 }

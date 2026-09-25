@@ -272,6 +272,91 @@
   }
 
   var CANON = {}; ALL.forEach(function (x) { CANON[x.id] = norm(x.q).trim(); });
+
+  // ——— Base de conhecimento de bordo (base-conhecimento.json) ———
+  // Trechos técnicos extraídos dos manuais e guias do Drive (sem documentos sensíveis). Quando a resposta pronta não tem o dado,
+  // o chat e a voz buscam aqui (BM25 com sinônimos PT/EN) e respondem com o trecho e a fonte. Carrega em segundo plano; funciona offline (cache do SW).
+  var KB = { docs: null, carregando: false, df: {}, media: 1 };
+  var PARADAS = ' a o e as os um uma uns umas de da do das dos em no na nos nas por para pra com sem se que qual quais quando como onde quanto quantos quantas e ou ao aos a is the of to and in on for with is are be it this that from at by an or eu voce vc me meu minha tem ter tenho ha esta estao fica ser sao era foi faz fazer posso pode sobre mais muito barco embarcacao avanti vessel '.split(' ').reduce(function (m, w) { if (w) m[w] = 1; return m; }, {});
+  var SINONIMOS = {
+    gerador: ['onan', 'generator', 'mdkdp', 'genset'], estabilizador: ['seakeeper', 'gyro', 'giroscopio', 'stabilizer'], giroscopio: ['seakeeper', 'gyro'],
+    piloto: ['autopilot', 'reactor'], automatico: ['autopilot'], oleo: ['oil', 'lubrificante'], filtro: ['filter'], combustivel: ['fuel', 'diesel'], diesel: ['fuel'],
+    motor: ['engine', 'd8', 'ips'], motores: ['engine', 'd8', 'ips'], rotor: ['impeller'], impelidor: ['impeller'], bomba: ['pump'], porao: ['bilge'],
+    ar: ['dometic', 'climatizacao', 'chiller'], climatizacao: ['dometic', 'chiller', 'air'], condicionado: ['dometic', 'chiller'], incendio: ['fire', 'sea', 'smac'], fogo: ['fire', 'smac'],
+    bateria: ['battery', 'baterias'], baterias: ['battery'], ancora: ['anchor', 'windlass', 'molinete'], molinete: ['windlass', 'anchor'], guincho: ['windlass'],
+    falha: ['fault', 'erro', 'alarme'], erro: ['fault', 'falha'], alarme: ['alarm', 'falha'], codigo: ['code'], temperatura: ['temperature'], pressao: ['pressure'],
+    arrefecimento: ['coolant', 'refrigerante'], refrigerante: ['coolant'], agua: ['water'], zinco: ['anode', 'anodo'], anodo: ['anode', 'zinco'], helice: ['propeller'],
+    radar: ['fantom'], plotter: ['gpsmap', 'chartplotter'], som: ['fusion', 'audio'], audio: ['fusion'], radio: ['vhf'], vhf: ['radio', 'dsc'], ligar: ['start', 'partida', 'iniciar'],
+    partida: ['start'], desligar: ['stop', 'shutdown', 'parar'], manutencao: ['maintenance', 'service', 'revisao'], revisao: ['service', 'maintenance'], limpeza: ['cleaning'],
+    capacidade: ['capacity', 'litros', 'volume'], superaquecer: ['temperatura', 'overheat', 'arrefecimento', 'coolant'], superaquecimento: ['temperatura', 'overheat', 'arrefecimento', 'coolant'], esquentando: ['temperatura', 'arrefecimento'],
+    parear: ['emparelhar', 'pairing', 'conectar', 'conectando', 'conexao'], emparelhar: ['pairing', 'bluetooth'], alarm: ['alarme'], lubrificante: ['oil', 'oleo'], tanque: ['tank'], helm: ['leme'], leme: ['steering'], direcao: ['steering']
+  };
+  function raiz(w) { if (/^\d/.test(w)) return w; w = w.replace(/coes$/, 'cao').replace(/oes$/, 'ao').replace(/aes$/, 'ao'); return w.length > 4 ? w.replace(/(es|s)$/, '') : w; }
+  function tokens(t) {
+    return norm(t).replace(/[^a-z0-9]+/g, ' ').split(' ').filter(function (w) { return w && !PARADAS[w] && (w.length > 2 || /\d/.test(w)); }).map(raiz);
+  }
+  function carregaBase() {
+    if (KB.docs || KB.carregando || !window.fetch) return;
+    KB.carregando = true;
+    fetch('./base-conhecimento.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var lista = j && j.trechos; if (!lista || !lista.length) return;
+      var soma = 0, df = {};
+      lista.forEach(function (d) {
+        var sec = d.secao || '', tf = {}, tk = tokens(sec + ' ' + sec + ' ' + sec + ' ' + d.texto + ' ' + (d.fonte || ''));
+        d._lista = /invent[aá]rio|cat[aá]logo|[íi]ndice/i.test(d.fonte || '');
+        d._en = (' ' + d.texto.toLowerCase() + ' ').split(/\b(?:the|and|with|to|of|is|are|your|from)\b/).length > 6;
+        tk.forEach(function (w) { tf[w] = (tf[w] || 0) + 1; });
+        Object.keys(tf).forEach(function (w) { df[w] = (df[w] || 0) + 1; });
+        d._tf = tf; d._n = tk.length; soma += tk.length;
+      });
+      KB.df = df; KB.media = soma / lista.length; KB.docs = lista;
+    }).catch(function () {}).then(function () { KB.carregando = false; });
+  }
+  // Devolve até n trechos { d, nota } ou [] se nada for relevante o bastante.
+  var PROCEDIMENTO = /\b(como|o que fazer|procedimento|passo|trocar|troca|ligar|desligar|parear|alarme|falha|codigo|superaquec\w*|oleo|capacidade)\b/;
+  function buscaBase(q, n) {
+    if (!KB.docs) { carregaBase(); return []; }
+    var qs = tokens(q).filter(function (w, k, a) { return a.indexOf(w) === k; });
+    if (!qs.length) return [];
+    // cada palavra da pergunta vira um grupo (ela + sinônimos); o trecho precisa cobrir a maioria dos grupos
+    var grupos = qs.map(function (w) { var g = {}; g[w] = 1; (SINONIMOS[w] || []).forEach(function (x) { x = raiz(x); if (!g[x]) g[x] = 0.6; }); return g; });
+    var N = KB.docs.length, k1 = 1.2, b = 0.75, res = [], proc = PROCEDIMENTO.test(' ' + norm(q) + ' ');
+    KB.docs.forEach(function (d) {
+      var nota = 0, bateu = 0, secao = d._sec || (d._sec = ' ' + tokens(d.secao || '').join(' ') + ' '), naSecao = 0;
+      grupos.forEach(function (g) {
+        var melhor = 0;
+        for (var w in g) {
+          var f = d._tf[w]; if (!f) continue;
+          var idf = Math.log(1 + (N - KB.df[w] + 0.5) / (KB.df[w] + 0.5));
+          melhor = Math.max(melhor, g[w] * idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * d._n / KB.media)));
+          if (secao.indexOf(' ' + w + ' ') !== -1) naSecao++;
+        }
+        if (melhor > 0) { bateu++; nota += melhor; }
+      });
+      if (naSecao >= grupos.length) nota *= 1.6; // o título da seção cobre a pergunta inteira
+      if (d._lista && proc) nota *= 0.45;
+      if (nota > 0 && bateu >= Math.min(2, grupos.length) && bateu >= Math.ceil(grupos.length * 0.6)) res.push({ d: d, nota: nota });
+    });
+    res.sort(function (x, y) { return y.nota - x.nota; });
+    return res.slice(0, n || 3);
+  }
+  function citaFonte(d) { return d.fonte + (d.pag ? ', p. ' + d.pag : d.secao ? ' · ' + d.secao : ''); }
+  function trechoCurto(t, max) {
+    t = String(t || '').replace(/\s+/g, ' ').trim(); max = max || 480;
+    if (t.length <= max) return t;
+    var c = t.slice(0, max), m = c.match(/^[\s\S]*[.!?;](?=\s)/);
+    return (m && m[0].length > max * 0.5 ? m[0] : c.slice(0, c.lastIndexOf(' ')) + '…');
+  }
+  var GENERICAS = { gerador: 1, motores: 1, audio: 1, estabilizador: 1, eletronicos: 1, climatizacao: 1, dessalinizador: 1, eletrico: 1, porao: 1, ancora: 1, manual: 1, clima: 0 };
+  var ESPECIFICA = /\b(como|trocar|troca|substitu\w*|parear|pareamento|conectar|codigo|codigos|alarme|alarmes|erro|falha|falhas|defeito|superaquec\w*|oleo|filtro|impeller|impelidor|rotor|capacidade|litros|pressao|temperatura|onde fica|localiza\w*|procedimento|passo|reset\w*|calibr\w*|configur\w*|limp\w*|intervalo|torque|especifica\w*|viscosidade|bluetooth|dsc|mob|zinco|anodo|fusivel|disjuntor)\b/;
+  function respostaBase(q, p) {
+    var hits = buscaBase(q, 3); if (!hits.length) return null;
+    var h = hits[0].d, outros = hits.slice(1).filter(function (x) { return x.d.fonte !== h.fonte || x.d.pag !== h.pag; });
+    var text = trechoCurto(h.texto) + (outros.length ? '\nVeja também: ' + outros.map(function (x) { return citaFonte(x.d); }).join(' · ') : '');
+    return { text: text, src: 'Fonte: ' + citaFonte(h) + ' — base de conhecimento de bordo', actions: act(p, [['FAQ de bordo', 'faq']]), ref: citaFonte(h), ingles: !!h._en };
+  }
+  if (window.requestIdleCallback) requestIdleCallback(carregaBase, { timeout: 4000 }); else setTimeout(carregaBase, 1500);
+
   function answer(q, ctx) {
     ctx = ctx || {};
     var p = ctx.platform || 'web';
@@ -281,6 +366,8 @@
     if (!ANSWERS[key]) key = 'fallback';
     var a;
     try { a = ANSWERS[key](p, ctx, String(q || '').trim()); } catch (e) { key = 'fallback'; a = ANSWERS.fallback(p, ctx); }
+    // Sem resposta pronta, ou pergunta específica sobre um equipamento (como, código, óleo, alarme, onde fica…): o trecho do manual vale mais que o resumo genérico.
+    if (key === 'fallback' || (GENERICAS[key] && ESPECIFICA.test(' ' + norm(q) + ' '))) { var kb = null; try { kb = respostaBase(q, p); } catch (e) {} if (kb) { a = kb; key = 'base'; } }
     a.key = key;
     return a;
   }
@@ -450,8 +537,8 @@
     for (var j = 0; j < VOZ_PREF.length; j++) if (VOZ_PREF[j][0].test(id)) { n += VOZ_PREF[j][1]; break; }
     if (!on && v.localService === false) n -= 700; // sem internet a voz de rede não fala
     if (/eloquence/i.test(v.voiceURI || '') || /^(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i.test(nome)) n -= 50; // vozes-novidade da Apple
-    // mesmo nível de qualidade: voz masculina primeiro (mais perto do tom do Otto)
-    return n + (/antonio|felipe|donato|fabio|humberto|julio|nicolau|valerio|daniel|ricardo/i.test(nome) ? 30 : /francisca|thalita|luciana/i.test(nome) ? 10 : 0) + (v.default ? 1 : 0);
+    // voz masculina ganha de voz feminina do mesmo nível (natural/online), mas nunca de uma voz bem mais natural
+    return n + (/antonio|felipe|donato|fabio|humberto|julio|nicolau|valerio|daniel|ricardo/i.test(nome) ? 120 : 0) + (v.default ? 1 : 0);
   }
   function vozPtBr() {
     var ss = window.speechSynthesis, on = !(window.navigator && window.navigator.onLine === false), lista = [], best = null, nota = 0;
@@ -495,8 +582,17 @@
   function ditado(o) {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return null;
     o = o || {};
-    var pausa = o.pausa || 2500, feito = false, texto = '', interino = '', r = null, t = 0, tMax = 0, ouviu = false, rapidas = 0, ini = 0;
-    function atual() { return (texto + ' ' + interino).replace(/\s+/g, ' ').trim(); }
+    var pausa = o.pausa || 2500, feito = false, texto = '', sessao = '', r = null, t = 0, tMax = 0, ouviu = false, rapidas = 0, ini = 0;
+    function atual() { return (texto + ' ' + sessao).replace(/\s+/g, ' ').trim(); }
+    // O Chrome do Android devolve resultados acumulados ("você", "você tem", "você tem banco"…): somar tudo repetia palavras.
+    // Cada sessão é remontada do zero a partir de todos os resultados, e um trecho que continua o anterior o substitui.
+    function junta(lista, seg) {
+      var n = norm(seg).replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim(); if (!n) return;
+      var ult = lista.length ? norm(lista[lista.length - 1]).replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim() : null;
+      if (ult !== null && n.indexOf(ult) === 0) lista[lista.length - 1] = seg.trim();
+      else if (ult !== null && ult.indexOf(n) === 0) return;
+      else lista.push(seg.trim());
+    }
     function arma() { clearTimeout(t); t = setTimeout(function () { fim(); }, ouviu ? pausa : (o.espera || 8000)); }
     function solta() { clearTimeout(t); clearTimeout(tMax); var x = r; r = null; if (x) { try { x.onresult = x.onend = x.onerror = null; x.abort(); } catch (e) {} } }
     function fim() { if (feito) return; feito = true; var txt = atual(); solta(); solto(); evVoz(txt ? 'pensando' : 'livre', txt); if (o.fim) o.fim(txt); }
@@ -505,15 +601,17 @@
     function liga() {
       var x = r = new SR(); x.lang = 'pt-BR'; x.continuous = true; x.interimResults = true; x.maxAlternatives = 1; ini = Date.now();
       x.onresult = function (ev) {
-        if (x !== r) return; interino = '';
-        for (var i = ev.resultIndex; i < ev.results.length; i++) { var y = ev.results[i]; if (y.isFinal) texto += ' ' + y[0].transcript; else interino += ' ' + y[0].transcript; }
+        if (x !== r) return;
+        var partes = [];
+        for (var i = 0; i < ev.results.length; i++) junta(partes, String(ev.results[i][0].transcript || ''));
+        sessao = partes.join(' ');
         if (atual()) { ouviu = true; rapidas = 0; }
         if (o.parcial) o.parcial(atual()); evVoz('ouvindo', atual()); arma();
       };
       x.onerror = function (ev) { var e = ev && ev.error; if (x === r && (e === 'not-allowed' || e === 'service-not-allowed' || e === 'audio-capture')) falha(e); };
       x.onend = function () { // fim de sessão do navegador (não da pessoa): guarda o que ouviu e religa
         if (x !== r || feito) return;
-        texto = atual(); interino = '';
+        texto = atual(); sessao = '';
         rapidas = Date.now() - ini < 400 ? rapidas + 1 : 0;
         if (rapidas >= 4) { if (ouviu) fim(); else falha('no-speech'); return; }
         try { liga(); } catch (e) { fim(); }
@@ -537,58 +635,9 @@
     if (c.charAt(0) !== '+' && d.length <= 11) d = '55' + d.replace(/^0+/, '');
     return { canal: 'WhatsApp', contato: c, href: 'https://wa.me/' + d + '?text=' + encodeURIComponent(msg) };
   }
-  // ——— Voz em nuvem: a voz do Otto (clonada no ElevenLabs) ———
-  // O proxy em voz-worker/ guarda a chave da API e devolve o áudio em MP3; o site nunca vê a chave.
-  // VOZ_NUVEM vazio = voz do próprio aparelho. Para testar antes de publicar: localStorage 'avanti.voz.nuvem.v1' = URL do proxy.
-  // Sem internet, erro ou demora (> 9 s): cai na voz do aparelho sem perder a resposta.
-  var VOZ_NUVEM = '';
-  function urlNuvem() { var u = ''; try { u = localStorage.getItem('avanti.voz.nuvem.v1') || ''; } catch (e) {} u = u || VOZ_NUVEM; return /^https:\/\/[^\s]+$/i.test(u) ? u : ''; }
-  // ⚙ VOZ (overlay de voz): chave + Voice ID do ElevenLabs guardados SÓ neste aparelho — fala direto com o ElevenLabs, sem servidor.
-  // Tem prioridade sobre o proxy. vozEleven() lê; vozEleven({chave, voz}) grava; vozEleven(null) apaga.
-  var KV = 'avanti.voz.eleven.v1', VSTAT = { msg: '' };
-  function vozEleven(c) {
-    if (arguments.length) {
-      try { if (c && c.chave && c.voz) localStorage.setItem(KV, JSON.stringify({ chave: String(c.chave), voz: String(c.voz) })); else localStorage.removeItem(KV); } catch (e) {}
-      AUD.url = {}; AUD.ordem = []; VSTAT.msg = '';
-    }
-    var v = null; try { v = JSON.parse(localStorage.getItem(KV) || 'null'); } catch (e) {}
-    return v && v.chave && /^[A-Za-z0-9]{10,40}$/.test(v.voz || '') ? v : null;
-  }
-  function vozStatus() { return VSTAT.msg || (vozEleven() ? 'Voz do ElevenLabs ativa neste aparelho.' : 'Usando a voz do aparelho.'); }
-  function destinoVoz() { var e = vozEleven(); if (e) return { eleven: e }; var u = urlNuvem(); return u ? { url: u } : null; }
-  var AUDIO = null, AUD = { url: {}, ordem: [] };
-  function player() { if (!AUDIO) { AUDIO = new Audio(); AUDIO.preload = 'auto'; AUDIO.setAttribute('playsinline', ''); } return AUDIO; }
-  function paraAudio() { if (!AUDIO) return; try { AUDIO.onended = AUDIO.onerror = AUDIO.ontimeupdate = null; AUDIO.pause(); } catch (e) {} }
-  // iPhone só toca som que começou num toque: o primeiro toque na tela destrava o player que as respostas usam depois.
-  (function () {
-    var SILENCIO = 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQIAAAAAAA==';
-    function destrava() {
-      window.removeEventListener('pointerdown', destrava, true); window.removeEventListener('keydown', destrava, true);
-      if (!destinoVoz()) return;
-      var a = player(); if (a.src) return;
-      try { a.src = SILENCIO; var p = a.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
-    }
-    window.addEventListener('pointerdown', destrava, true); window.addEventListener('keydown', destrava, true);
-  })();
-  function pedeAudio(dest, fala) {
-    if (AUD.url[fala]) return Promise.resolve(AUD.url[fala]); // mesma frase (atalhos, "Conversa ativa"): não gasta de novo
-    var ctl = window.AbortController ? new AbortController() : null, tempo = setTimeout(function () { if (ctl) ctl.abort(); }, 9000);
-    var e = dest.eleven, req = e
-      ? fetch('https://api.elevenlabs.io/v1/text-to-speech/' + encodeURIComponent(e.voz) + '?output_format=mp3_44100_64', { method: 'POST', headers: { 'xi-api-key': e.chave, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
-        body: JSON.stringify({ text: fala, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.4, similarity_boost: 0.85, style: 0.3, use_speaker_boost: true } }), signal: ctl ? ctl.signal : undefined })
-      : fetch(dest.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto: fala }), signal: ctl ? ctl.signal : undefined });
-    return req
-      .then(function (r) { if (!r.ok) { VSTAT.msg = r.status === 401 ? 'Chave do ElevenLabs recusada (401).' : r.status === 404 ? 'Voice ID não encontrado — adicione a voz em My Voices.' : 'ElevenLabs respondeu ' + r.status + ' — usando a voz do aparelho.'; throw new Error('HTTP ' + r.status); } VSTAT.msg = 'Voz do ElevenLabs funcionando.'; return r.blob(); })
-      .then(function (b) {
-        clearTimeout(tempo);
-        if (!b || b.size < 200 || (b.type && !/^audio\//i.test(b.type))) throw new Error('sem áudio');
-        var u = URL.createObjectURL(b);
-        AUD.url[fala] = u; AUD.ordem.push(fala);
-        while (AUD.ordem.length > 24) { var v = AUD.ordem.shift(); try { URL.revokeObjectURL(AUD.url[v]); } catch (e) {} delete AUD.url[v]; }
-        return u;
-      }, function (e) { clearTimeout(tempo); throw e; });
-  }
-  // Legendas do diamante: o texto original (com siglas e números como na tela), linha a linha.
+  // Voz única do aparelho: apaga a chave/URL de voz em nuvem que versões anteriores guardavam neste aparelho.
+  try { localStorage.removeItem('avanti.voz.eleven.v1'); localStorage.removeItem('avanti.voz.nuvem.v1'); } catch (e) {}
+  // Legendas do núcleo de voz: o texto original (com siglas e números como na tela), linha a linha.
   function legendas(text) {
     var out = [];
     String(text || '').split(/\n+/).forEach(function (l) { l = l.trim(); if (l) out = out.concat(blocos(l)); });
@@ -596,12 +645,12 @@
   }
   function speak(text, onEnd) {
     var gen = ++FALA.gen, done = false, ss = window.speechSynthesis, i = 0, atual = null, tentou = {}, voz = null, partes = [], leg = legendas(text);
-    var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; FALA.pula = null; paraAudio(); evVoz('livre'); if (onEnd) onEnd(); };
+    var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; FALA.pula = null; evVoz('livre'); if (onEnd) onEnd(); };
     var vale = function (u) { return !done && gen === FALA.gen && u === atual; };
     var legenda = function (k, n) { return leg.length ? leg[Math.min(leg.length - 1, Math.floor(k * leg.length / Math.max(1, n)))] : ''; };
-    calaTimers(); FALA.fila = []; paraAudio();
+    calaTimers(); FALA.fila = [];
     // Tocar no diamante enquanto fala: encerra esta fala como se tivesse terminado (a conversa volta a ouvir).
-    FALA.pula = function () { if (done || gen !== FALA.gen) return; paraAudio(); try { if (ss) ss.cancel(); } catch (e) {} fin(); };
+    FALA.pula = function () { if (done || gen !== FALA.gen) return; try { if (ss) ss.cancel(); } catch (e) {} fin(); };
     function vigia(u, ms) { clearTimeout(FALA.timer); FALA.timer = setTimeout(function () { if (vale(u)) avanca(); }, ms); }
     function avanca() { if (++i >= partes.length) return fin(); try { fala(i); } catch (e) { fin(); } }
     function fala(k) {
@@ -638,34 +687,28 @@
         return true;
       } catch (e) { calaTimers(); setTimeout(fin, 0); return false; }
     }
-    var url = destinoVoz();
-    if (!url || (window.navigator && navigator.onLine === false) || !window.fetch || !window.URL || !URL.createObjectURL) return doAparelho();
-    var dita = falavel(text), nb = Math.max(1, blocos(dita).length);
-    if (!dita) { setTimeout(fin, 0); return false; }
-    evVoz('falando', legenda(0, 1));
-    pedeAudio(url, dita).then(function (src) {
-      if (done || gen !== FALA.gen) return;
-      var a = player(), ult = 0, comecou = false;
-      a.onended = function () { if (gen === FALA.gen) fin(); };
-      a.onerror = function () { if (gen === FALA.gen && !done) { paraAudio(); if (comecou) fin(); else doAparelho(); } };
-      a.ontimeupdate = function () {
-        if (gen !== FALA.gen || !a.duration || !isFinite(a.duration)) return;
-        comecou = true;
-        var k = Math.min(nb - 1, Math.floor(a.currentTime / a.duration * nb));
-        if (k !== ult) { ult = k; evVoz('falando', legenda(k, nb)); } else evVoz('pulso');
-      };
-      a.src = src;
-      var p = a.play(); if (p && p.catch) p.catch(function () { if (gen === FALA.gen && !done) { paraAudio(); doAparelho(); } });
-      clearTimeout(FALA.timer); FALA.timer = setTimeout(function () { if (gen === FALA.gen) fin(); }, estimaMs(dita) * 1.5 + 8000);
-    }).catch(function () { if (!VSTAT.msg || /funcionando/.test(VSTAT.msg)) VSTAT.msg = 'Sem conexão com a voz na nuvem — usando a voz do aparelho.'; if (gen === FALA.gen && !done) doAparelho(); });
-    return true;
+    return doAparelho();
   }
-  function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; FALA.pula = null; paraAudio(); try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} evVoz('livre'); }
-  // Abertura da conversa, de igual pra igual, no jeito carioca.
-  function abertura() {
-    var n = quem(), F = ['Fala, ' + n + '! Tô na escuta, manda aí.', 'E aí, ' + n + ', tranquilo? Pode falar.', 'Opa, comandante! Na escuta. Qual é a boa de hoje?', 'Fala, ' + n + '! Tô ligado, pode mandar.'];
-    return F[Math.floor(Math.random() * F.length)];
+  function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; FALA.pula = null; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} evVoz('livre'); }
+  // Abertura da conversa: curta, sem cerimônia.
+  function abertura() { return 'Pode falar.'; }
+  // Fala direta: na voz vai só o essencial (a 1ª linha da resposta, sem fontes); o texto completo fica na tela.
+  // Emergência (SOS, pressão de óleo) é lida inteira — segurança vem antes da concisão.
+  var FALA_INTEIRA = { sos: 1, oleo: 1, epirb: 1 };
+  function falaCurta(a) {
+    var t = a && typeof a === 'object' ? a.text : a;
+    if (a && a.key && FALA_INTEIRA[a.key]) return String(t || '');
+    if (a && a.key === 'base' && a.ingles) return 'Está no ' + String(a.ref || 'manual').replace(/, p\. /, ', página ').replace(/ · .*$/, '') + ', em inglês. Mostrei o trecho na tela.';
+    var item = function (l) { return l.replace(/^(\d+[.)]|•|-)\s*/, '').replace(/\s*\([^)]*\)/g, '').trim(); };
+    var ls = String(t || '').split(/\n+/).map(function (l) { return l.trim(); }).filter(function (l) { return l && !/^fonte\b/i.test(l); });
+    var r = (ls[0] || '').replace(/\s*\([^)]*\)/g, ''), extra = [];
+    if (/ressalva/i.test(r)) extra = ls.filter(function (l) { return /ressalva\s*\d/i.test(l); }).map(function (l) { return item(l).replace(/^ressalva\s*\d+:\s*/i, '').split(' — ')[0]; });
+    else if (/:$/.test(r)) { r = r.replace(/:$/, ''); extra = ls.slice(1, 3).filter(function (l) { return /^(\d+[.)]|•|-)/.test(l); }).map(item); }
+    if (extra.length) r = r.replace(/[.]$/, '') + ': ' + extra.join('; ') + '.';
+    if (r.length > 220) { var m = r.slice(0, 220).match(/^[\s\S]*[.!?;]/); r = m ? m[0] : r.slice(0, r.lastIndexOf(' ', 220)) + '.'; }
+    return r;
   }
+
   // Controles do overlay de voz (avanti-voz.js)
   function vozEnviar() { if (ESCUTA.rec) ESCUTA.rec.parar(); }
   function pularFala() { if (FALA.pula) FALA.pula(); }
@@ -675,6 +718,6 @@
     stopSpeaking();
   }
 
-  window.AvantiBrain = { BASE: BASE, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, vozEleven: vozEleven, vozStatus: vozStatus, abertura: abertura, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, urlNuvem: urlNuvem, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
+  window.AvantiBrain = { BASE: BASE, buscaBase: buscaBase, carregaBase: carregaBase, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, abertura: abertura, falaCurta: falaCurta, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();
