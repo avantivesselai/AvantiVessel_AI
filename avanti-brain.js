@@ -450,8 +450,8 @@
     for (var j = 0; j < VOZ_PREF.length; j++) if (VOZ_PREF[j][0].test(id)) { n += VOZ_PREF[j][1]; break; }
     if (!on && v.localService === false) n -= 700; // sem internet a voz de rede não fala
     if (/eloquence/i.test(v.voiceURI || '') || /^(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley)\b/i.test(nome)) n -= 50; // vozes-novidade da Apple
-    // mesmo nível de qualidade: voz masculina primeiro (mais perto do tom do Otto)
-    return n + (/antonio|felipe|donato|fabio|humberto|julio|nicolau|valerio|daniel|ricardo/i.test(nome) ? 30 : /francisca|thalita|luciana/i.test(nome) ? 10 : 0) + (v.default ? 1 : 0);
+    // voz masculina ganha de voz feminina do mesmo nível (natural/online), mas nunca de uma voz bem mais natural
+    return n + (/antonio|felipe|donato|fabio|humberto|julio|nicolau|valerio|daniel|ricardo/i.test(nome) ? 120 : 0) + (v.default ? 1 : 0);
   }
   function vozPtBr() {
     var ss = window.speechSynthesis, on = !(window.navigator && window.navigator.onLine === false), lista = [], best = null, nota = 0;
@@ -537,58 +537,9 @@
     if (c.charAt(0) !== '+' && d.length <= 11) d = '55' + d.replace(/^0+/, '');
     return { canal: 'WhatsApp', contato: c, href: 'https://wa.me/' + d + '?text=' + encodeURIComponent(msg) };
   }
-  // ——— Voz em nuvem: a voz do Otto (clonada no ElevenLabs) ———
-  // O proxy em voz-worker/ guarda a chave da API e devolve o áudio em MP3; o site nunca vê a chave.
-  // VOZ_NUVEM vazio = voz do próprio aparelho. Para testar antes de publicar: localStorage 'avanti.voz.nuvem.v1' = URL do proxy.
-  // Sem internet, erro ou demora (> 9 s): cai na voz do aparelho sem perder a resposta.
-  var VOZ_NUVEM = '';
-  function urlNuvem() { var u = ''; try { u = localStorage.getItem('avanti.voz.nuvem.v1') || ''; } catch (e) {} u = u || VOZ_NUVEM; return /^https:\/\/[^\s]+$/i.test(u) ? u : ''; }
-  // ⚙ VOZ (overlay de voz): chave + Voice ID do ElevenLabs guardados SÓ neste aparelho — fala direto com o ElevenLabs, sem servidor.
-  // Tem prioridade sobre o proxy. vozEleven() lê; vozEleven({chave, voz}) grava; vozEleven(null) apaga.
-  var KV = 'avanti.voz.eleven.v1', VSTAT = { msg: '' };
-  function vozEleven(c) {
-    if (arguments.length) {
-      try { if (c && c.chave && c.voz) localStorage.setItem(KV, JSON.stringify({ chave: String(c.chave), voz: String(c.voz) })); else localStorage.removeItem(KV); } catch (e) {}
-      AUD.url = {}; AUD.ordem = []; VSTAT.msg = '';
-    }
-    var v = null; try { v = JSON.parse(localStorage.getItem(KV) || 'null'); } catch (e) {}
-    return v && v.chave && /^[A-Za-z0-9]{10,40}$/.test(v.voz || '') ? v : null;
-  }
-  function vozStatus() { return VSTAT.msg || (vozEleven() ? 'Voz do ElevenLabs ativa neste aparelho.' : 'Usando a voz do aparelho.'); }
-  function destinoVoz() { var e = vozEleven(); if (e) return { eleven: e }; var u = urlNuvem(); return u ? { url: u } : null; }
-  var AUDIO = null, AUD = { url: {}, ordem: [] };
-  function player() { if (!AUDIO) { AUDIO = new Audio(); AUDIO.preload = 'auto'; AUDIO.setAttribute('playsinline', ''); } return AUDIO; }
-  function paraAudio() { if (!AUDIO) return; try { AUDIO.onended = AUDIO.onerror = AUDIO.ontimeupdate = null; AUDIO.pause(); } catch (e) {} }
-  // iPhone só toca som que começou num toque: o primeiro toque na tela destrava o player que as respostas usam depois.
-  (function () {
-    var SILENCIO = 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQIAAAAAAA==';
-    function destrava() {
-      window.removeEventListener('pointerdown', destrava, true); window.removeEventListener('keydown', destrava, true);
-      if (!destinoVoz()) return;
-      var a = player(); if (a.src) return;
-      try { a.src = SILENCIO; var p = a.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
-    }
-    window.addEventListener('pointerdown', destrava, true); window.addEventListener('keydown', destrava, true);
-  })();
-  function pedeAudio(dest, fala) {
-    if (AUD.url[fala]) return Promise.resolve(AUD.url[fala]); // mesma frase (atalhos, "Conversa ativa"): não gasta de novo
-    var ctl = window.AbortController ? new AbortController() : null, tempo = setTimeout(function () { if (ctl) ctl.abort(); }, 9000);
-    var e = dest.eleven, req = e
-      ? fetch('https://api.elevenlabs.io/v1/text-to-speech/' + encodeURIComponent(e.voz) + '?output_format=mp3_44100_64', { method: 'POST', headers: { 'xi-api-key': e.chave, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
-        body: JSON.stringify({ text: fala, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.4, similarity_boost: 0.85, style: 0.3, use_speaker_boost: true } }), signal: ctl ? ctl.signal : undefined })
-      : fetch(dest.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto: fala }), signal: ctl ? ctl.signal : undefined });
-    return req
-      .then(function (r) { if (!r.ok) { VSTAT.msg = r.status === 401 ? 'Chave do ElevenLabs recusada (401).' : r.status === 404 ? 'Voice ID não encontrado — adicione a voz em My Voices.' : 'ElevenLabs respondeu ' + r.status + ' — usando a voz do aparelho.'; throw new Error('HTTP ' + r.status); } VSTAT.msg = 'Voz do ElevenLabs funcionando.'; return r.blob(); })
-      .then(function (b) {
-        clearTimeout(tempo);
-        if (!b || b.size < 200 || (b.type && !/^audio\//i.test(b.type))) throw new Error('sem áudio');
-        var u = URL.createObjectURL(b);
-        AUD.url[fala] = u; AUD.ordem.push(fala);
-        while (AUD.ordem.length > 24) { var v = AUD.ordem.shift(); try { URL.revokeObjectURL(AUD.url[v]); } catch (e) {} delete AUD.url[v]; }
-        return u;
-      }, function (e) { clearTimeout(tempo); throw e; });
-  }
-  // Legendas do diamante: o texto original (com siglas e números como na tela), linha a linha.
+  // Voz única do aparelho: apaga a chave/URL de voz em nuvem que versões anteriores guardavam neste aparelho.
+  try { localStorage.removeItem('avanti.voz.eleven.v1'); localStorage.removeItem('avanti.voz.nuvem.v1'); } catch (e) {}
+  // Legendas do núcleo de voz: o texto original (com siglas e números como na tela), linha a linha.
   function legendas(text) {
     var out = [];
     String(text || '').split(/\n+/).forEach(function (l) { l = l.trim(); if (l) out = out.concat(blocos(l)); });
@@ -596,12 +547,12 @@
   }
   function speak(text, onEnd) {
     var gen = ++FALA.gen, done = false, ss = window.speechSynthesis, i = 0, atual = null, tentou = {}, voz = null, partes = [], leg = legendas(text);
-    var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; FALA.pula = null; paraAudio(); evVoz('livre'); if (onEnd) onEnd(); };
+    var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; FALA.pula = null; evVoz('livre'); if (onEnd) onEnd(); };
     var vale = function (u) { return !done && gen === FALA.gen && u === atual; };
     var legenda = function (k, n) { return leg.length ? leg[Math.min(leg.length - 1, Math.floor(k * leg.length / Math.max(1, n)))] : ''; };
-    calaTimers(); FALA.fila = []; paraAudio();
+    calaTimers(); FALA.fila = [];
     // Tocar no diamante enquanto fala: encerra esta fala como se tivesse terminado (a conversa volta a ouvir).
-    FALA.pula = function () { if (done || gen !== FALA.gen) return; paraAudio(); try { if (ss) ss.cancel(); } catch (e) {} fin(); };
+    FALA.pula = function () { if (done || gen !== FALA.gen) return; try { if (ss) ss.cancel(); } catch (e) {} fin(); };
     function vigia(u, ms) { clearTimeout(FALA.timer); FALA.timer = setTimeout(function () { if (vale(u)) avanca(); }, ms); }
     function avanca() { if (++i >= partes.length) return fin(); try { fala(i); } catch (e) { fin(); } }
     function fala(k) {
@@ -638,34 +589,27 @@
         return true;
       } catch (e) { calaTimers(); setTimeout(fin, 0); return false; }
     }
-    var url = destinoVoz();
-    if (!url || (window.navigator && navigator.onLine === false) || !window.fetch || !window.URL || !URL.createObjectURL) return doAparelho();
-    var dita = falavel(text), nb = Math.max(1, blocos(dita).length);
-    if (!dita) { setTimeout(fin, 0); return false; }
-    evVoz('falando', legenda(0, 1));
-    pedeAudio(url, dita).then(function (src) {
-      if (done || gen !== FALA.gen) return;
-      var a = player(), ult = 0, comecou = false;
-      a.onended = function () { if (gen === FALA.gen) fin(); };
-      a.onerror = function () { if (gen === FALA.gen && !done) { paraAudio(); if (comecou) fin(); else doAparelho(); } };
-      a.ontimeupdate = function () {
-        if (gen !== FALA.gen || !a.duration || !isFinite(a.duration)) return;
-        comecou = true;
-        var k = Math.min(nb - 1, Math.floor(a.currentTime / a.duration * nb));
-        if (k !== ult) { ult = k; evVoz('falando', legenda(k, nb)); } else evVoz('pulso');
-      };
-      a.src = src;
-      var p = a.play(); if (p && p.catch) p.catch(function () { if (gen === FALA.gen && !done) { paraAudio(); doAparelho(); } });
-      clearTimeout(FALA.timer); FALA.timer = setTimeout(function () { if (gen === FALA.gen) fin(); }, estimaMs(dita) * 1.5 + 8000);
-    }).catch(function () { if (!VSTAT.msg || /funcionando/.test(VSTAT.msg)) VSTAT.msg = 'Sem conexão com a voz na nuvem — usando a voz do aparelho.'; if (gen === FALA.gen && !done) doAparelho(); });
-    return true;
+    return doAparelho();
   }
-  function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; FALA.pula = null; paraAudio(); try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} evVoz('livre'); }
-  // Abertura da conversa, de igual pra igual, no jeito carioca.
-  function abertura() {
-    var n = quem(), F = ['Fala, ' + n + '! Tô na escuta, manda aí.', 'E aí, ' + n + ', tranquilo? Pode falar.', 'Opa, comandante! Na escuta. Qual é a boa de hoje?', 'Fala, ' + n + '! Tô ligado, pode mandar.'];
-    return F[Math.floor(Math.random() * F.length)];
+  function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; FALA.pula = null; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} evVoz('livre'); }
+  // Abertura da conversa: curta, sem cerimônia.
+  function abertura() { return 'Pode falar.'; }
+  // Fala direta: na voz vai só o essencial (a 1ª linha da resposta, sem fontes); o texto completo fica na tela.
+  // Emergência (SOS, pressão de óleo) é lida inteira — segurança vem antes da concisão.
+  var FALA_INTEIRA = { sos: 1, oleo: 1, epirb: 1 };
+  function falaCurta(a) {
+    var t = a && typeof a === 'object' ? a.text : a;
+    if (a && a.key && FALA_INTEIRA[a.key]) return String(t || '');
+    var item = function (l) { return l.replace(/^(\d+[.)]|•|-)\s*/, '').replace(/\s*\([^)]*\)/g, '').trim(); };
+    var ls = String(t || '').split(/\n+/).map(function (l) { return l.trim(); }).filter(function (l) { return l && !/^fonte\b/i.test(l); });
+    var r = (ls[0] || '').replace(/\s*\([^)]*\)/g, ''), extra = [];
+    if (/ressalva/i.test(r)) extra = ls.filter(function (l) { return /ressalva\s*\d/i.test(l); }).map(function (l) { return item(l).replace(/^ressalva\s*\d+:\s*/i, '').split(' — ')[0]; });
+    else if (/:$/.test(r)) { r = r.replace(/:$/, ''); extra = ls.slice(1, 3).filter(function (l) { return /^(\d+[.)]|•|-)/.test(l); }).map(item); }
+    if (extra.length) r = r.replace(/[.]$/, '') + ': ' + extra.join('; ') + '.';
+    if (r.length > 220) { var m = r.slice(0, 220).match(/^[\s\S]*[.!?;]/); r = m ? m[0] : r.slice(0, r.lastIndexOf(' ', 220)) + '.'; }
+    return r;
   }
+
   // Controles do overlay de voz (avanti-voz.js)
   function vozEnviar() { if (ESCUTA.rec) ESCUTA.rec.parar(); }
   function pularFala() { if (FALA.pula) FALA.pula(); }
@@ -675,6 +619,6 @@
     stopSpeaking();
   }
 
-  window.AvantiBrain = { BASE: BASE, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, vozEleven: vozEleven, vozStatus: vozStatus, abertura: abertura, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, urlNuvem: urlNuvem, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
+  window.AvantiBrain = { BASE: BASE, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, abertura: abertura, falaCurta: falaCurta, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();

@@ -6,7 +6,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.3.1 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.3.2 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -45,7 +45,7 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Console:** telemetria ao vivo e histórico, gestão, manutenção (com o botão Executado), documentos, abastecimento, diário de bordo e equipe.
 - **FAQ de bordo:** passo a passo por equipamento: gerador, climatização, estabilizador e eletrônicos.
 - **SOS:** canal 16 com roteiro MAYDAY, homem ao mar (MOB), incêndio e EPIRB. Está em todas as telas.
-- **Conversa por voz:** botão CONVERSA (núcleo AI com anel girando) em destaque no centro da barra do app. Durante a conversa abre o **núcleo de IA** em tela cheia: anéis graduados, espectro radial que acompanha a voz, varredura de radar, hora e posição do barco. Ciano na ESCUTA (mostra a transcrição), acelera no PROCESSANDO e fica azul-elétrico na RESPOSTA (mostra a frase dita). Tocar no núcleo envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga; ⚙ VOZ configura a voz. O SOS continua no canto. A conversa abre no jeito carioca (“Fala, Otto! Tô na escuta, manda aí.”).
+- **Conversa por voz:** botão CONVERSA (núcleo AI com anel girando) em destaque no centro da barra do app. Durante a conversa abre o **núcleo de IA** em tela cheia: anéis graduados, espectro radial que acompanha a voz, varredura de radar, hora e posição do barco. Ciano na ESCUTA (mostra a transcrição), acelera no PROCESSANDO e fica azul-elétrico na RESPOSTA (mostra a frase dita). Tocar no núcleo envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga. O SOS continua no canto. A voz fala só o essencial; o detalhe fica na tela.
 - **Cabeçalho ao vivo (início e SOS):** hora local do barco atualizada sozinha · máxima/mínima do dia (modelo ECMWF, o padrão do windy.com) · maré agora (ex.: +0,6m). Tocar abre o windy.com na posição do barco.
 - **Saudação:** uma frase marinheira sorteada a cada vez que a página abre (“Terra à vista!”, “À frente e AVANTI!”…).
 - **Base de conhecimento:** quando o chat não tem o dado, oferece o botão para abrir a base completa no NotebookLM.
@@ -89,21 +89,15 @@ Também há duas pranchetas de apoio:
 - **Maré:** altura agora em relação ao **nível médio do mar** (Open-Meteo Marine). É um modelo de 8 km, **não é a tábua oficial da DHN** (Ilha Fiscal): serve de referência rápida, não para passar em canal raso.
 - Sem internet, mostra a última leitura salva no aparelho; sem nenhuma, mostra “—”.
 
-## Voz masculina carioca
+## Voz
 
-Sem configurar nada, o app usa a melhor voz **masculina** pt-BR do aparelho (Antonio no Edge, Felipe no iPhone). Voz de aparelho não tem sotaque carioca; para isso é preciso uma voz do ElevenLabs.
+Uma voz só: a melhor voz **masculina** pt-BR do aparelho, gratuita, em velocidade normal. Sem conta, sem chave, sem configuração.
 
-**Jeito rápido (sem servidor), no aparelho do Otto:**
-1. Crie a conta no [ElevenLabs](https://elevenlabs.io) (plano Starter ou acima) e defina um limite de gasto.
-2. Em **Voice Library**, busque “carioca” (ex.: *Carlos Daniel*, jovem com sotaque carioca), ouça, clique **Add to My Voices** e copie o **Voice ID**.
-3. Em **API Keys**, crie uma chave.
-4. No app: toque em **CONVERSA › ⚙ VOZ**, cole a chave e o Voice ID e toque em **SALVAR E TESTAR**. Ele responde: “Fala, Otto! Aqui é o Avanti…”.
+- **Computador:** use o **Microsoft Edge** — traz a voz neural “Antonio (Natural)”, a mais humana disponível de graça.
+- **iPhone:** Ajustes › Acessibilidade › Conteúdo Falado › Vozes › Português (Brasil) › baixe o **Felipe** na melhor qualidade.
+- **Android:** Ajustes › Conversão de texto em voz › mecanismo **Google** › Português (Brasil) › escolha uma variante masculina.
 
-A chave fica **só nesse aparelho** (não vai para o repositório). Cada aparelho configura o seu. REMOVER volta para a voz do aparelho.
-
-**Para todos os aparelhos de uma vez (ou para a voz clonada do próprio Otto):** publique o proxy da pasta `voz-worker/` no Cloudflare (`npx wrangler secret put ELEVENLABS_API_KEY`, preencha `ELEVENLABS_VOICE_ID` no `wrangler.toml`, `npx wrangler deploy`) e coloque o endereço gerado em `VOZ_NUVEM` no `avanti-brain.js`. A voz do Otto se clona em Voices › Add voice › Voice Clone, com 1 a 3 min de gravação dele.
-
-Sem internet, erro ou demora (> 9 s), a fala cai na voz do aparelho.
+**Fala direta:** na conversa por voz, o app fala só o essencial (a primeira linha da resposta, sem as fontes); a resposta completa fica na tela. Emergências (SOS, pressão de óleo, EPIRB) são lidas inteiras.
 
 ## Base de conhecimento (NotebookLM)
 
@@ -127,11 +121,10 @@ avanti-brain.js         respostas do chat, atalhos, diário e voz
 avanti-theme.js         tema claro/escuro e botão sol/lua
 avanti-app.js           configuração de app, ajuste à janela, cache offline
 avanti-clima.js         hora local, previsão do dia e maré no cabeçalho
-avanti-voz.js           núcleo de IA da conversa por voz e ⚙ VOZ
+avanti-voz.js           núcleo de IA da conversa por voz
 deck-stage.js           apresentação do manual
 manifest.webmanifest    app instalável
 sw.js                   cache offline
-voz-worker/             proxy da voz do Otto (Cloudflare Worker + ElevenLabs)
 assets/                 logo e ícones
 .nojekyll               publica os arquivos exatamente como estão
 ```
@@ -142,6 +135,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.3.2 | 25/09/2026 | Voz única, masculina e gratuita do aparelho · fala só o essencial (resposta completa na tela; emergências lidas inteiras) · abertura “Pode falar.” · sem ⚙ VOZ, sem ElevenLabs e sem proxy de voz |
 | 1.3.1 | 25/09/2026 | Núcleo de IA high-tech no lugar do diamante (tela da conversa e botão central) · ⚙ VOZ: voz carioca do ElevenLabs direto do aparelho · abertura da conversa no jeito carioca · SOS mais sóbrio: só a borda da tela pulsa, botões sólidos e legíveis |
 | 1.3.0 | 25/09/2026 | Conversa por voz com diamante animado (pergunta e resposta) · CONVERSA no centro da barra do app · voz do Otto pela nuvem (ElevenLabs, opcional) com voz masculina do aparelho como reserva · hora local ao vivo, máx/mín do dia e maré no cabeçalho · saudação sorteada · SOS com sirene vermelha, luz de alerta e EMERGÊNCIA centralizada (sem “alarme sonoro”) · botão da base NotebookLM no chat |
 | 1.2.0 | 25/09/2026 | Voz a 1× · voz→texto e conversa esperam a pessoa terminar de falar · usuária Amanda · convite pela Equipe envia por WhatsApp ou e-mail · tablet em pé e janelas estreitas abrem o app · SOS flutuante no celular quando o SOS da tela fica fora da vista · Equipe web com 4 perfis sem sobreposição |

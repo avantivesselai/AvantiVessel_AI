@@ -247,7 +247,7 @@ class Component extends DCLogic {
           if (q) { const b = B.answer(q, { platform: 'app' }); if (b.key !== 'fallback' && b.key !== 'saudacao') a = { text: a.text + '\n\n' + b.text, src: b.src, actions: b.actions }; }
         } else a = B.answer(q, link ? { platform: 'app', id: id, commit: false } : { platform: 'app', id: id });
       } catch (e) { a = { text: 'Não consegui responder agora — SEM DADOS. Tente de novo.', src: '', actions: [] }; }
-      this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(a.text); });
+      this.setState((s) => { const n = Math.max(0, (s.pending || 1) - 1); return { thread: s.thread.concat([{ role: 'bot', text: a.text, src: a.src, actions: a.actions }]), pending: n, thinking: n > 0 }; }, () => { this.scrollThread(); if (this.state.conversa) this.speakAndResume(B.falaCurta ? B.falaCurta(a) : a.text); });
     }, 650);
     this._pend = (this._pend || []).concat([t]);
   }

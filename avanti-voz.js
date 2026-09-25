@@ -5,7 +5,7 @@
    - PROCESSANDO: anéis aceleram e a varredura gira rápido enquanto a resposta é montada.
    - RESPOSTA: azul-elétrico com núcleo branco; o espectro acompanha a fala; mostra a frase dita.
    Tocar no núcleo: escuta → envia agora; resposta → interrompe e volta a ouvir. ENCERRAR (ou Esc) desliga.
-   ⚙ VOZ: chave e Voice ID do ElevenLabs guardados só neste aparelho (voz masculina carioca). SOS sempre no canto. */
+   SOS sempre no canto. */
 (function () {
   if (window.AvantiVoz) return;
   var d = document, raiz = null, el = {}, estado = 'livre', some = 0, raf = 0, energia = 0, t0 = 0, barras = [];
@@ -46,23 +46,9 @@
     '.avz-txt.vazio{color:rgba(var(--avz-g),0.6);font-family:' + MONO + ';font-size:13px;letter-spacing:0.08em}',
     '.avz-dica{position:relative;font:700 10px/1 ' + MONO + ';letter-spacing:0.2em;color:rgba(233,246,255,0.5);min-height:12px}',
     '.avz-acoes{position:relative;display:flex;gap:10px}',
-    '.avz-fim,.avz-cfg{height:48px;padding:0 22px;border-radius:12px;border:1px solid rgba(var(--avz-g),0.45);background:rgba(var(--avz-g),0.08);color:#e9f6ff;font:800 12px/1 ' + MONO + ';letter-spacing:0.2em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}',
-    '.avz-fim:hover,.avz-fim:focus-visible,.avz-cfg:hover,.avz-cfg:focus-visible{border-color:rgb(var(--avz-g));box-shadow:0 0 18px rgba(var(--avz-g),0.35);outline:none}',
-    '.avz-cfg{padding:0 16px}',
+    '.avz-fim{height:48px;padding:0 22px;border-radius:12px;border:1px solid rgba(var(--avz-g),0.45);background:rgba(var(--avz-g),0.08);color:#e9f6ff;font:800 12px/1 ' + MONO + ';letter-spacing:0.2em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}',
+    '.avz-fim:hover,.avz-fim:focus-visible{border-color:rgb(var(--avz-g));box-shadow:0 0 18px rgba(var(--avz-g),0.35);outline:none}',
     '.avz-sos{position:absolute;top:max(14px,env(safe-area-inset-top));left:16px;height:40px;padding:0 16px;border-radius:12px;background:#d32f27;color:#fff;font:800 13px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:0.1em;display:flex;align-items:center;text-decoration:none;box-shadow:0 0 0 3px rgba(255,59,48,0.25)}',
-    // painel de configuração da voz
-    '.avzp{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,6,10,0.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}',
-    '.avzp.on{display:flex}',
-    '.avzp-box{width:min(440px,100%);box-sizing:border-box;padding:22px;border-radius:16px;background:#0b1118;border:1px solid rgba(53,224,255,0.4);box-shadow:0 0 40px rgba(53,224,255,0.15);color:#e9f6ff;display:flex;flex-direction:column;gap:12px}',
-    '.avzp h2{margin:0;font:800 13px/1.2 ' + MONO + ';letter-spacing:0.22em;color:#35e0ff}',
-    '.avzp p{margin:0;font-size:13px;line-height:1.5;color:#9fb3c4}',
-    '.avzp label{display:flex;flex-direction:column;gap:6px;font:700 10px/1 ' + MONO + ';letter-spacing:0.16em;color:#9fb3c4}',
-    '.avzp input{height:44px;box-sizing:border-box;padding:0 12px;border-radius:10px;border:1px solid #243140;background:#05090e;color:#fff;font:15px ' + MONO + ';outline:none}',
-    '.avzp input:focus{border-color:#35e0ff}',
-    '.avzp-b{display:flex;gap:8px;flex-wrap:wrap}',
-    '.avzp-b button{flex:1 1 auto;height:44px;padding:0 14px;border-radius:10px;border:1px solid #243140;background:#0f1822;color:#e9f6ff;font:800 11px/1 ' + MONO + ';letter-spacing:0.14em;cursor:pointer}',
-    '.avzp-b button.pri{background:#35e0ff;border-color:#35e0ff;color:#03131a}',
-    '.avzp-st{min-height:16px;font:700 11px/1.4 ' + MONO + ';letter-spacing:0.06em;color:#35e0ff}',
     '@media (prefers-reduced-motion: reduce){.avz-scan{display:none}.avz-r1,.avz-r2,.avz-r3{animation:none}.avz-radar{animation-duration:8s}}'
   ].join('\n');
 
@@ -111,10 +97,9 @@
       '<div class="avz-palco"><span class="avz-canto avz-c1"></span><span class="avz-canto avz-c2"></span><span class="avz-canto avz-c3"></span><span class="avz-canto avz-c4"></span>' + svg() +
       '<button type="button" class="avz-btn"></button></div>' +
       '<div class="avz-rot" aria-live="polite"></div><div class="avz-txt"></div><div class="avz-dica"></div>' +
-      '<div class="avz-acoes"><button type="button" class="avz-fim"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12 M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>ENCERRAR</button>' +
-      '<button type="button" class="avz-cfg" aria-label="Configurar a voz">⚙ VOZ</button></div>';
+      '<div class="avz-acoes"><button type="button" class="avz-fim"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12 M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>ENCERRAR</button></div>';
     d.body.appendChild(raiz);
-    el = { btn: raiz.querySelector('.avz-btn'), rot: raiz.querySelector('.avz-rot'), txt: raiz.querySelector('.avz-txt'), dica: raiz.querySelector('.avz-dica'), fim: raiz.querySelector('.avz-fim'), cfg: raiz.querySelector('.avz-cfg'), sos: raiz.querySelector('.avz-sos'), modo: raiz.querySelector('.avz-modo'), sinal: raiz.querySelector('.avz-sinal'), hora: raiz.querySelector('.avz-hora') };
+    el = { btn: raiz.querySelector('.avz-btn'), rot: raiz.querySelector('.avz-rot'), txt: raiz.querySelector('.avz-txt'), dica: raiz.querySelector('.avz-dica'), fim: raiz.querySelector('.avz-fim'), sos: raiz.querySelector('.avz-sos'), modo: raiz.querySelector('.avz-modo'), sinal: raiz.querySelector('.avz-sinal'), hora: raiz.querySelector('.avz-hora') };
     // espectro: N barras saindo do anel interno
     var g = raiz.querySelector('.avz-esp'), NS = 'http://www.w3.org/2000/svg';
     for (var i = 0; i < N; i++) {
@@ -128,7 +113,6 @@
       else if (estado === 'falando' && B.pularFala) B.pularFala();
     });
     el.fim.addEventListener('click', encerrar);
-    el.cfg.addEventListener('click', function () { encerrar(); config(); });
     d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && raiz.classList.contains('on')) encerrar(); });
   }
   function encerrar() { var B = window.AvantiBrain; if (B && B.vozEncerrar) B.vozEncerrar(); esconde(); }
@@ -180,38 +164,6 @@
   }
   function pulso(forca) { energia = Math.min(1, energia + (forca || 0.5)); }
 
-  // ——— ⚙ VOZ: ElevenLabs direto deste aparelho (chave fica só aqui, no navegador) ———
-  var painel = null;
-  function config() {
-    var B = window.AvantiBrain;
-    if (!painel) {
-      painel = d.createElement('div'); painel.className = 'avzp'; painel.setAttribute('role', 'dialog'); painel.setAttribute('aria-label', 'Configurar a voz');
-      if (!raiz) monta();
-      painel.innerHTML = '<div class="avzp-box"><h2>VOZ DO NÚCLEO · ELEVENLABS</h2>' +
-        '<p>Voz masculina carioca: no ElevenLabs, abra a <b>Voice Library</b>, busque “carioca”, adicione a voz em <b>My Voices</b> e copie o <b>Voice ID</b>. A chave fica guardada só neste aparelho. Sem chave, o app usa a melhor voz masculina do aparelho.</p>' +
-        '<label>CHAVE DA API (xi-api-key)<input class="avzp-k" type="password" autocomplete="off" spellcheck="false" placeholder="sk_…"></label>' +
-        '<label>VOICE ID<input class="avzp-v" autocomplete="off" spellcheck="false" placeholder="ex.: 21m00Tcm4TlvDq8ikWAM"></label>' +
-        '<div class="avzp-st" aria-live="polite"></div>' +
-        '<div class="avzp-b"><button type="button" class="pri avzp-s">SALVAR E TESTAR</button><button type="button" class="avzp-x">REMOVER</button><button type="button" class="avzp-f">FECHAR</button></div></div>';
-      d.body.appendChild(painel);
-      var st = painel.querySelector('.avzp-st'), k = painel.querySelector('.avzp-k'), v = painel.querySelector('.avzp-v');
-      painel.querySelector('.avzp-f').addEventListener('click', function () { painel.classList.remove('on'); });
-      painel.addEventListener('click', function (e) { if (e.target === painel) painel.classList.remove('on'); });
-      painel.querySelector('.avzp-x').addEventListener('click', function () { if (B && B.vozEleven) B.vozEleven(null); k.value = ''; v.value = ''; st.textContent = 'Removida. Usando a voz do aparelho.'; });
-      painel.querySelector('.avzp-s').addEventListener('click', function () {
-        if (!k.value.trim() || !/^[A-Za-z0-9]{10,40}$/.test(v.value.trim())) { st.textContent = 'Preencha a chave e um Voice ID válido.'; return; }
-        B.vozEleven({ chave: k.value.trim(), voz: v.value.trim() });
-        st.textContent = 'Testando…';
-        B.speak('Fala, Otto! Aqui é o Avanti. Tô na escuta, pode mandar.', function () {});
-        setTimeout(function () { st.textContent = B.vozStatus ? B.vozStatus() : 'Salvo.'; }, 4500);
-      });
-    }
-    var c = B && B.vozEleven ? B.vozEleven() : null;
-    painel.querySelector('.avzp-k').value = c ? c.chave : ''; painel.querySelector('.avzp-v').value = c ? c.voz : '';
-    painel.querySelector('.avzp-st').textContent = c ? 'Voz do ElevenLabs ativa neste aparelho.' : '';
-    painel.classList.add('on');
-  }
-
   window.addEventListener('avanti-voz', function (ev) {
     var x = (ev && ev.detail) || {}, e = x.estado;
     if (!d.body) return;
@@ -231,5 +183,5 @@
   });
   window.addEventListener('pagehide', esconde);
 
-  window.AvantiVoz = { esconde: esconde, config: config };
+  window.AvantiVoz = { esconde: esconde };
 })();
