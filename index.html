@@ -29,7 +29,9 @@
     var mobileUA = uad && typeof uad.mobile === 'boolean' ? uad.mobile : /Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua);
     var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
     var coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
-    pick = mobileUA || (coarse && shortSide < 600) ? 'app' : 'web';
+    // Tela estreita (tablet em pé, janela pequena): a prancheta web de 1440 px ficaria ilegível — abre o app.
+    var estreita = Math.min(window.innerWidth || 9999, document.documentElement.clientWidth || 9999) < 900;
+    pick = mobileUA || (coarse && shortSide < 600) || estreita ? 'app' : 'web';
   }
   location.replace((pick === 'app' ? 'H2-Home-Mobile.dc.html' : 'Main.dc.html') + location.hash);
 })();

@@ -250,44 +250,38 @@ class Component extends DCLogic {
     e.target.value = '';
     setTimeout(() => { if (this.inputRef.current) this.inputRef.current.focus(); }, 50);
   }
+  // Ditado contínuo (avanti-brain ditado): só envia depois de uma pausa real, ou ao tocar de novo — não corta no meio da frase.
   startVoice(continuous) {
-    const B = window.AvantiBrain; const r = B && B.recognizer({ continuous: continuous });
-    if (!r) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return false; }
-    this.rec = r; let finalText = '';
-    r.onresult = (ev) => {
-      let interim = '';
-      for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; }
-      if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim();
-      if (continuous && finalText.trim()) { const t = finalText.trim(); finalText = ''; this.stopRec(); this.ask(t); }
-    };
-    r.onend = () => {
-      if (this.rec !== r) return;
-      if (this.state.conversa) { try { r.start(); } catch (e) { this.rec = null; } return; }
-      this.rec = null; this.setState({ listening: false });
-      const t = this.inputRef.current ? this.inputRef.current.value.trim() : '';
-      if (!continuous && t) this.ask(t);
-    };
-    r.onerror = (ev) => {
-      if (this.rec !== r) return;
-      const err = ev && ev.error;
-      if (this.state.conversa && (err === 'no-speech' || err === 'aborted')) return;
-      this.rec = null;
-      this.setState({ listening: false, conversa: false });
-      this.flash(err === 'not-allowed' || err === 'service-not-allowed' ? 'Permissão de microfone negada — digite a pergunta.' : err === 'no-speech' ? 'Não ouvi nada — toque em VOZ→TEXTO e fale de novo.' : 'Voz indisponível agora — digite a pergunta.');
-    };
-    try { r.start(); this.setState({ listening: true, note: '' }); return true; } catch (e) { this.rec = null; return false; }
+    const B = window.AvantiBrain;
+    const d = B && B.ditado && B.ditado({
+      pausa: continuous ? 2500 : 3000, espera: continuous ? 12000 : 8000,
+      parcial: (t) => { if (this.rec === d && this.inputRef.current) this.inputRef.current.value = t; },
+      fim: (t) => {
+        if (this.rec !== d) return; this.rec = null; this.setState({ listening: false });
+        if (t) { if (this.inputRef.current) this.inputRef.current.value = ''; this.ask(t); }
+        else if (this.state.conversa) this.startVoice(true); // silêncio na conversa: continua escutando
+        else this.flash('Não ouvi nada — toque em VOZ e fale de novo.');
+      },
+      erro: (e) => {
+        if (this.rec !== d) return; this.rec = null;
+        this.setState({ listening: false, conversa: false });
+        this.flash(e === 'no-speech' ? 'Não ouvi nada — toque em VOZ e fale de novo.' : 'Permissão de microfone negada — digite a pergunta.');
+      }
+    });
+    if (!d) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return false; }
+    this.rec = d; this.setState({ listening: true, note: '' }); return true;
   }
-  stopRec() { if (this.rec) { const r = this.rec; this.rec = null; try { r.onend = null; r.onerror = null; r.onresult = null; r.stop(); } catch (e) {} } }
+  stopRec() { if (this.rec) { const d = this.rec; this.rec = null; try { d.cancelar(); } catch (e) {} } }
   toggleVoice() {
     if (this.state.conversa) { this.toggleConversa(); return; }
-    if (this.rec) { this.stopRec(); this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.ask(t); return; }
+    if (this.rec) { this.rec.parar(); return; } // tocar de novo = terminei de falar: envia o que ouviu
     this.startVoice(false);
   }
   toggleConversa() {
     const B = window.AvantiBrain;
     if (this.state.conversa) { this.stopRec(); this._fala = null; if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
     if (this.rec) { this.stopRec(); this.setState({ listening: false }); }
-    if (!B || !B.recognizer({ continuous: true })) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
+    if (!B || !(window.SpeechRecognition || window.webkitSpeechRecognition)) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
     this.setState({ conversa: true }, () => this.speakAndResume('Conversa ativa. Pode falar.'));
   }
   renderVals() {

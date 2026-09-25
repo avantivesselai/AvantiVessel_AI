@@ -35,7 +35,8 @@ input::placeholder { color: var(--av-ph, #4c5666); }
       <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; background: var(--av-card, #0f131a); border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.35); border-radius: 14px; flex-shrink: 0;">
         <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-accent, #409cff);">CONVIDAR</span>
         <input ref="{{nomeRef}}" placeholder="Nome" aria-label="Nome" autocomplete="off" style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
-        <input ref="{{funcRef}}" onKeyDown="{{onInviteKey}}" placeholder="Função a bordo" aria-label="Função" autocomplete="off" style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+        <input ref="{{funcRef}}" placeholder="Função a bordo" aria-label="Função" autocomplete="off" style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+        <input ref="{{contatoRef}}" onKeyDown="{{onInviteKey}}" inputmode="email" placeholder="WhatsApp com DDD ou e-mail" aria-label="WhatsApp ou e-mail" autocomplete="off" style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
         <span style="display: flex; gap: 6px; align-items: center;">
           <span style="display: flex; gap: 2px; padding: 3px; background: var(--av-bar, #0b0e13); border: 1px solid var(--av-line, #1d2229); border-radius: 10px;">
             <sc-for list="{{acessos}}" as="a" hint-placeholder-count="2">
@@ -47,7 +48,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
       </div>
     </sc-if>
 
-    <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af);">ACESSO TOTAL · 3</span>
+    <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af);">ACESSO TOTAL · 4</span>
     <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
       <div style="display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: var(--av-card, #0f131a); border: 1px solid {{p.line}}; border-radius: 14px; flex-shrink: 0;">
         <span style="display: flex; align-items: center; gap: 10px;">
@@ -108,14 +109,15 @@ input::placeholder { color: var(--av-ph, #4c5666); }
       <span style="font-size: 10.5px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af); margin-top: 4px;">CONVITES PENDENTES</span>
       <sc-for list="{{convites}}" as="c" hint-placeholder-count="0">
         <span style="display: flex; align-items: center; gap: 10px; padding: 8px 11px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 12px; flex-shrink: 0;">
-          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 12.5px; font-weight: 600;">{{c.nome}}</span><span style="font-size: 10.5px; color: var(--av-ink3, #9aa3af);">{{c.func}} · acesso {{c.acesso}} · {{c.d}}</span></span>
+          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 12.5px; font-weight: 600;">{{c.nome}}</span><span style="font-size: 10.5px; color: var(--av-ink3, #9aa3af);">{{c.func}} · acesso {{c.acesso}} · {{c.d}}{{c.via}}</span></span>
           <span style="padding: 3px 7px; border-radius: 5px; border: 1px solid rgba(var(--av-warn-rgb, 240,166,58), 0.45); color: var(--av-warn, #f0a63a); font-size: 9px; letter-spacing: 0.12em; font-weight: 700;">PENDENTE</span>
+          <sc-if value="{{c.temReenvio}}" hint-placeholder-val="{{false}}"><a href="{{c.reenvio}}" target="_blank" rel="noopener" aria-label="Reenviar convite" style="flex-shrink: 0; padding: 6px 8px; border-radius: 8px; color: var(--av-accent, #409cff); font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-decoration: none;">REENVIAR</a></sc-if>
           <button type="button" onClick="{{c.remove}}" aria-label="Cancelar convite" style="width: 30px; height: 30px; border-radius: 8px; border: none; background: transparent; color: var(--av-ink4, #7d8796); cursor: pointer; font-size: 14px;">✕</button>
         </span>
       </sc-for>
     </sc-if>
 
-    <span style="font-size: 10.5px; color: var(--av-ink4, #7d8796); line-height: 1.4; padding: 4px 2px 10px;">Fonte: agenda preditiva (responsáveis) · diário 12–24/08 · NF-e 002925 · Health Check 47715565 · EPIRB 67827-001. Permissões: Otto, Giovanni e Lucas com acesso total (decisão de Otto, 21/09).</span>
+    <span style="font-size: 10.5px; color: var(--av-ink4, #7d8796); line-height: 1.4; padding: 4px 2px 10px;">Fonte: agenda preditiva (responsáveis) · diário 12–24/08 · NF-e 002925 · Health Check 47715565 · EPIRB 67827-001. Permissões: Otto, Giovanni, Lucas e Amanda com acesso total (decisão de Otto, 21/09).</span>
   </div>
 
   <nav style="flex-shrink: 0; box-sizing: border-box; height: 64px; display: flex; align-items: center; justify-content: space-around; padding: 0 12px; background: var(--av-bar, #0b0e13); border-top: 1px solid var(--av-line, #1d2229);">
@@ -129,7 +131,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
 class Component extends DCLogic {
   state = { eq: { fones: {}, convites: [] }, fone: null, inviteOpen: false, acesso: 'Total', atalhos: 6, note: '', noteTone: 'var(--av-ink3, #9aa3af)' };
-  foneRef = React.createRef(); nomeRef = React.createRef(); funcRef = React.createRef();
+  foneRef = React.createRef(); nomeRef = React.createRef(); funcRef = React.createRef(); contatoRef = React.createRef();
   componentDidMount() {
     this.whenBrain(() => this.load());
     // Outra aba/tela salvou: recarrega do armazenamento
@@ -165,11 +167,15 @@ class Component extends DCLogic {
   }
   convidar() {
     const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim(); const func = (this.funcRef.current ? this.funcRef.current.value : '').trim();
+    const contato = (this.contatoRef.current ? this.contatoRef.current.value : '').trim();
     if (!nome) return this.toast('Digite o nome', 'var(--av-warn, #f0a63a)');
     const B = window.AvantiBrain; const n = B ? B.now() : { d: 'hoje' };
-    const eq = this.fresh(); eq.convites.push({ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d });
-    this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite PENDENTE · ' + nome);
-    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' — pendente de confirmação.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
+    const lk = B && B.linkConvite ? B.linkConvite(nome, contato, this.state.acesso.toLowerCase()) : null;
+    if (!lk) return this.toast('WhatsApp com DDD ou e-mail', 'var(--av-warn, #f0a63a)');
+    try { window.open(lk.href, '_blank', 'noopener'); } catch (e) {}
+    const eq = this.fresh(); eq.convites.push({ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d, contato: lk.contato, canal: lk.canal });
+    this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite no ' + lk.canal);
+    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' por ' + lk.canal + ' (' + lk.contato + ') — pendente de cadastro do acesso.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · equipe' });
   }
   cancelConvite(c) {
     const eq = this.fresh(); const k = eq.convites.findIndex((x) => x.nome === c.nome && x.d === c.d && x.func === c.func && x.acesso === c.acesso);
@@ -181,14 +187,15 @@ class Component extends DCLogic {
     const tel = (v) => 'tel:' + String(v).replace(/[^+\d]/g, '');
     const fone = (id) => ({ fone: fones[id] || '', hasFone: !!fones[id] && s.fone !== id, editing: s.fone === id, needsFone: !fones[id] && s.fone !== id, tel: fones[id] ? tel(fones[id]) : '#', ph: fones[id] ? 'vazio = remover' : '+55 21 9…', addFone: () => this.openFone(id) });
     return {
-      subtitle: s.note || '3 com acesso total · 7 contatos de apoio', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
+      subtitle: s.note || '4 com acesso total · 7 de apoio', noteTone: s.note ? s.noteTone : 'var(--av-ink3, #9aa3af)',
       inviteOpen: s.inviteOpen, inviteLabel: s.inviteOpen ? 'FECHAR' : '+ CONVIDAR', toggleInvite: () => this.setState({ inviteOpen: !s.inviteOpen }),
       acessos: ['Total', 'Leitura'].map((a) => ({ l: a.toUpperCase(), onClick: () => this.setState({ acesso: a }), active: s.acesso === a, bg: s.acesso === a ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.18)' : 'transparent', tone: s.acesso === a ? 'var(--av-accent, #409cff)' : 'var(--av-ink4, #7d8796)' })),
-      nomeRef: this.nomeRef, funcRef: this.funcRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
+      nomeRef: this.nomeRef, funcRef: this.funcRef, contatoRef: this.contatoRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
       foneRef: this.foneRef, saveFone: () => this.saveFone(), cancelFone: () => this.setState({ fone: null }), onFoneKey: (e) => { if (e.key === 'Enter') this.saveFone(); if (e.key === 'Escape') this.setState({ fone: null }); },
       people: [
         Object.assign({ n: 'Otto Licks', ini: 'OL', role: 'proprietário' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'otto' ? ' · perfil ativo' : ''), s: s.atalhos + ' atalhos na tela inicial · alertas das 09:00 · recebe SOS, anomalias e vencimentos', tone: 'var(--av-accent, #409cff)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)' }, fone('Otto')),
         Object.assign({ n: 'Giovanni', ini: 'G', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'giovanni' ? ' · perfil ativo' : ''), s: 'Acionado pelo SOS e pelo modo navegação ("Chamar Giovanni") · alertas das 09:00 desde 14/08', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)' }, fone('Giovanni')),
+        Object.assign({ n: 'Amanda', ini: 'A', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'amanda' ? ' · perfil ativo' : ''), s: 'Acesso ao app e ao console · perfil criado em 25/09', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)' }, fone('Amanda')),
         Object.assign({ n: 'Lucas', ini: 'L', role: 'técnico · 3 tarefas na agenda' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'lucas' ? ' · perfil ativo' : ''), s: 'D-4 tensões Quick VRS / SBC NRG+ · D-24 revisão do sistema · D-33 isolador galvânico', tone: 'var(--av-warn, #f0a63a)', line: 'var(--av-line, #1d2229)' }, fone('Lucas'))
       ],
       vendors: [
@@ -201,7 +208,7 @@ class Component extends DCLogic {
         { id: 'Life Safety', n: 'Life Safety', role: 'EPIRB', s: 'cert. 67827-001 · SBM jan/2031', d: 'M12 21V9 M8 5a6 6 0 0 1 8 0 M5 2a10 10 0 0 1 14 0 M9 21h6', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
       ].map((v) => Object.assign(v, fone(v.id))),
       hasConvites: convites.length > 0,
-      convites: convites.map((c) => Object.assign({}, c, { remove: () => this.cancelConvite(c) }))
+      convites: convites.map((c) => { const lk = c.contato && window.AvantiBrain && window.AvantiBrain.linkConvite ? window.AvantiBrain.linkConvite(c.nome, c.contato, c.acesso) : null; return Object.assign({}, c, { remove: () => this.cancelConvite(c), via: c.contato ? ' · ' + c.contato : '', reenvio: lk ? lk.href : '', temReenvio: !!lk }); })
     };
   }
 }

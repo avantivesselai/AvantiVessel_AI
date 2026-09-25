@@ -184,7 +184,7 @@
     checklistChegada: function (p) { return { text: 'Checklist de chegada — do que está catalogado:\n1. Estabilizador: desligar ao atracar — 4 h+ até parar totalmente; nunca mexer com o volante girando.\n2. Eletrônicos: piloto em STBY antes de manobrar na marina · plotter e AIS conforme uso.\n3. Gerador Onan: desligar cargas, depois STOP.\n4. Climatização: chiller com lockout de fluxo de 10 s — desligar pelo display.\n5. Fechar a viagem no diário: horas, consumo e custo.\nHidráulica, cuidados e fechamento: A CONFIRMAR (sem checklist oficial no Drive).', src: 'Fonte: manuais Seakeeper 90403 · Onan A046J602 · Dometic L-3527 · FAQ de eletrônicos', actions: act(p, [['Fechar no diário', 'diario']]) }; },
     consumo: function (p) { return { text: 'Consumo observado (telemetria 14/08–20/09):\n• cruzeiro leve — 20,9 L/h (média 1.130 rpm · 8,4 nós)\n• marcha lenta — 5,1 L/h (≤ 900 rpm)\n• gerador — +22,6 h desde 14/08 (280,7 h no horímetro)\nConsumido desde os 500 L: ≈ 186 L. Média por abastecimento aparece a partir do 2º registro — só 1 NF em 2026.', src: 'Fonte: telemetria (taxa de combustível dos dois motores) · NF-e 002925', actions: act(p, [['Abastecimento', 'abast']]) }; },
     tanques: function (p) { return { text: 'Tanques agora:\n• água doce 50,5 %\n• águas cinzas 70,8 % — atenção: programar esgoto\n• águas negras 32,7 %\n• diesel BB 34,0 % · BE 34,8 % (≈ 516 L) — ' + SNAP.dieselHora + '.', src: 'Fonte: telemetria NMEA 20/09 23:01 (diesel 13:23)', actions: act(p, [['Telemetria', 'console']]) }; },
-    contatos: function (p) { return { text: 'Acesso total: Otto Licks (proprietário) · Giovanni · Lucas.\nApoio: Eduardo (casco · Marina Express) · dealer Volvo Penta (Health Check 47715565) · estaleiro (chiller e porão) · Sr. Dalmo (Tlaloc · estofados) · Posto Marina da Glória (Verana) · Diran no VHF canal 67 (24 h) · Life Safety (EPIRB).\nTelefones: A CADASTRAR em Equipe.', src: 'Fonte: agenda preditiva · diário 14–24/08 · NF-e 002925', actions: act(p, [['Equipe e contatos', 'equipe']]) }; },
+    contatos: function (p) { return { text: 'Acesso total: Otto Licks (proprietário) · Giovanni · Lucas · Amanda.\nApoio: Eduardo (casco · Marina Express) · dealer Volvo Penta (Health Check 47715565) · estaleiro (chiller e porão) · Sr. Dalmo (Tlaloc · estofados) · Posto Marina da Glória (Verana) · Diran no VHF canal 67 (24 h) · Life Safety (EPIRB).\nTelefones: A CADASTRAR em Equipe.', src: 'Fonte: agenda preditiva · diário 14–24/08 · NF-e 002925', actions: act(p, [['Equipe e contatos', 'equipe']]) }; },
     anomalias: function (p) { return { text: 'Pendências abertas (4):\n• Garantia Azimut — vazamento no teto do cockpit · pleito em rascunho desde 15/08\n• Capas dos estofados na Tlaloc · devolução 31/08 a conferir\n• Seakeeper — vigência da garantia estendida · A CONFIRMAR\n• Coletor NMEA — lacuna de 6 h 58 min em 15/08\nAnomalias registradas (3): combustível baixo BB 9,6 % (14/08, resolvido) · Seakeeper sem AC para o spool-up (15/08) · interrupção da telemetria (15/08).', src: 'Fonte: diário de bordo 14–24/08 · nmea_20260815.jsonl', actions: act(p, [['Abrir diário', 'diario']]) }; },
     porao: function (p) { return { text: 'Teste de bombas de porão e alarmes VENCIDO há 95 dias (agenda: estaleiro · ref. diagrama ATL51).\nSem sensor de porão no barramento NMEA — SEM LEITURA.\nAntes de sair: acione cada bomba no manual e confira o alarme; registre o resultado no diário.', src: 'Fonte: agenda preditiva · telemetria (sem sentença de porão)', actions: act(p, [['Manutenção', 'manut']]) }; },
     gerador: function (p) { return { text: 'Gerador Onan MDKDP · 280,7 h (20/09 13:23).\nLigar: STOP/Prime por 3 s (escorva) → START/Preheat · lâmpada âmbar→verde · partida em 20–60 s.\nDesligar: retire as cargas e pressione STOP.', src: 'Fonte: manual Onan A046J602 §3.2 / §4.2.1 · horímetro na telemetria', actions: act(p, [['Passo a passo', 'f4']]) }; },
@@ -477,11 +477,56 @@
     })(s.replace(/([.!?;])\s+/g, '$1\n').split('\n'), ' ', 0);
     return out;
   }
-  // Vigia de cada bloco a 1.25x (base antiga: 85 ms/letra a ~1x → 70) + 200 ms/dígito, porque número falado é longo.
-  function estimaMs(t) { return Math.min(45000, 1500 + t.length * 70 + (t.match(/\d/g) || []).length * 200); }
+  // Vigia de cada bloco a 1x: 95 ms/letra (folga sobre ~85 medidos) + 250 ms/dígito, porque número falado é longo.
+  function estimaMs(t) { return Math.min(60000, 2000 + t.length * 95 + (t.match(/\d/g) || []).length * 250); }
   var FALA = { gen: 0, timer: null, vivo: null, fila: [] };
   function calaTimers() { clearTimeout(FALA.timer); clearInterval(FALA.vivo); FALA.timer = FALA.vivo = null; }
   // onEnd dispara uma única vez, depois do último bloco (ou por erro/vigia). Nova fala ou stopSpeaking() trocam a geração: o onEnd antigo nunca dispara.
+  // Ditado: escuta até a pessoa parar de falar por `pausa` ms (ou tocar de novo). Junta todos os trechos — o reconhecedor
+  // fecha um "resultado final" a cada respiro e, no Android, encerra a cada frase: aqui ele religa sozinho sem perder o texto.
+  // o = { pausa, espera (ms sem ouvir nada até desistir), max, parcial(texto), fim(texto), erro(codigo) }. Retorna { parar, cancelar } ou null.
+  function ditado(o) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return null;
+    o = o || {};
+    var pausa = o.pausa || 2500, feito = false, texto = '', interino = '', r = null, t = 0, tMax = 0, ouviu = false, rapidas = 0, ini = 0;
+    function atual() { return (texto + ' ' + interino).replace(/\s+/g, ' ').trim(); }
+    function arma() { clearTimeout(t); t = setTimeout(function () { fim(); }, ouviu ? pausa : (o.espera || 8000)); }
+    function solta() { clearTimeout(t); clearTimeout(tMax); var x = r; r = null; if (x) { try { x.onresult = x.onend = x.onerror = null; x.abort(); } catch (e) {} } }
+    function fim() { if (feito) return; feito = true; var txt = atual(); solta(); if (o.fim) o.fim(txt); }
+    function falha(e) { if (feito) return; feito = true; solta(); if (o.erro) o.erro(e); }
+    function liga() {
+      var x = r = new SR(); x.lang = 'pt-BR'; x.continuous = true; x.interimResults = true; x.maxAlternatives = 1; ini = Date.now();
+      x.onresult = function (ev) {
+        if (x !== r) return; interino = '';
+        for (var i = ev.resultIndex; i < ev.results.length; i++) { var y = ev.results[i]; if (y.isFinal) texto += ' ' + y[0].transcript; else interino += ' ' + y[0].transcript; }
+        if (atual()) { ouviu = true; rapidas = 0; }
+        if (o.parcial) o.parcial(atual()); arma();
+      };
+      x.onerror = function (ev) { var e = ev && ev.error; if (x === r && (e === 'not-allowed' || e === 'service-not-allowed' || e === 'audio-capture')) falha(e); };
+      x.onend = function () { // fim de sessão do navegador (não da pessoa): guarda o que ouviu e religa
+        if (x !== r || feito) return;
+        texto = atual(); interino = '';
+        rapidas = Date.now() - ini < 400 ? rapidas + 1 : 0;
+        if (rapidas >= 4) { if (ouviu) fim(); else falha('no-speech'); return; }
+        try { liga(); } catch (e) { fim(); }
+      };
+      x.start();
+    }
+    try { liga(); } catch (e) { return null; }
+    arma(); tMax = setTimeout(fim, o.max || 90000);
+    return { parar: fim, cancelar: function () { feito = true; solta(); } };
+  }
+  // Convite: o site não tem servidor — o convite sai pelo WhatsApp (celular) ou e-mail do próprio aparelho, com o link de acesso.
+  // contato = celular com DDD (8–15 dígitos; sem +55 assume Brasil) ou e-mail. Retorna { href, canal, contato } ou null se inválido.
+  function linkConvite(nome, contato, acesso) {
+    var c = String(contato || '').trim(), url = location.href.replace(/[^\/]*$/, '') + 'login.html';
+    var msg = 'Olá, ' + nome + '! Você foi convidado(a) para o Avanti Vessel AI — Azimut Atlantis 51 (acesso ' + (acesso || 'total') + ').\nEntre por: ' + url + '\nO usuário e a senha são passados pelo proprietário.';
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c)) return { canal: 'e-mail', contato: c, href: 'mailto:' + encodeURIComponent(c) + '?subject=' + encodeURIComponent('Convite · Avanti Vessel AI') + '&body=' + encodeURIComponent(msg) };
+    if (!/^\+?[\d ().-]+$/.test(c)) return null;
+    var d = c.replace(/\D/g, ''); if (d.length < 10 || d.length > 15) return null;
+    if (c.charAt(0) !== '+' && d.length <= 11) d = '55' + d.replace(/^0+/, '');
+    return { canal: 'WhatsApp', contato: c, href: 'https://wa.me/' + d + '?text=' + encodeURIComponent(msg) };
+  }
   function speak(text, onEnd) {
     var gen = ++FALA.gen, done = false, ss = window.speechSynthesis, i = 0, atual = null, tentou = {}, voz = null, partes = [];
     var fin = function () { if (done || gen !== FALA.gen) return; done = true; calaTimers(); FALA.fila = []; if (onEnd) onEnd(); };
@@ -492,7 +537,7 @@
     function avanca() { if (++i >= partes.length) return fin(); try { fala(i); } catch (e) { fin(); } }
     function fala(k) {
       var u = new SpeechSynthesisUtterance(partes[k]), est = estimaMs(partes[k]);
-      u.lang = voz && voz.lang ? String(voz.lang).replace(/_/g, '-') : 'pt-BR'; if (voz) u.voice = voz; u.rate = 1.25;
+      u.lang = voz && voz.lang ? String(voz.lang).replace(/_/g, '-') : 'pt-BR'; if (voz) u.voice = voz; u.rate = 1;
       u.onstart = function () { if (vale(u)) vigia(u, est); };
       u.onend = function () { if (vale(u)) avanca(); };
       u.onerror = function (e) {
@@ -521,6 +566,6 @@
   }
   function stopSpeaking() { FALA.gen++; calaTimers(); FALA.fila = []; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} }
 
-  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, speak: speak, stopSpeaking: stopSpeaking, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
+  window.AvantiBrain = { DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();
