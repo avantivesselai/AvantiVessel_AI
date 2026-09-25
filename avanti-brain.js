@@ -272,6 +272,79 @@
   }
 
   var CANON = {}; ALL.forEach(function (x) { CANON[x.id] = norm(x.q).trim(); });
+
+  // ——— Base de conhecimento de bordo (base-conhecimento.json) ———
+  // Trechos técnicos extraídos dos manuais e guias do Drive (sem documentos sensíveis). Quando a resposta pronta não tem o dado,
+  // o chat e a voz buscam aqui (BM25 com sinônimos PT/EN) e respondem com o trecho e a fonte. Carrega em segundo plano; funciona offline (cache do SW).
+  var KB = { docs: null, carregando: false, df: {}, media: 1 };
+  var PARADAS = ' a o e as os um uma uns umas de da do das dos em no na nos nas por para pra com sem se que qual quais quando como onde quanto quantos quantas e ou ao aos a is the of to and in on for with is are be it this that from at by an or eu voce vc me meu minha tem ter tenho ha esta estao fica ser sao era foi faz fazer posso pode sobre mais muito barco embarcacao avanti vessel '.split(' ').reduce(function (m, w) { if (w) m[w] = 1; return m; }, {});
+  var SINONIMOS = {
+    gerador: ['onan', 'generator', 'mdkdp', 'genset'], estabilizador: ['seakeeper', 'gyro', 'giroscopio', 'stabilizer'], giroscopio: ['seakeeper', 'gyro'],
+    piloto: ['autopilot', 'reactor'], automatico: ['autopilot'], oleo: ['oil', 'lubrificante'], filtro: ['filter'], combustivel: ['fuel', 'diesel'], diesel: ['fuel'],
+    motor: ['engine', 'd8', 'ips'], motores: ['engine', 'd8', 'ips'], rotor: ['impeller'], impelidor: ['impeller'], bomba: ['pump'], porao: ['bilge'],
+    ar: ['dometic', 'climatizacao', 'chiller'], climatizacao: ['dometic', 'chiller', 'air'], condicionado: ['dometic', 'chiller'], incendio: ['fire', 'sea', 'smac'], fogo: ['fire', 'smac'],
+    bateria: ['battery', 'baterias'], baterias: ['battery'], ancora: ['anchor', 'windlass', 'molinete'], molinete: ['windlass', 'anchor'], guincho: ['windlass'],
+    falha: ['fault', 'erro', 'alarme'], erro: ['fault', 'falha'], alarme: ['alarm', 'falha'], codigo: ['code'], temperatura: ['temperature'], pressao: ['pressure'],
+    arrefecimento: ['coolant', 'refrigerante'], refrigerante: ['coolant'], agua: ['water'], zinco: ['anode', 'anodo'], anodo: ['anode', 'zinco'], helice: ['propeller'],
+    radar: ['fantom'], plotter: ['gpsmap', 'chartplotter'], som: ['fusion', 'audio'], audio: ['fusion'], radio: ['vhf'], vhf: ['radio', 'dsc'], ligar: ['start', 'partida', 'iniciar'],
+    partida: ['start'], desligar: ['stop', 'shutdown', 'parar'], manutencao: ['maintenance', 'service', 'revisao'], revisao: ['service', 'maintenance'], limpeza: ['cleaning'],
+    capacidade: ['capacity', 'litros'], tanque: ['tank'], helm: ['leme'], leme: ['steering'], direcao: ['steering']
+  };
+  function raiz(w) { if (/^\d/.test(w)) return w; w = w.replace(/coes$/, 'cao').replace(/oes$/, 'ao').replace(/aes$/, 'ao'); return w.length > 4 ? w.replace(/(es|s)$/, '') : w; }
+  function tokens(t) {
+    return norm(t).replace(/[^a-z0-9]+/g, ' ').split(' ').filter(function (w) { return w && !PARADAS[w] && (w.length > 2 || /\d/.test(w)); }).map(raiz);
+  }
+  function carregaBase() {
+    if (KB.docs || KB.carregando || !window.fetch) return;
+    KB.carregando = true;
+    fetch('./base-conhecimento.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var lista = j && j.trechos; if (!lista || !lista.length) return;
+      var soma = 0, df = {};
+      lista.forEach(function (d) {
+        var tf = {}, tk = tokens((d.secao || '') + ' ' + d.texto + ' ' + (d.fonte || ''));
+        tk.forEach(function (w) { tf[w] = (tf[w] || 0) + 1; });
+        Object.keys(tf).forEach(function (w) { df[w] = (df[w] || 0) + 1; });
+        d._tf = tf; d._n = tk.length; soma += tk.length;
+      });
+      KB.df = df; KB.media = soma / lista.length; KB.docs = lista;
+    }).catch(function () {}).then(function () { KB.carregando = false; });
+  }
+  // Devolve até n trechos { d, nota } ou [] se nada for relevante o bastante.
+  function buscaBase(q, n) {
+    if (!KB.docs) { carregaBase(); return []; }
+    var qs = tokens(q), pesos = {};
+    if (!qs.length) return [];
+    qs.forEach(function (w) { pesos[w] = 1; (SINONIMOS[w] || []).forEach(function (s) { s = raiz(s); if (!pesos[s]) pesos[s] = 0.6; }); });
+    var N = KB.docs.length, k1 = 1.2, b = 0.75, res = [];
+    KB.docs.forEach(function (d) {
+      var nota = 0, bateu = 0;
+      for (var w in pesos) {
+        var f = d._tf[w]; if (!f) continue;
+        var idf = Math.log(1 + (N - KB.df[w] + 0.5) / (KB.df[w] + 0.5));
+        nota += pesos[w] * idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * d._n / KB.media));
+        if (pesos[w] === 1) bateu++;
+      }
+      // exige a maioria das palavras da pergunta (ou uma, se a pergunta só tem uma)
+      if (nota > 0 && bateu >= Math.min(2, qs.length) && bateu >= Math.ceil(qs.length * 0.5)) res.push({ d: d, nota: nota });
+    });
+    res.sort(function (x, y) { return y.nota - x.nota; });
+    return res.slice(0, n || 3);
+  }
+  function citaFonte(d) { return d.fonte + (d.pag ? ', p. ' + d.pag : d.secao ? ' · ' + d.secao : ''); }
+  function trechoCurto(t, max) {
+    t = String(t || '').replace(/\s+/g, ' ').trim(); max = max || 480;
+    if (t.length <= max) return t;
+    var c = t.slice(0, max), m = c.match(/^[\s\S]*[.!?;](?=\s)/);
+    return (m && m[0].length > max * 0.5 ? m[0] : c.slice(0, c.lastIndexOf(' ')) + '…');
+  }
+  function respostaBase(q, p) {
+    var hits = buscaBase(q, 3); if (!hits.length) return null;
+    var h = hits[0].d, outros = hits.slice(1).filter(function (x) { return x.d.fonte !== h.fonte || x.d.pag !== h.pag; });
+    var text = trechoCurto(h.texto) + (outros.length ? '\nVeja também: ' + outros.map(function (x) { return citaFonte(x.d); }).join(' · ') : '');
+    return { text: text, src: 'Fonte: ' + citaFonte(h) + ' — base de conhecimento de bordo', actions: act(p, [['FAQ de bordo', 'faq']]) };
+  }
+  if (window.requestIdleCallback) requestIdleCallback(carregaBase, { timeout: 4000 }); else setTimeout(carregaBase, 1500);
+
   function answer(q, ctx) {
     ctx = ctx || {};
     var p = ctx.platform || 'web';
@@ -281,6 +354,7 @@
     if (!ANSWERS[key]) key = 'fallback';
     var a;
     try { a = ANSWERS[key](p, ctx, String(q || '').trim()); } catch (e) { key = 'fallback'; a = ANSWERS.fallback(p, ctx); }
+    if (key === 'fallback') { var kb = null; try { kb = respostaBase(q, p); } catch (e) {} if (kb) { a = kb; key = 'base'; } } // sem resposta pronta: busca nos manuais
     a.key = key;
     return a;
   }
@@ -630,6 +704,6 @@
     stopSpeaking();
   }
 
-  window.AvantiBrain = { BASE: BASE, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, abertura: abertura, falaCurta: falaCurta, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
+  window.AvantiBrain = { BASE: BASE, buscaBase: buscaBase, carregaBase: carregaBase, DEFAULTS: DEFAULTS, BANK: BANK, ALL: ALL, HREF: HREF, loadShortcuts: loadShortcuts, saveShortcuts: saveShortcuts, resetShortcuts: resetShortcuts, bankFor: bankFor, loadDiario: loadDiario, addDiario: addDiario, loadExec: loadExec, markExec: markExec, unmarkExec: unmarkExec, loadEquipe: loadEquipe, saveEquipe: saveEquipe, loadDocs: loadDocs, addDoc: addDoc, answer: answer, answerAttachment: answerAttachment, quem: quem, route: route, parseHash: parseHash, clearHash: clearHash, recognizer: recognizer, ditado: ditado, linkConvite: linkConvite, speak: speak, stopSpeaking: stopSpeaking, abertura: abertura, falaCurta: falaCurta, vozEnviar: vozEnviar, pularFala: pularFala, vozEncerrar: vozEncerrar, falavel: falavel, voz: vozPtBr, now: now, askHref: askHref };
   try { window.dispatchEvent(new CustomEvent('avanti-brain-ready')); } catch (e) {}
 })();
