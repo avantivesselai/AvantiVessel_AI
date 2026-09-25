@@ -26,12 +26,12 @@ button { font: inherit; }
       <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Abastecimento</span>
       <span style="font-size: 11.5px; color: {{subTone}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
     </span>
-    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-warn, #f0a63a); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg> 34 %</span>
+    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; background: rgba(var(--av-warn-rgb, 240,166,58), 0.14); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 700; color: var(--av-warn, #f0a63a); flex-shrink: 0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-warn, var(--av-warn, #f0a63a));"></path></svg> 28 %</span>
   </header>
   <div style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden;">
     <div style="box-sizing: border-box; padding: 14px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 16px; display: flex; flex-direction: column; gap: 8px;">
       <span style="font-size: 11px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-ink3, #9aa3af);">DIESEL A BORDO · ESTIMADO</span>
-      <span style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums;">≈ 516</span><span style="font-size: 13px; color: var(--av-ink3, #9aa3af);">L de 1.500</span></span>
+      <span style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums;">≈ 423</span><span style="font-size: 13px; color: var(--av-ink3, #9aa3af);">L de 1.500</span></span>
       <sc-for list="{{tanks}}" as="t" hint-placeholder-count="2">
         <span style="display: flex; align-items: center; gap: 10px;">
           <span style="width: 64px; flex-shrink: 0; font-size: 12px; font-weight: 600;">{{t.n}}</span>
@@ -39,7 +39,7 @@ button { font: inherit; }
           <span style="width: 44px; flex-shrink: 0; text-align: right; font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums;">{{t.v}}</span>
         </span>
       </sc-for>
-      <span style="font-size: 10.5px; color: var(--av-ink4, #7d8796);">última leitura com motores ligados · 20/09 13:23 · o sensor só publica com motor ligado</span>
+      <span style="font-size: 10.5px; color: var(--av-ink4, #7d8796);">última leitura com motores ligados · 25/09 13:40 · o sensor só publica com motor ligado</span>
     </div>
     <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
       <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
@@ -100,12 +100,12 @@ class Component extends DCLogic {
       temPend: pend.length > 0,
       pendLine: pend.length ? pend[0].d + ' · ' + pend[0].local + (pend.length > 1 ? ' · +' + (pend.length - 1) + ' a confirmar' : '') + ' ›' : '',
       pickNf: () => this.nfRef.current && this.nfRef.current.click(), nfRef: this.nfRef, onNf: (e) => this.onNf(e),
-      tanks: [ { n: 'Diesel BB', v: '34,0%', w: '34%', tone: 'var(--av-tele, #5ac8fa)' }, { n: 'Diesel BE', v: '34,8%', w: '34.8%', tone: 'var(--av-accent, #409cff)' } ],
+      tanks: [ { n: 'Diesel BB', v: '27,6%', w: '27.6%', tone: 'var(--av-tele, #5ac8fa)' }, { n: 'Diesel BE', v: '28,8%', w: '28.8%', tone: 'var(--av-accent, #409cff)' } ],
       kpis: [
-        { l: 'AUTONOMIA', v: '≈ 22 h', s: '≈ 185 mn a 8,4 nós · reserva 10 %', tone: 'var(--av-ok, #34c77a)' },
+        { l: 'AUTONOMIA', v: '≈ 18 h', s: '≈ 153 mn a 8,4 nós · reserva 10 %', tone: 'var(--av-ok, #34c77a)' },
         { l: 'CRUZEIRO', v: '20,9 L/h', s: 'média 1.130 rpm · 2 motores', tone: 'var(--av-ink, #e9edf2)' },
         { l: 'DESDE 14/08', v: '≈ 186 L', s: '10,2 h motor · 22,6 h gerador', tone: 'var(--av-ink, #e9edf2)' },
-        { l: 'GERADOR', v: '280,7 h', s: 'horímetro · 20/09', tone: 'var(--av-ink, #e9edf2)' }
+        { l: 'GERADOR', v: '285,6 h', s: 'horímetro · 25/09', tone: 'var(--av-ink, #e9edf2)' }
       ]
     };
   }

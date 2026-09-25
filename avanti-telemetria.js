@@ -1,5 +1,5 @@
 /* Avanti Vessel AI — telemetria ao vivo do coletor (YDWG-02 → Drive → proxy protegido → app).
-   DESLIGADA por padrão: sem URL configurada, nada é buscado e o app segue com o snapshot de 20/09.
+   DESLIGADA por padrão: sem URL configurada, nada é buscado e o app segue com o snapshot de 25/09.
    Para ligar (depois da demonstração): publicar o proxy de telemetria-worker/, pôr a URL em URL_PROXY
    e abrir o app uma vez por aparelho com #tele=<chave> no fim do endereço (a chave fica só no aparelho).
    Nunca aponte para um link público do Drive: o arquivo tem a posição do barco. */
