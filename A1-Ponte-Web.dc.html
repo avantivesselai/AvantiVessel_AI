@@ -64,8 +64,8 @@ button { font: inherit; }
     <main style="flex-grow: 1; box-sizing: border-box; padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; min-width: 0;">
 
       <div style="display: flex; align-items: baseline; justify-content: space-between;">
-        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;">Boa noite, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import></h1>
-        <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">Sexta-feira, 25 de setembro · 13:40 · tudo em ordem para o dia seguinte, com duas pendências</span>
+        <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;"><x-import component-from-global-scope="avanti-periodo"></x-import>, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import></h1>
+        <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">Sexta-feira, 25 de setembro · 13:40 · três manutenções atrasadas</span>
       </div>
 
       <section style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px;">
@@ -204,7 +204,7 @@ button { font: inherit; }
             </span>
             <span style="flex-grow: 1; display: flex; flex-direction: column;">
               <span style="font-size: 16px; font-weight: 700;">O que vence</span>
-              <span style="font-size: 12px; color: var(--av-ink3, #9aa3af);">35 tarefas · 2 atrasadas · 2 em D-30</span>
+              <span style="font-size: 12px; color: var(--av-ink3, #9aa3af);">35 tarefas · 3 atrasadas · 2 em D-30</span>
             </span>
           </div>
 
@@ -244,13 +244,13 @@ class Component extends DCLogic {
     const showChart = st.metric === '24 V' && st.win === '7 D';
     const winTxt = { '1 D': 'últimas 24 h (média a cada 15 min)', '7 D': 'últimos 7 dias (média por hora)', '30 D': 'últimos 30 dias (média a cada 6 h)', '1 A': '1 ano' }[st.win];
     const due = [
-      { dd: '181 d atrás', date: '23/03', task: 'Filtros do chiller · Dometic PLC L-3527', who: 'Estaleiro', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { dd: '95 d atrás', date: '17/06', task: 'Teste de bombas de porão e alarmes', who: 'Estaleiro', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { dd: 'D-4', date: '24/09', task: 'Tensões e conexões · Quick VRS / SBC NRG+', who: 'Lucas', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-      { dd: 'D-24', date: '14/10', task: 'Revisão programada do Avanti Vessel AI', who: 'Lucas + Avanti', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-      { dd: 'D-33', date: '23/10', task: 'Isolador galvânico · ProMariner FS30/FS60', who: 'Lucas', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
-      { dd: 'D-53', date: '12/11', task: 'Inspeção de casco, anodos e zincos', who: 'Eduardo', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
-    ].map((x) => ({ ...x, meta: x.who + ' · ' + x.date, href: 'C1-Leme-Web.dc.html#f=' + (x.dd.indexOf('atrás') !== -1 ? 'atrasadas' : (x.dd === 'D-4' || x.dd === 'D-24') ? 'd30' : 'emdia') }));
+      { dd: '186 d atrás', date: '23/03', task: 'Filtros do chiller · Dometic PLC L-3527', who: 'Estaleiro', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: '100 d atrás', date: '17/06', task: 'Teste de bombas de porão e alarmes', who: 'Estaleiro', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: '1 d atrás', date: '24/09', task: 'Tensões e conexões · Quick VRS / SBC NRG+', who: 'Lucas', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: 'D-19', date: '14/10', task: 'Revisão programada do Avanti Vessel AI', who: 'Lucas + Avanti', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+      { dd: 'D-28', date: '23/10', task: 'Isolador galvânico · ProMariner FS30/FS60', who: 'Lucas', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+      { dd: 'D-48', date: '12/11', task: 'Inspeção de casco, anodos e zincos', who: 'Eduardo', d: 'M3 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0M3 9c2-3 4-3 6 0s4 3 6 0 4-3 6 0', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
+    ].map((x) => ({ ...x, meta: x.who + ' · ' + x.date, href: 'C1-Leme-Web.dc.html#f=' + (x.dd.indexOf('atrás') !== -1 ? 'atrasadas' : (x.dd === 'D-19' || x.dd === 'D-28') ? 'd30' : 'emdia') }));
     return {
       accent: accent,
       metricLabel: st.metric === '24 V' ? 'banco 24 V' : st.metric === 'Praça °C' ? 'praça de máquinas °C' : st.metric.toLowerCase(),
@@ -272,9 +272,9 @@ class Component extends DCLogic {
       systems: [
         { l: 'Motor BB', v: '600 rpm', vtone: 'var(--av-ink, #e9edf2)', sub: '110,0 h · neutro · óleo 3,8 bar', href: 'C1-Leme-Web.dc.html#f=emdia', tip: 'Revisão dos motores — agenda de manutenção', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8', tone: 'var(--av-ink3, #9aa3af)', wash: 'rgba(var(--av-ink3-rgb, 154,163,175), 0.16)' },
         { l: 'Motor BE', v: '600 rpm', vtone: 'var(--av-ink, #e9edf2)', sub: '106,0 h · neutro · óleo 3,8 bar', href: 'C1-Leme-Web.dc.html#f=emdia', tip: 'Revisão dos motores — agenda de manutenção', d: 'M4 17V9l3-4h7l3 4v8z M8 17v3 M16 17v3 M8 9h8', tone: 'var(--av-ink3, #9aa3af)', wash: 'rgba(var(--av-ink3-rgb, 154,163,175), 0.16)' },
-        { l: 'Elétrico 24 V', v: '27,49 V', vtone: 'var(--av-ink, #e9edf2)', sub: 'banco 2 · flutuação', href: 'C1-Leme-Web.dc.html#f=d30', tip: 'D-4 · tensões e conexões Quick VRS / SBC NRG+', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
-        { l: 'Porão', v: 'Teste vencido', vtone: 'var(--av-crit, #ff3b30)', sub: 'bombas · 95 dias', href: 'C1-Leme-Web.dc.html#f=atrasadas', tip: 'Teste de bombas de porão e alarmes — atrasado', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-        { l: 'Climatização', v: 'Filtro vencido', vtone: 'var(--av-crit, #ff3b30)', sub: 'chiller · 181 dias', href: 'F5-FAQ-Climatizacao-Web.dc.html', tip: 'Passo a passo do chiller Dometic', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+        { l: 'Elétrico 24 V', v: '27,49 V', vtone: 'var(--av-ink, #e9edf2)', sub: 'banco 2 · flutuação', href: 'C1-Leme-Web.dc.html#f=atrasadas', tip: 'Tensões e conexões Quick VRS / SBC NRG+ — atrasada 1 dia', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
+        { l: 'Porão', v: 'Teste vencido', vtone: 'var(--av-crit, #ff3b30)', sub: 'bombas · 100 dias', href: 'C1-Leme-Web.dc.html#f=atrasadas', tip: 'Teste de bombas de porão e alarmes — atrasado', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+        { l: 'Climatização', v: 'Filtro vencido', vtone: 'var(--av-crit, #ff3b30)', sub: 'chiller · 186 dias', href: 'F5-FAQ-Climatizacao-Web.dc.html', tip: 'Passo a passo do chiller Dometic', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
         { l: 'Praça de máq.', v: '22,9 °C', vtone: 'var(--av-ink, #e9edf2)', sub: 'externo 24,8 °C', href: 'F4-FAQ-Gerador-Web.dc.html', tip: 'Gerador Onan — passo a passo', d: 'M10 4a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
       ],
       live: [

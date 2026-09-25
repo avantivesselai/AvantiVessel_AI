@@ -6,7 +6,7 @@
 (function () {
   if (window.AvantiAuth) return;
 
-  var VERSAO = { v: '1.4.0', data: '25/09/2026' };
+  var VERSAO = { v: '1.4.1', data: '25/09/2026' };
   var CREDITO = 'designed by Wonder BOAT | Wonder HUB.AI';
 
   // Senha verificada por PBKDF2 (210.000 iterações, SHA-256, 32 bytes). Trocar senha = gerar sal e hash novos.
@@ -184,6 +184,18 @@
     render() {
       var u = usuario() || publico('otto');
       var t = '“Olá, ' + u.nome + '. ' + frase() + '”';
+      if (this.textContent !== t) this.textContent = t;
+    }
+  });
+
+  // <avanti-periodo> — “Bom dia” / “Boa tarde” / “Boa noite” pela hora do barco (America/Sao_Paulo).
+  if (!customElements.get('avanti-periodo')) customElements.define('avanti-periodo', class extends HTMLElement {
+    connectedCallback() { this.render(); this._t = setInterval(this.render.bind(this), 60000); }
+    disconnectedCallback() { clearInterval(this._t); }
+    render() {
+      var h = new Date().getHours();
+      try { h = parseInt(new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false }).format(new Date()), 10) % 24; } catch (e) {}
+      var t = h >= 5 && h < 12 ? 'Bom dia' : h >= 12 && h < 18 ? 'Boa tarde' : 'Boa noite';
       if (this.textContent !== t) this.textContent = t;
     }
   });

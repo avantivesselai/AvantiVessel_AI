@@ -6,9 +6,9 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.4.0 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.1 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
-> É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
+> É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 13:40 (motores em marcha lenta, gerador e Seakeeper ligados). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
 ## Acesso
 
@@ -160,6 +160,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.1 | 25/09/2026 | Dados atualizados com a leitura do coletor de 25/09 13:40 (diesel 27,6/28,8 % ≈ 423 L, horímetros 110/106 h, gerador 285,6 h, tanques, vento, barômetro) · prazos recalculados para 25/09 (3 atrasadas) · cumprimento pelo horário · telemetria ao vivo preparada e desligada |
 | 1.4.0 | 25/09/2026 | Base de conhecimento de bordo: ~1.000 trechos técnicos dos manuais do Drive, com fonte e página, usados pelo chat e pela voz (offline) · sem documentos sensíveis |
 | 1.3.4 | 25/09/2026 | Ícone do barco Avanti no botão CONVERSA e no centro do núcleo de voz (no lugar do “AI”) · botão CONVERSA com brilho e giro mais suaves |
 | 1.3.3 | 25/09/2026 | Núcleo de voz mais discreto (sem varredura nem grade, giros lentos, espectro menor) · tela da voz se ajusta a celulares pequenos (sem o núcleo sobre o texto) · transcrição sem palavras repetidas no Android |

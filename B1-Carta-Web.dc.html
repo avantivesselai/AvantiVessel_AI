@@ -124,7 +124,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           <a href="C1-Leme-Web.dc.html" style="padding: 10px 14px; background: var(--av-row, #12161e); border-radius: 14px; display: flex; flex-direction: column; gap: 5px; text-decoration: none; color: var(--av-ink, #e9edf2);">
             <span style="display: flex; align-items: baseline; justify-content: space-between;">
               <span style="font-size: 13px; font-weight: 700;">Próxima revisão</span>
-              <span style="padding: 4px 10px; border-radius: 999px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); color: var(--av-ok, #34c77a); font-size: 12px; font-weight: 700;">D-117</span>
+              <span style="padding: 4px 10px; border-radius: 999px; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); color: var(--av-ok, #34c77a); font-size: 12px; font-weight: 700;">D-113</span>
             </span>
             <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15;">16 de janeiro <span style="font-size: 13px; font-weight: 600; color: var(--av-ink3, #9aa3af);">ou 280 h</span></span>
             <span style="font-size: 12px; color: var(--av-ink2, #aeb6c2); line-height: 1.35;">30,0 h desde a revisão de julho · faltam 170,0 h — a data vence antes</span>
@@ -189,11 +189,11 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 class Component extends DCLogic {
   renderVals() {
     const agenda = [
-      { dd: '181 d atrás', task: 'Limpeza de filtros do chiller', eq: 'Dometic PLC L-3527 + MCGX', who: 'Estaleiro', href: 'C1-Leme-Web.dc.html#f=atrasadas', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { dd: '95 d atrás', task: 'Teste de bombas de porão e alarmes', eq: 'Diagrama ATL51', who: 'Estaleiro', href: 'C1-Leme-Web.dc.html#f=atrasadas', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
-      { dd: 'D-4', task: 'Verificação de tensões e conexões', eq: 'Quick VRS / SBC NRG+', who: 'Lucas', href: 'C1-Leme-Web.dc.html#f=d30', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-      { dd: 'D-24', task: 'Revisão programada do sistema', eq: 'Avanti Vessel AI', who: 'Lucas + Avanti', href: 'C1-Leme-Web.dc.html#f=d30', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-      { dd: 'D-33', task: 'Verificação do isolador galvânico', eq: 'ProMariner ProSafe FS30 / FS60', who: 'Lucas', href: 'C1-Leme-Web.dc.html#f=emdia', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
+      { dd: '186 d atrás', task: 'Limpeza de filtros do chiller', eq: 'Dometic PLC L-3527 + MCGX', who: 'Estaleiro', href: 'C1-Leme-Web.dc.html#f=atrasadas', d: 'M12 3v18 M3 12h18 M6 6l12 12 M18 6L6 18', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: '100 d atrás', task: 'Teste de bombas de porão e alarmes', eq: 'Diagrama ATL51', who: 'Estaleiro', href: 'C1-Leme-Web.dc.html#f=atrasadas', d: 'M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: '1 d atrás', task: 'Verificação de tensões e conexões', eq: 'Quick VRS / SBC NRG+', who: 'Lucas', href: 'C1-Leme-Web.dc.html#f=atrasadas', d: 'M13 3L5 14h6l-1 7 8-11h-6z', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+      { dd: 'D-19', task: 'Revisão programada do sistema', eq: 'Avanti Vessel AI', who: 'Lucas + Avanti', href: 'C1-Leme-Web.dc.html#f=d30', d: 'M4 6h16v12H4z M8 10h8 M8 14h5', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+      { dd: 'D-28', task: 'Verificação do isolador galvânico', eq: 'ProMariner ProSafe FS30 / FS60', who: 'Lucas', href: 'C1-Leme-Web.dc.html#f=d30', d: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' }
     ].map((x) => Object.assign({}, x, { meta: x.eq + ' · ' + x.who }));
     return {
       nav: [
@@ -208,16 +208,16 @@ class Component extends DCLogic {
         { l: 'Equipe', href: 'G4-Equipe-Web.dc.html', d: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M3 20a6 6 0 0 1 12 0 M16 11a3 3 0 1 0 0-6 M21 20a6 6 0 0 0-5-5.9', bg: 'transparent', tone: 'var(--av-ink2, #aeb6c2)' }
       ],
       kpis: [
-        { l: 'Atrasadas', v: '2', s: 'tarefas', go: 'Manutenção', href: 'C1-Leme-Web.dc.html#f=atrasadas', vtone: 'var(--av-crit, #ff3b30)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
+        { l: 'Atrasadas', v: '3', s: 'tarefas', go: 'Manutenção', href: 'C1-Leme-Web.dc.html#f=atrasadas', vtone: 'var(--av-crit, #ff3b30)', d: 'M12 4 21 20H3z M12 10v4 M12 17h.01', tone: 'var(--av-crit, #ff3b30)', wash: 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' },
         { l: 'Vencem em 30 dias', v: '2', s: 'tarefas', go: 'Manutenção', href: 'C1-Leme-Web.dc.html#f=d30', vtone: 'var(--av-warn, #f0a63a)', d: 'M12 7v5l3 2 M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-        { l: 'Em dia', v: '31', s: 'de 35', go: 'Manutenção', href: 'C1-Leme-Web.dc.html#f=emdia', vtone: 'var(--av-ok, #34c77a)', d: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
+        { l: 'Em dia', v: '30', s: 'de 35', go: 'Manutenção', href: 'C1-Leme-Web.dc.html#f=emdia', vtone: 'var(--av-ok, #34c77a)', d: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
         // Mesma conta do G1: 6 documentos com status OK · A conferir 4 = 3 + o pleito
         { l: 'Documentos válidos', v: '6', s: '3 a conferir · 1 pleito', go: 'Documentos', href: 'G1-Documentos-Web.dc.html', vtone: 'var(--av-ink, #e9edf2)', d: 'M6 3h8l4 4v14H6z M14 3v4h4', tone: 'var(--av-accent, #409cff)', wash: 'rgba(var(--av-accent-rgb, 64,156,255), 0.14)' }
       ],
       agenda: agenda,
       docs: [
         { n: 'Título de inscrição · até 15/01/2031', dd: 'OK', i: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
-        { n: 'FISTEL + licença de estação · 23/01/2027', dd: 'D-124', i: 'M12 7v5l3 2', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+        { n: 'FISTEL + licença de estação · 23/01/2027', dd: 'D-120', i: 'M12 7v5l3 2', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
         { n: 'Homologações VHF 215 e 315 · até 11/2028', dd: 'OK', i: 'M5 12.5l4.5 4.5L19 7.5', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
         { n: 'Licença do VHF 115 · fonte divergente', dd: 'Conferir', i: 'M12 7v6 M12 17h.01', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' }
       ],

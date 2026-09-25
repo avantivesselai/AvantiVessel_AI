@@ -181,7 +181,7 @@ class Component extends DCLogic {
     const s = this.state;
     const DOCS = [
       { n: 'Título de Inscrição (TIE) · 3813927725', s: 'Capitania dos Portos RJ · emitido 15/01/2026 · protocolo 381-000651/2026', dd: 'até 15/01/2031', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M6 3h8l4 4v14H6z M14 3v4h4 M9 13h6 M9 17h4', cat: 'registro', fonte: 'Drive › Documentos_Legais · Capitania dos Portos RJ · protocolo 381-000651/2026' },
-      { n: 'FISTEL + licença de estação', s: 'ANATEL · renovar antes do vencimento · alerta D-90 ativo', dd: '23/01/2027 · D-124', st: 'RENOVAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'ANATEL · Drive › Documentos_Legais (certificados ANATEL) · agenda preditiva D-90' },
+      { n: 'FISTEL + licença de estação', s: 'ANATEL · renovar antes do vencimento · alerta D-90 ativo', dd: '23/01/2027 · D-120', st: 'RENOVAR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'ANATEL · Drive › Documentos_Legais (certificados ANATEL) · agenda preditiva D-90' },
       { n: 'Licença do VHF 115', s: 'fonte divergente entre registro e planilha — conferir com a ANATEL', dd: 'sem data', st: 'CONFERIR', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'registro oficial × planilha divergem — conferir na ANATEL (hierarquia: registro › planilha)' },
       { n: 'Homologação VHF 215 AIS · nº 07895-25-01493', s: 'ANATEL · em nome de Otto B. Licks · série 7GG001169', dd: 'até 11/11/2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'Drive › Documentos_Legais · certificado ANATEL 07895-25-01493' },
       { n: 'Homologação VHF 315', s: 'ANATEL · certificado 2025–2028 arquivado', dd: 'até 2028', st: 'OK', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)', d: 'M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5', cat: 'radio', fonte: 'Drive › Documentos_Legais · certificado ANATEL 2025–2028' },
@@ -226,9 +226,9 @@ class Component extends DCLogic {
       pickFoto: () => this.fotoRef.current && this.fotoRef.current.click(), pickPdf: () => this.pdfRef.current && this.pdfRef.current.click(),
       fotoRef: this.fotoRef, pdfRef: this.pdfRef, onFoto: (e) => this.onFile('foto', e), onPdf: (e) => this.onFile('PDF', e),
       proximos: [
-        { n: 'FISTEL + licença de estação', s: '23/01/2027 · renovar na ANATEL', dd: 'D-124', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
-        { n: 'Health Check anual · dealer', s: '16/07/2027 · protocolo 47715565', dd: 'D-298', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
-        { n: 'Homologações VHF 215 e 315', s: '11/11/2028', dd: 'D-782', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
+        { n: 'FISTEL + licença de estação', s: '23/01/2027 · renovar na ANATEL', dd: 'D-120', tone: 'var(--av-warn, #f0a63a)', wash: 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)' },
+        { n: 'Health Check anual · dealer', s: '16/07/2027 · protocolo 47715565', dd: 'D-294', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' },
+        { n: 'Homologações VHF 215 e 315', s: '11/11/2028', dd: 'D-778', tone: 'var(--av-ok, #34c77a)', wash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.14)' }
       ]
     };
   }
