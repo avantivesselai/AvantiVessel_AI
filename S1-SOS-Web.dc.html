@@ -17,14 +17,14 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--av-bg, #05070b); -webkit-font-smoothing: antialiased; }
 a { color: var(--av-accent, #409cff); } a:hover { color: var(--av-link-hover, #6fb3ff); }
 button { font: inherit; }
-@keyframes avantiSirene { 0%, 100% { opacity: 0.10; } 50% { opacity: 1; } }
+@keyframes avantiSirene { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 @keyframes avantiGiro { to { transform: rotate(360deg); } }
 @keyframes avantiFaroE { 0%, 50%, 100% { opacity: 0.12; } 12%, 34% { opacity: 1; } }
 @keyframes avantiFaroD { 0%, 50%, 100% { opacity: 1; } 62%, 84% { opacity: 0.12; } }
 @keyframes avantiCupula { 0%, 100% { fill-opacity: 0.45; } 50% { fill-opacity: 1; } }
 @keyframes avantiHalo { 0%, 100% { transform: scale(0.72); opacity: 0.12; } 50% { transform: scale(1.12); opacity: 0.7; } }
-@keyframes avantiBrilho { 0%, 100% { box-shadow: 0 0 0 1px rgba(255,90,80,0.25), 0 10px 30px rgba(255,40,30,0.25); } 50% { box-shadow: 0 0 0 1px rgba(255,120,110,0.6), 0 0 46px rgba(255,40,30,0.75); } }
-.av-sirene { animation: avantiSirene 1.4s ease-in-out infinite; }
+@keyframes avantiBrilho { 0%, 100% { box-shadow: 0 0 0 1px rgba(255,90,80,0.3), 0 8px 24px rgba(255,40,30,0.2); } 50% { box-shadow: 0 0 0 1px rgba(255,120,110,0.55), 0 8px 30px rgba(255,40,30,0.45); } }
+.av-sirene { animation: avantiSirene 2s ease-in-out infinite; }
 .av-giro { animation: avantiGiro 2.8s linear infinite; }
 .av-faro-e { animation: avantiFaroE 1.4s linear infinite; }
 .av-faro-d { animation: avantiFaroD 1.4s linear infinite; }
@@ -99,8 +99,7 @@ button { font: inherit; }
 
   <div style="position: absolute; inset: 0; background: rgba(var(--av-bg-rgb, 5,7,11), 0.86); backdrop-filter: blur(10px); z-index: 40; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto;">
     <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
-      <div class="av-sirene" style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,40,30,0.55) 0%, rgba(255,40,30,0) 70%), radial-gradient(ellipse 60% 70% at 0% 100%, rgba(255,40,30,0.38) 0%, rgba(255,40,30,0) 70%), radial-gradient(ellipse 60% 70% at 100% 100%, rgba(255,40,30,0.38) 0%, rgba(255,40,30,0) 70%), rgba(150,8,4,0.26);"></div>
-      <div class="av-giro" style="position: absolute; left: 50%; top: 50%; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; background: conic-gradient(rgba(255,60,45,0) 0deg, rgba(255,60,45,0.22) 16deg, rgba(255,60,45,0) 40deg, rgba(255,60,45,0) 180deg, rgba(255,60,45,0.22) 196deg, rgba(255,60,45,0) 220deg, rgba(255,60,45,0) 360deg);"></div>
+      <div class="av-sirene" style="position: absolute; inset: 0; box-shadow: inset 0 0 0 3px rgba(255,59,48,0.85), inset 0 0 70px 6px rgba(255,40,30,0.45); background: linear-gradient(180deg, rgba(255,40,30,0.14) 0%, rgba(255,40,30,0) 22%, rgba(255,40,30,0) 78%, rgba(255,40,30,0.10) 100%);"></div>
     </div>
     <div class="av-brilho" style="position: relative; z-index: 1; width: 540px; flex-shrink: 0; margin: auto; box-sizing: border-box; background: var(--av-modal, #10141b); border: 2px solid rgba(var(--av-crit-rgb, 255,59,48), 0.6); border-radius: 18px; padding: 26px 28px; display: flex; flex-direction: column; gap: 14px;">
       <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;">

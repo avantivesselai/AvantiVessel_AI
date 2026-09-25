@@ -288,7 +288,7 @@ class Component extends DCLogic {
     if (this.state.conversa) { this.stopRec(); this._fala = null; if (B) B.stopSpeaking(); this.setState({ conversa: false, listening: false }); return; }
     if (this.rec) { this.stopRec(); this.setState({ listening: false }); }
     if (!B || !(window.SpeechRecognition || window.webkitSpeechRecognition)) { this.flash('Microfone indisponível neste navegador — digite a pergunta.'); return; }
-    this.setState({ conversa: true }, () => this.speakAndResume('Conversa ativa. Pode falar.'));
+    this.setState({ conversa: true }, () => this.speakAndResume(B.abertura ? B.abertura() : 'Conversa ativa. Pode falar.'));
   }
   renderVals() {
     const s = this.state; const fx = this.fx();
