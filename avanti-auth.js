@@ -6,7 +6,7 @@
 (function () {
   if (window.AvantiAuth) return;
 
-  var VERSAO = { v: '1.3.4', data: '25/09/2026' };
+  var VERSAO = { v: '1.4.0', data: '25/09/2026' };
   var CREDITO = 'designed by Wonder BOAT | Wonder HUB.AI';
 
   // Senha verificada por PBKDF2 (210.000 iterações, SHA-256, 32 bytes). Trocar senha = gerar sal e hash novos.

@@ -6,7 +6,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.3.4 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.0 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -99,9 +99,15 @@ Uma voz só: a melhor voz **masculina** pt-BR do aparelho, gratuita, em velocida
 
 **Fala direta:** na conversa por voz, o app fala só o essencial (a primeira linha da resposta, sem as fontes); a resposta completa fica na tela. Emergências (SOS, pressão de óleo, EPIRB) são lidas inteiras.
 
-## Base de conhecimento (NotebookLM)
+## Base de conhecimento de bordo
 
-A base completa (manuais, laudos, notas e histórico) está no [NotebookLM](https://notebook.google.com/notebook/f8238fa6-ff5e-4cc8-b0f1-e664927a42a6). O Google não libera consulta automática a cadernos pessoais do NotebookLM (a API existe só no plano Enterprise), então o site não lê o caderno sozinho: quando o chat não encontra o dado, mostra o botão **Base de conhecimento**, que abre o caderno. O acesso depende do compartilhamento do caderno no Google.
+`base-conhecimento.json` traz cerca de 1.000 trechos técnicos, com a fonte e a página, extraídos dos manuais e guias do Drive: Azimut (manual do proprietário), Volvo Penta D8/IPS (operação, serviço, falhas, códigos, emergência), Onan, Seakeeper, Dometic, Sea-Fire, Quick, Garmin (Glass Cockpit, VHF/AIS, Reactor, GPSMAP), Fusion, Yacht Devices, inventário, checklist de partida, rota Rio–Angra e registro técnico do EPIRB.
+
+- **Como responde:** quando a resposta pronta não tem o dado, ou a pergunta é específica (como, código, óleo, alarme, onde fica…), o chat e a voz buscam na base e mostram o trecho com a fonte (“Manual de Serviço Gerador Onan MDKDP, p. 40”). Trechos em inglês aparecem na tela; a voz só avisa onde estão.
+- **Sem internet:** a base fica no aparelho depois da primeira visita.
+- **Nenhum documento sensível:** contratos, notas fiscais, títulos, transferência de propriedade e dados pessoais (nomes de terceiros, CPF/CNPJ, telefones, e-mails, valores) ficaram de fora. A conexão com IA para esses documentos fica para depois, com o site protegido.
+- **Lacunas conhecidas:** o Drive entregou só parte de alguns PDFs grandes. Faltam, entre outros, o fim do manual do proprietário Azimut (a partir de Sistemas), a parte final do manual do operador D8/IPS15 (partida em diante vem dos capítulos IPS avulsos), o plano de manutenção D8, a lista de falhas do gerador Onan e as telas de motor/alarmes do Glass Cockpit. O Memorial Descritivo, o “Azimut – Português” e o capítulo de manutenção IPS são digitalizados (sem texto).
+- A base completa continua no [NotebookLM](https://notebook.google.com/notebook/f8238fa6-ff5e-4cc8-b0f1-e664927a42a6) (botão no chat quando nada é encontrado).
 
 ## Requisitos
 
@@ -122,6 +128,7 @@ avanti-theme.js         tema claro/escuro e botão sol/lua
 avanti-app.js           configuração de app, ajuste à janela, cache offline
 avanti-clima.js         hora local, previsão do dia e maré no cabeçalho
 avanti-voz.js           núcleo de IA da conversa por voz
+base-conhecimento.json  trechos técnicos dos manuais (busca do chat e da voz)
 deck-stage.js           apresentação do manual
 manifest.webmanifest    app instalável
 sw.js                   cache offline
@@ -135,6 +142,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.0 | 25/09/2026 | Base de conhecimento de bordo: ~1.000 trechos técnicos dos manuais do Drive, com fonte e página, usados pelo chat e pela voz (offline) · sem documentos sensíveis |
 | 1.3.4 | 25/09/2026 | Ícone do barco Avanti no botão CONVERSA e no centro do núcleo de voz (no lugar do “AI”) · botão CONVERSA com brilho e giro mais suaves |
 | 1.3.3 | 25/09/2026 | Núcleo de voz mais discreto (sem varredura nem grade, giros lentos, espectro menor) · tela da voz se ajusta a celulares pequenos (sem o núcleo sobre o texto) · transcrição sem palavras repetidas no Android |
 | 1.3.2 | 25/09/2026 | Voz única, masculina e gratuita do aparelho · fala só o essencial (resposta completa na tela; emergências lidas inteiras) · abertura “Pode falar.” · sem ⚙ VOZ, sem ElevenLabs e sem proxy de voz |

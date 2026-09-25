@@ -288,7 +288,8 @@
     arrefecimento: ['coolant', 'refrigerante'], refrigerante: ['coolant'], agua: ['water'], zinco: ['anode', 'anodo'], anodo: ['anode', 'zinco'], helice: ['propeller'],
     radar: ['fantom'], plotter: ['gpsmap', 'chartplotter'], som: ['fusion', 'audio'], audio: ['fusion'], radio: ['vhf'], vhf: ['radio', 'dsc'], ligar: ['start', 'partida', 'iniciar'],
     partida: ['start'], desligar: ['stop', 'shutdown', 'parar'], manutencao: ['maintenance', 'service', 'revisao'], revisao: ['service', 'maintenance'], limpeza: ['cleaning'],
-    capacidade: ['capacity', 'litros'], tanque: ['tank'], helm: ['leme'], leme: ['steering'], direcao: ['steering']
+    capacidade: ['capacity', 'litros', 'volume'], superaquecer: ['temperatura', 'overheat', 'arrefecimento', 'coolant'], superaquecimento: ['temperatura', 'overheat', 'arrefecimento', 'coolant'], esquentando: ['temperatura', 'arrefecimento'],
+    parear: ['emparelhar', 'pairing', 'conectar', 'conectando', 'conexao'], emparelhar: ['pairing', 'bluetooth'], alarm: ['alarme'], lubrificante: ['oil', 'oleo'], tanque: ['tank'], helm: ['leme'], leme: ['steering'], direcao: ['steering']
   };
   function raiz(w) { if (/^\d/.test(w)) return w; w = w.replace(/coes$/, 'cao').replace(/oes$/, 'ao').replace(/aes$/, 'ao'); return w.length > 4 ? w.replace(/(es|s)$/, '') : w; }
   function tokens(t) {
@@ -301,7 +302,9 @@
       var lista = j && j.trechos; if (!lista || !lista.length) return;
       var soma = 0, df = {};
       lista.forEach(function (d) {
-        var tf = {}, tk = tokens((d.secao || '') + ' ' + d.texto + ' ' + (d.fonte || ''));
+        var sec = d.secao || '', tf = {}, tk = tokens(sec + ' ' + sec + ' ' + sec + ' ' + d.texto + ' ' + (d.fonte || ''));
+        d._lista = /invent[aá]rio|cat[aá]logo|[íi]ndice/i.test(d.fonte || '');
+        d._en = (' ' + d.texto.toLowerCase() + ' ').split(/\b(?:the|and|with|to|of|is|are|your|from)\b/).length > 6;
         tk.forEach(function (w) { tf[w] = (tf[w] || 0) + 1; });
         Object.keys(tf).forEach(function (w) { df[w] = (df[w] || 0) + 1; });
         d._tf = tf; d._n = tk.length; soma += tk.length;
@@ -310,22 +313,29 @@
     }).catch(function () {}).then(function () { KB.carregando = false; });
   }
   // Devolve até n trechos { d, nota } ou [] se nada for relevante o bastante.
+  var PROCEDIMENTO = /\b(como|o que fazer|procedimento|passo|trocar|troca|ligar|desligar|parear|alarme|falha|codigo|superaquec\w*|oleo|capacidade)\b/;
   function buscaBase(q, n) {
     if (!KB.docs) { carregaBase(); return []; }
-    var qs = tokens(q), pesos = {};
+    var qs = tokens(q).filter(function (w, k, a) { return a.indexOf(w) === k; });
     if (!qs.length) return [];
-    qs.forEach(function (w) { pesos[w] = 1; (SINONIMOS[w] || []).forEach(function (s) { s = raiz(s); if (!pesos[s]) pesos[s] = 0.6; }); });
-    var N = KB.docs.length, k1 = 1.2, b = 0.75, res = [];
+    // cada palavra da pergunta vira um grupo (ela + sinônimos); o trecho precisa cobrir a maioria dos grupos
+    var grupos = qs.map(function (w) { var g = {}; g[w] = 1; (SINONIMOS[w] || []).forEach(function (x) { x = raiz(x); if (!g[x]) g[x] = 0.6; }); return g; });
+    var N = KB.docs.length, k1 = 1.2, b = 0.75, res = [], proc = PROCEDIMENTO.test(' ' + norm(q) + ' ');
     KB.docs.forEach(function (d) {
-      var nota = 0, bateu = 0;
-      for (var w in pesos) {
-        var f = d._tf[w]; if (!f) continue;
-        var idf = Math.log(1 + (N - KB.df[w] + 0.5) / (KB.df[w] + 0.5));
-        nota += pesos[w] * idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * d._n / KB.media));
-        if (pesos[w] === 1) bateu++;
-      }
-      // exige a maioria das palavras da pergunta (ou uma, se a pergunta só tem uma)
-      if (nota > 0 && bateu >= Math.min(2, qs.length) && bateu >= Math.ceil(qs.length * 0.5)) res.push({ d: d, nota: nota });
+      var nota = 0, bateu = 0, secao = d._sec || (d._sec = ' ' + tokens(d.secao || '').join(' ') + ' '), naSecao = 0;
+      grupos.forEach(function (g) {
+        var melhor = 0;
+        for (var w in g) {
+          var f = d._tf[w]; if (!f) continue;
+          var idf = Math.log(1 + (N - KB.df[w] + 0.5) / (KB.df[w] + 0.5));
+          melhor = Math.max(melhor, g[w] * idf * (f * (k1 + 1)) / (f + k1 * (1 - b + b * d._n / KB.media)));
+          if (secao.indexOf(' ' + w + ' ') !== -1) naSecao++;
+        }
+        if (melhor > 0) { bateu++; nota += melhor; }
+      });
+      if (naSecao >= grupos.length) nota *= 1.6; // o título da seção cobre a pergunta inteira
+      if (d._lista && proc) nota *= 0.45;
+      if (nota > 0 && bateu >= Math.min(2, grupos.length) && bateu >= Math.ceil(grupos.length * 0.6)) res.push({ d: d, nota: nota });
     });
     res.sort(function (x, y) { return y.nota - x.nota; });
     return res.slice(0, n || 3);
@@ -337,11 +347,13 @@
     var c = t.slice(0, max), m = c.match(/^[\s\S]*[.!?;](?=\s)/);
     return (m && m[0].length > max * 0.5 ? m[0] : c.slice(0, c.lastIndexOf(' ')) + '…');
   }
+  var GENERICAS = { gerador: 1, motores: 1, audio: 1, estabilizador: 1, eletronicos: 1, climatizacao: 1, dessalinizador: 1, eletrico: 1, porao: 1, ancora: 1, manual: 1, clima: 0 };
+  var ESPECIFICA = /\b(como|trocar|troca|substitu\w*|parear|pareamento|conectar|codigo|codigos|alarme|alarmes|erro|falha|falhas|defeito|superaquec\w*|oleo|filtro|impeller|impelidor|rotor|capacidade|litros|pressao|temperatura|onde fica|localiza\w*|procedimento|passo|reset\w*|calibr\w*|configur\w*|limp\w*|intervalo|torque|especifica\w*|viscosidade|bluetooth|dsc|mob|zinco|anodo|fusivel|disjuntor)\b/;
   function respostaBase(q, p) {
     var hits = buscaBase(q, 3); if (!hits.length) return null;
     var h = hits[0].d, outros = hits.slice(1).filter(function (x) { return x.d.fonte !== h.fonte || x.d.pag !== h.pag; });
     var text = trechoCurto(h.texto) + (outros.length ? '\nVeja também: ' + outros.map(function (x) { return citaFonte(x.d); }).join(' · ') : '');
-    return { text: text, src: 'Fonte: ' + citaFonte(h) + ' — base de conhecimento de bordo', actions: act(p, [['FAQ de bordo', 'faq']]) };
+    return { text: text, src: 'Fonte: ' + citaFonte(h) + ' — base de conhecimento de bordo', actions: act(p, [['FAQ de bordo', 'faq']]), ref: citaFonte(h), ingles: !!h._en };
   }
   if (window.requestIdleCallback) requestIdleCallback(carregaBase, { timeout: 4000 }); else setTimeout(carregaBase, 1500);
 
@@ -354,7 +366,8 @@
     if (!ANSWERS[key]) key = 'fallback';
     var a;
     try { a = ANSWERS[key](p, ctx, String(q || '').trim()); } catch (e) { key = 'fallback'; a = ANSWERS.fallback(p, ctx); }
-    if (key === 'fallback') { var kb = null; try { kb = respostaBase(q, p); } catch (e) {} if (kb) { a = kb; key = 'base'; } } // sem resposta pronta: busca nos manuais
+    // Sem resposta pronta, ou pergunta específica sobre um equipamento (como, código, óleo, alarme, onde fica…): o trecho do manual vale mais que o resumo genérico.
+    if (key === 'fallback' || (GENERICAS[key] && ESPECIFICA.test(' ' + norm(q) + ' '))) { var kb = null; try { kb = respostaBase(q, p); } catch (e) {} if (kb) { a = kb; key = 'base'; } }
     a.key = key;
     return a;
   }
@@ -685,6 +698,7 @@
   function falaCurta(a) {
     var t = a && typeof a === 'object' ? a.text : a;
     if (a && a.key && FALA_INTEIRA[a.key]) return String(t || '');
+    if (a && a.key === 'base' && a.ingles) return 'Está no ' + String(a.ref || 'manual').replace(/, p\. /, ', página ').replace(/ · .*$/, '') + ', em inglês. Mostrei o trecho na tela.';
     var item = function (l) { return l.replace(/^(\d+[.)]|•|-)\s*/, '').replace(/\s*\([^)]*\)/g, '').trim(); };
     var ls = String(t || '').split(/\n+/).map(function (l) { return l.trim(); }).filter(function (l) { return l && !/^fonte\b/i.test(l); });
     var r = (ls[0] || '').replace(/\s*\([^)]*\)/g, ''), extra = [];
