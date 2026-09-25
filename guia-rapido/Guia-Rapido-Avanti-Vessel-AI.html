@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia rápido · Avanti Vessel AI</title>
+<meta name="description" content="Guia rápido para quem nunca usou o Avanti Vessel AI (Azimut Atlantis 51 · Avanti Vessel). Versão do app 1.4.3 · 25/09/2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap">
+<style>
+  /* Guia rápido — A4 retrato, uma <section class="page"> por folha. Fundo claro, texto escuro, azul da marca como destaque,
+     vermelho só na emergência. Fontes: Inter (texto) e Montserrat (títulos); sem internet, Liberation Sans / DejaVu Sans. */
+  :root {
+    --ink: #111922;       /* texto principal */
+    --ink2: #354150;      /* texto secundário */
+    --muted: #56616f;     /* legendas */
+    --line: #d5dbe3;
+    --soft: #f3f5f8;
+    --blue: #409cff;      /* azul da marca (barras, ícones, bordas) */
+    --blue-d: #1f6fd1;    /* azul para texto pequeno e números */
+    --blue-soft: #eaf3ff;
+    --amber-d: #8a5200;
+    --amber: #e39a1b;
+    --amber-soft: #fff5e3;
+    --green-d: #17703c;
+    --green-soft: #e3f4ea;
+    --red: #d32f27;       /* só emergência */
+    --red-d: #a8211b;
+    --red-soft: #fdeceb;
+    --sans: 'Inter', 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif;
+    --head: 'Montserrat', 'Inter', 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #e6eaf0; color: var(--ink); font-family: var(--sans); font-size: 11pt; line-height: 1.33; font-feature-settings: 'calt' 0;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; font-variant-numeric: tabular-nums; }
+  @media print { body { background: #fff; } }
+
+  .page { width: 210mm; height: 297mm; margin: 8mm auto; background: #fff; position: relative; overflow: hidden;
+          padding: 8.5mm 13mm 7.5mm; display: flex; flex-direction: column; box-shadow: 0 1mm 4mm rgba(0,0,0,.12); }
+  @media print { .page { margin: 0; box-shadow: none; break-after: page; } .page:last-of-type { break-after: auto; } }
+
+  .run { display: flex; justify-content: space-between; align-items: baseline; font-size: 8pt; color: var(--muted);
+         letter-spacing: .02em; flex: none; }
+  .run.top { border-bottom: 0.3mm solid var(--line); padding-bottom: 1.4mm; margin-bottom: 4mm; }
+  .run.bot { border-top: 0.3mm solid var(--line); padding-top: 1.4mm; margin-top: 2mm; }
+  .run b { color: var(--ink2); font-weight: 600; }
+  .body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+  h1, h2, h3, h4 { font-family: var(--head); margin: 0; color: var(--ink); }
+  p { margin: 0 0 1.8mm; }
+  strong, b { font-weight: 700; }
+  .k { font-weight: 700; letter-spacing: .02em; } /* rótulo de botão do app */
+  .q { font-weight: 600; } /* pergunta de exemplo */
+
+  /* Título de seção */
+  .sec { display: flex; align-items: center; gap: 3mm; margin: 0 0 2mm; }
+  .sec .n { flex: none; width: 9.5mm; height: 9.5mm; border-radius: 2.4mm; background: var(--blue-d); color: #fff;
+            font: 800 15pt/9.5mm var(--head); text-align: center; }
+  .sec h2 { font-size: 18pt; line-height: 1.1; font-weight: 800; letter-spacing: -.005em; }
+  .lead { font-size: 11.5pt; line-height: 1.3; font-weight: 600; color: var(--ink); border-left: 1.3mm solid var(--blue);
+          padding: .3mm 0 .3mm 3mm; margin: 0 0 3mm; }
+  h3 { font-size: 10pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-d);
+       margin: 0 0 1.6mm; display: flex; align-items: center; gap: 1.8mm; }
+  h3 svg { width: 4.6mm; height: 4.6mm; flex: none; }
+  .gap { height: 3.4mm; flex: none; }
+  .gap-s { height: 2mm; flex: none; }
+  .push { margin-top: auto; }
+
+  /* Passos numerados */
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0 0 2mm; }
+  ol.steps > li { counter-increment: s; position: relative; padding-left: 8mm; margin: 0 0 1.3mm; min-height: 5.8mm; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: -.1mm; width: 5.8mm; height: 5.8mm; border-radius: 50%;
+                          background: var(--blue-d); color: #fff; font: 700 9pt/5.8mm var(--head); text-align: center; }
+  ol.steps.start2 { counter-reset: s 1; }
+  ol.steps.small > li { padding-left: 7mm; min-height: 5.2mm; margin-bottom: 1.1mm; }
+  ol.steps.small > li::before { width: 5.2mm; height: 5.2mm; font-size: 8.5pt; line-height: 5.2mm; }
+
+  /* Legenda que casa com os números na imagem */
+  ol.legend { list-style: none; padding: 0; margin: 0; }
+  ol.legend > li { position: relative; padding-left: 7.2mm; margin: 0 0 1.2mm; }
+  ol.legend > li > .m, .m { position: absolute; left: 0; top: .1mm; }
+  .m, .mk { width: 5.4mm; height: 5.4mm; border-radius: 50%; background: var(--blue-d); color: #fff; border: .45mm solid #fff;
+            font: 700 8.5pt/4.5mm var(--head); text-align: center; box-shadow: 0 .2mm .8mm rgba(0,0,0,.45); display: inline-block; }
+  ol.legend > li > .m { box-shadow: none; border-color: var(--blue-d); }
+  .mk { position: absolute; margin: -2.7mm 0 0 -2.7mm; z-index: 2; }
+
+  ul.dots { list-style: none; padding: 0; margin: 0 0 2mm; }
+  ul.dots > li { position: relative; padding-left: 4.2mm; margin: 0 0 1mm; }
+  ul.dots > li::before { content: ""; position: absolute; left: .6mm; top: 1.75mm; width: 1.5mm; height: 1.5mm; border-radius: 50%; background: var(--blue); }
+
+  /* Caixas */
+  .box { border-radius: 2.2mm; padding: 2.2mm 3.2mm 2.2mm 11mm; position: relative; margin: 0 0 2.4mm; }
+  .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0; }
+  .box .ic { position: absolute; left: 3mm; top: 2.3mm; width: 5.6mm; height: 5.6mm; }
+  .box .t { font: 800 8.5pt/1.2 var(--head); letter-spacing: .08em; text-transform: uppercase; display: block; margin-bottom: .5mm; }
+  .dica { background: var(--blue-soft); border-left: 1.3mm solid var(--blue); }
+  .dica .t, .dica .ic { color: var(--blue-d); }
+  .atencao { background: var(--amber-soft); border-left: 1.3mm solid var(--amber); }
+  .atencao .t, .atencao .ic { color: var(--amber-d); }
+  .nota { background: var(--soft); border-left: 1.3mm solid #aab4c1; }
+  .nota .t, .nota .ic { color: var(--ink2); }
+
+  /* Capturas */
+  figure { margin: 0; }
+  .shot { position: relative; display: block; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 2.2mm; border: .3mm solid #2a3340; }
+  .phone img { border-radius: 4mm; border: 1.1mm solid #1b222c; }
+  figcaption { font-size: 8.5pt; line-height: 1.25; color: var(--muted); margin-top: 1mm; }
+
+  /* Layouts */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 6mm; }
+  .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 5mm; }
+  .row { display: flex; gap: 5mm; align-items: flex-start; }
+  .flow2 { column-count: 2; column-gap: 6mm; }
+  .dense { font-size: 10.5pt; line-height: 1.3; }
+  .dense10 { font-size: 10pt; line-height: 1.28; }
+  .flow2 > * { break-inside: avoid; }
+  .card { border: .35mm solid var(--line); border-radius: 2.4mm; padding: 2.4mm 3.2mm; background: #fff; }
+  .card h4 { font-size: 11pt; font-weight: 800; margin: 0 0 1mm; display: flex; align-items: center; gap: 2mm; }
+  .card h4 svg { width: 5.4mm; height: 5.4mm; color: var(--blue-d); flex: none; }
+
+  .ico { width: 5mm; height: 5mm; vertical-align: -1.1mm; }
+  .url { display: inline-block; font-weight: 700; color: var(--blue-d); background: var(--blue-soft); border-radius: 1.6mm; padding: .2mm 2mm; }
+  code, .mono { font-family: 'DejaVu Sans Mono', 'Liberation Mono', monospace; font-size: 9.8pt; background: var(--soft); border-radius: 1mm; padding: 0 1mm; white-space: nowrap; }
+
+  /* Selos de cor (iguais aos do app, em versão para papel) */
+  .chip { display: inline-block; font: 700 8.5pt/1 var(--head); letter-spacing: .05em; border-radius: 1.4mm; padding: 1.1mm 2mm; border: .35mm solid; white-space: nowrap; }
+  .chip.ok { color: var(--green-d); background: var(--green-soft); border-color: #7cc79a; }
+  .chip.am { color: var(--amber-d); background: var(--amber-soft); border-color: var(--amber); }
+  .chip.rd { color: var(--red-d); background: var(--red-soft); border-color: #eb8f89; }
+  .chip.gy { color: #4a5360; background: #eef0f3; border-color: #aab2bd; }
+  table.cor { width: 100%; border-collapse: collapse; }
+  table.cor td { padding: 1.2mm 0; vertical-align: top; border-bottom: .3mm solid var(--line); }
+  table.cor td:first-child { width: 29mm; padding-right: 2.4mm; }
+  table.msg { width: 100%; border-collapse: collapse; font-size: 10pt; line-height: 1.28; }
+  table.msg td { padding: 1.1mm 2mm; vertical-align: top; border-bottom: .3mm solid var(--line); }
+  table.msg td:first-child { width: 40%; font-weight: 600; color: var(--ink); padding-left: 0; }
+  dl.words { margin: 0; }
+  dl.words dt { font-weight: 800; font-family: var(--head); font-size: 9.5pt; letter-spacing: .03em; margin-top: 1.1mm; }
+  dl.words dt:first-child { margin-top: 0; }
+  dl.words dd { margin: 0 0 0 0; }
+
+  /* Capa */
+  .cover { display: grid; grid-template-columns: 1fr 42mm; column-gap: 8mm; align-items: start; margin-bottom: 5mm; }
+  .brand { display: flex; align-items: center; gap: 3.5mm; margin: 1mm 0 6mm; }
+  .brand img { width: 16mm; height: 16mm; }
+  .brand span { font: 700 10pt/1.2 var(--head); letter-spacing: .28em; color: var(--ink2); }
+  .cover h1 { font-size: 31pt; line-height: 1.04; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4mm; }
+  .cover h1 em { font-style: normal; color: var(--blue-d); display: block; }
+  .cover .sub { font: 600 16pt/1.2 var(--head); color: var(--ink2); margin-bottom: 6mm; }
+  .vessel { border-top: .5mm solid var(--blue); padding-top: 3mm; }
+  .vessel b { display: block; font: 800 13pt/1.3 var(--head); }
+  .vessel span { color: var(--muted); font-size: 10pt; }
+  .sos-strip { display: flex; align-items: center; gap: 3.5mm; background: var(--red); color: #fff; border-radius: 2.6mm;
+               padding: 3mm 4mm; margin: 6mm 0 0; font-size: 11pt; }
+  .sos-strip svg { width: 8mm; height: 8mm; flex: none; }
+  .sos-strip b { font: 800 12.5pt/1.2 var(--head); letter-spacing: .02em; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 0 0 3mm; }
+  .three .card { border-top: 1.2mm solid var(--blue); }
+  .three .card.red { border-top-color: var(--red); }
+  .three .card.red h4 svg { color: var(--red); }
+  .index { font-size: 10pt; list-style: none; padding: 0; margin: 0; }
+  .index li { display: flex; justify-content: space-between; border-bottom: .3mm dotted #b9c1cc; padding: .7mm 0; }
+  .index li span:last-child { color: var(--muted); }
+  .index li.sosl { color: var(--red-d); font-weight: 700; }
+
+  /* Página de emergência */
+  .sos .run.top { border-color: #f2b8b4; }
+  .sos .run.top b { color: var(--red-d); }
+  .sos-band { background: var(--red); color: #fff; border-radius: 3mm; padding: 3mm 5mm; display: flex; align-items: center; gap: 4.5mm; margin-bottom: 3.6mm; }
+  .sos-band svg { width: 13mm; height: 13mm; flex: none; }
+  .sos-band h2 { color: #fff; font-size: 26pt; line-height: 1; letter-spacing: .04em; margin-bottom: 1.4mm; }
+  .sos-band p { margin: 0; font-size: 12pt; font-weight: 600; line-height: 1.25; }
+  .sos-top { display: grid; grid-template-columns: 1.3fr 1fr; gap: 5mm; margin-bottom: 3.6mm; }
+  .script { border: .9mm solid var(--red); border-radius: 3mm; padding: 2.8mm 4mm; background: #fff; display: grid; grid-template-columns: 1fr 50mm; gap: 4mm; margin-bottom: 3.2mm; }
+  .script .notes { border-left: .35mm solid #f0c2bf; padding-left: 4mm; align-self: center; }
+  .script .notes p { font-size: 10pt; line-height: 1.3; margin: 0 0 2mm; color: var(--ink); }
+  .script .sub2 { font-size: 9.5pt; font-weight: 600; color: var(--ink2); margin-bottom: 1.4mm; }
+  .script .h { font: 800 9.5pt/1.25 var(--head); letter-spacing: .07em; color: var(--red-d); text-transform: uppercase; margin-bottom: .6mm; }
+  .script ol { list-style: none; margin: 0; padding: 0; font: 800 10.5pt/1.4 var(--head); letter-spacing: 0; }
+  .script ol li { border-bottom: .3mm dashed #f0c2bf; padding: .25mm 0; }
+  .script ol li:last-child { border-bottom: 0; }
+  .script ol li small { font: 600 8.5pt var(--sans); color: var(--muted); letter-spacing: 0; }
+  .script p { font-size: 9.5pt; line-height: 1.35; margin: 0 0 1.2mm; color: var(--ink2); }
+  .where h3, .sos h3 { color: var(--red-d); }
+  .where { display: grid; grid-template-columns: 1.25fr 1fr 1.25fr; gap: 3mm; margin-bottom: 3.2mm; }
+  .where .it { display: flex; align-items: center; gap: 2.4mm; font-size: 9.5pt; line-height: 1.25; border: .35mm solid #f0c2bf; border-radius: 2.2mm; padding: 1.6mm 2.4mm; }
+  .where .it.txt { justify-content: center; }
+  .where .it img { border-radius: 1.4mm; display: block; }
+  .where .it img { width: 20mm; height: auto; flex: none; }
+  .where .it img.round { height: 10mm; width: 10mm; border-radius: 50%; }
+  .where ul.dots li { font-size: 10pt; line-height: 1.27; }
+  .where ul.dots li::before, .sos ul.dots li::before { background: var(--red); }
+  .proto { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin-bottom: 3mm; }
+  .pc { border: .5mm solid #eaa5a0; border-radius: 3mm; padding: 2.2mm 3.2mm 1.2mm; background: var(--red-soft); break-inside: avoid; }
+  .pc h4 { font-size: 12pt; font-weight: 800; color: var(--red-d); display: flex; align-items: center; gap: 2.4mm; margin: 0 0 1.8mm; line-height: 1.15; }
+  .pc h4 small { display: block; font: 600 9pt/1.2 var(--sans); color: var(--ink2); margin-top: .3mm; }
+  .pc h4 .L { flex: none; width: 7mm; height: 7mm; border-radius: 50%; background: var(--red); color: #fff; font: 800 11pt/7mm var(--head); text-align: center; }
+  .pc .what { font-size: 9.5pt; color: var(--ink2); margin: 0 0 1.8mm 9.4mm; line-height: 1.25; }
+  .pc ol.steps > li { font-size: 10.5pt; line-height: 1.28; }
+  .pc ol.steps > li::before { background: var(--red); }
+  .sos .box.nota { border-left-color: var(--red); background: #fff; border: .35mm solid #f0c2bf; border-left: 1.3mm solid var(--red); }
+  .sos .box.nota .t, .sos .box.nota .ic { color: var(--red-d); }
+
+
+  .h3n { font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--muted); }
+  ul.qs { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2mm 3mm; font-size: 10pt; line-height: 1.2; }
+  ul.qs li { background: var(--soft); border: .3mm solid var(--line); border-radius: 1.6mm; padding: 1.1mm 2.2mm; font-weight: 600; }
+  ul.qs li::before { content: "“"; color: var(--blue-d); } ul.qs li::after { content: "”"; color: var(--blue-d); }
+  .pc .what { display: none; }
+  .gl-h { font-size: 13pt; font-weight: 800; display: flex; align-items: center; gap: 2.4mm; margin: 0 0 2mm; }
+  .gl-h svg { width: 6mm; height: 6mm; color: var(--blue-d); }
+  ul.qs { display: flex !important; flex-wrap: wrap; }
+  .words p { margin: 0 0 1.3mm; }
+  .words b { font-family: var(--head); font-weight: 800; font-size: 9.5pt; letter-spacing: .02em; }
+  .cores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 4mm; }
+  .cores > div { display: flex; flex-direction: column; gap: 1.4mm; align-items: flex-start; }
+  .cores .chip { justify-self: start; margin-top: .3mm; }
+  .gl p.app b { color: var(--blue-d); }
+  .onde { list-style: none; margin: 1.8mm 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .8mm 4mm; font-size: 9.5pt; line-height: 1.25; }
+  .onde li::before { content: "▸ "; }
+  .mi { display: inline-block; width: 4.4mm; height: 4.4mm; border-radius: 50%; background: var(--blue-d); color: #fff; font: 700 7.5pt/4.4mm var(--head); text-align: center; vertical-align: .1mm; margin: 0 .3mm; }
+  .spread .body { justify-content: space-between; }
+  .nw { white-space: nowrap; }
+  .gl { column-count: 2; column-gap: 6mm; font-size: 9.5pt; line-height: 1.25; }
+  .gl p { break-inside: avoid; margin: 0 0 .75mm; }
+  .gl b { font-family: var(--head); font-weight: 800; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H10l-6 4z M8 9.5h8 M8 12.5h5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z"/></symbol>
+    <symbol id="i-siren" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-5a5 5 0 0 1 10 0v5 M5 18h14v3H5z M12 2.5v2 M3.6 6l1.5 1.4 M20.4 6l-1.5 1.4 M10 13a2 2 0 0 1 2-2"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6 M10 21h4 M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z M12 10v4.5 M12 17.3v.2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6 M12 7.5v.2"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12 M8 7l4-4 4 4 M7 10H5v11h14V10h-2"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5h8a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2z M11 18h2"/></symbol>
+    <symbol id="i-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5 M9 17l5-5-5-5 M14 12H3"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z M5 11a7 7 0 0 0 14 0 M12 18v3"/></symbol>
+    <symbol id="i-kb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18v12H3z M7 10h.01 M11 10h.01 M15 10h.01 M8 14h8"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4 M8 7v10 M12 4v16 M16 7v10 M20 10v4"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.2"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M5 17a3 3 0 0 1 3-3h11 M9 8h6"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.5 8.5a14 14 0 0 1 19 0 M5.5 12a9.5 9.5 0 0 1 13 0 M8.8 15.4a5 5 0 0 1 6.4 0 M12 19h.01 M3 3l18 18"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5h8a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2z M9.5 9l2 2 3.5-3.5 M11 18h2"/></symbol>
+    <symbol id="i-radio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16v11H4z M8 4l8 5 M8 13h.01 M8 16h.01 M12 13h5 M12 16h5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===================== PÁGINA 1 · CAPA + 1. O QUE É ===================== -->
+<section class="page spread" id="p1">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>Capa · 1 · O que é</span></div>
+  <div class="body">
+    <div class="cover">
+      <div>
+        <div class="brand"><img src="img/logo-app.png" alt="Ícone do app Avanti Vessel AI"><span>AVANTI VESSEL AI</span></div>
+        <h1>Guia rápido ·<em>Avanti Vessel AI</em></h1>
+        <div class="sub">Para quem nunca usou</div>
+        <div class="vessel"><b>Azimut Atlantis 51 · Avanti Vessel</b><span>Versão do app 1.4.3 · 25/09/2026</span></div>
+        <div class="sos-strip"><svg><use href="#i-siren"/></svg><div><b>Emergência? Vá direto à última página (p.&nbsp;8).</b><br>O botão vermelho SOS está em todas as telas do app.</div></div>
+      </div>
+      <figure class="shot phone"><img src="img/inicio-app.jpg" alt="Tela inicial do app no celular"></figure>
+    </div>
+
+    <div class="sec"><div class="n">1</div><h2>O que é o Avanti Vessel AI</h2></div>
+    <p class="lead">É o “cérebro” digital do barco Avanti Vessel (Azimut Atlantis 51): você pergunta e ele responde com os dados do próprio barco.</p>
+    <div class="three">
+      <div class="card"><h4><svg><use href="#i-chat"/></svg>Perguntar ao barco</h4>Por texto, voz, foto ou vídeo. A resposta é curta e mostra de onde veio.</div>
+      <div class="card"><h4><svg><use href="#i-grid"/></svg>Consultar o console</h4>Manutenção, documentos, combustível, diário de bordo e equipe.</div>
+      <div class="card red"><h4><svg><use href="#i-siren"/></svg>Agir na emergência</h4>O botão vermelho SOS está em todas as telas.</div>
+    </div>
+    <p>Funciona no celular (versão app) e no computador ou tablet (versão web). É um protótipo. Os números de hoje vêm de uma leitura fixa dos sensores feita em <b>25/09/2026 às 13:40</b>.</p>
+    <div class="cols" style="margin-top:1mm">
+      <div>
+        <h3>As 3 regras do app</h3>
+        <ol class="steps">
+          <li><b>Nada inventado.</b> Todo número mostra de onde veio, na linha “Fonte”.</li>
+          <li>Quando não tem o dado, o app escreve <b>SEM DADOS</b>. Ele nunca chuta.</li>
+          <li><b>O registro só cresce.</b> Nada é apagado: uma correção vira uma linha nova no diário, com data e autor.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Neste guia</h3>
+        <ol class="index">
+          <li><span>1 · O que é</span><span>p. 1</span></li>
+          <li><span>2 · Como abrir e entrar</span><span>p. 2</span></li>
+          <li><span>3 · Instalar no celular</span><span>p. 2</span></li>
+          <li><span>4 · A tela inicial explicada</span><span>p. 3</span></li>
+          <li><span>5 · Perguntar ao barco</span><span>p. 4</span></li>
+          <li><span>6 · Como ler as respostas e as cores</span><span>p. 5</span></li>
+          <li><span>7 · O console em uma página</span><span>p. 6</span></li>
+          <li><span>8 · Problemas comuns · palavras do mar</span><span>p. 7</span></li>
+          <li class="sosl"><span>SOS · Emergência passo a passo</span><span>p. 8</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="run bot"><span>Nada inventado: sem fonte, o app diz SEM DADOS.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 2 · 2. ENTRAR + 3. INSTALAR ===================== -->
+<section class="page" id="p2">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>2 · Entrar · 3 · Instalar</span></div>
+  <div class="body">
+    <div class="sec"><div class="n">2</div><h2>Como abrir e entrar</h2></div>
+    <p class="lead">Abra <span class="url">https://avantivesselai.github.io/AvantiVessel_AI/</span> e entre com o seu usuário e a senha que a equipe combinou com você.</p>
+    <div class="row">
+      <figure style="width:41mm;flex:none">
+        <div class="shot">
+          <img src="img/login-app.jpg" alt="Tela de login no celular">
+          <span class="mk" style="left:88%;top:9%">2</span>
+          <span class="mk" style="left:4.5%;top:48%">3</span>
+          <span class="mk" style="left:84%;top:59.5%">4</span>
+          <span class="mk" style="left:5%;top:77.3%">5</span>
+        </div>
+        <figcaption>Os números na imagem são os dos passos.</figcaption>
+      </figure>
+      <div style="flex:1">
+        <ol class="steps">
+          <li>Abra o endereço no navegador. No celular abre a versão app; no computador ou tablet, a versão web.</li>
+          <li>Toque no seu nome: <span class="k">OTTO</span>, <span class="k">LUCAS</span>, <span class="k">GIOVANNI</span> ou <span class="k">AMANDA</span>. Ele preenche o campo USUÁRIO.</li>
+          <li>Digite a senha. Para conferir o que digitou, toque em <span class="k">VER</span>.</li>
+          <li>Aparelho seu? Deixe marcado “Manter conectado neste aparelho”: o acesso vale <b>30 dias</b>. Sem essa opção, vale <b>12 horas</b>.</li>
+          <li>Toque em <span class="k">ENTRAR</span>.</li>
+        </ol>
+        <div class="box atencao"><svg class="ic"><use href="#i-warn"/></svg><span class="t">Atenção</span>Nunca escreva a senha em papel, mensagem ou foto de tela. Quem ainda não tem acesso fala com o proprietário.</div>
+        <p class="dense" style="margin:0"><b>Para sair:</b> “Sair”, no rodapé, ao lado do seu nome (fecha todas as abas do aparelho). Acesso vencido com a tela aberta volta sozinho ao login.</p>
+      </div>
+    </div>
+    <div class="gap-s"></div>
+    <h3>Se aparecer uma destas mensagens</h3>
+    <table class="msg">
+      <tr><td>“Usuário ou senha incorretos.”</td><td>Confira e tente de novo.</td></tr>
+      <tr><td>“Muitas tentativas. Tente de novo em&nbsp;…&nbsp;s.”</td><td>Depois de 5 senhas erradas, o login trava por 30 s. Cada nova tentativa errada dobra a espera, até no máximo 15 min. Espere o contador zerar. Erros de mais de 1 hora atrás não contam.</td></tr>
+      <tr><td>“O navegador está bloqueando os dados deste site…”</td><td>Permita cookies e dados do site, ou saia da navegação anônima.</td></tr>
+      <tr><td>“Este navegador não permite o login seguro…”</td><td>Abra pelo endereço com https:// em um navegador atual (Chrome, Edge, Safari ou Firefox).</td></tr>
+      <tr><td style="color:var(--blue-d)">Abriu a versão errada?</td><td>No fim do endereço, acrescente <code>?v=app</code> (sempre app), <code>?v=web</code> (sempre web) ou <code>?v=auto</code> (o app escolhe).</td></tr>
+    </table>
+
+    <div class="gap"></div>
+    <div class="sec"><div class="n">3</div><h2>Instalar no celular</h2></div>
+    <p class="lead">Instale para abrir em tela cheia, com o ícone Avanti, como um aplicativo comum.</p>
+    <div class="cols">
+      <div class="card"><h4><svg><use href="#i-phone"/></svg>iPhone (Safari)</h4>
+        <ol class="steps small">
+          <li>Abra o endereço no Safari.</li>
+          <li>Toque em Compartilhar <svg class="ico"><use href="#i-share"/></svg>.</li>
+          <li>Toque em “Adicionar à Tela de Início”.</li>
+        </ol></div>
+      <div class="card"><h4><svg><use href="#i-phone"/></svg>Android (Chrome)</h4>
+        <ol class="steps small">
+          <li>Abra o endereço no Chrome.</li>
+          <li>Toque no menu <svg class="ico"><use href="#i-dots"/></svg> (três pontinhos).</li>
+          <li>Toque em “Instalar app”.</li>
+        </ol>
+        <p class="dense10" style="margin:1mm 0 0;color:var(--blue-d)"><svg class="ico"><use href="#i-bulb"/></svg> <b>Dica:</b> segure o dedo sobre o ícone para ver atalhos diretos para SOS, Console e Diário.</p></div>
+    </div>
+    <div class="gap-s"></div>
+    <div class="box nota" style="margin:0"><svg class="ic"><use href="#i-wifi"/></svg><span class="t">Sem internet · versão nova</span>Abra o app uma vez com internet: depois todas as telas abrem sem internet, inclusive o SOS. Versão nova não apareceu? Feche e abra o app (versão no rodapé; hoje <b>v1.4.3&nbsp;·&nbsp;25/09/2026</b>).</div>
+  </div>
+  <div class="run bot"><span>Nunca escreva a senha. Usuários: Otto, Lucas, Giovanni e Amanda.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 3 · 4. TELA INICIAL ===================== -->
+<section class="page" id="p3">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>4 · A tela inicial</span></div>
+  <div class="body">
+    <div class="sec"><div class="n">4</div><h2>A tela inicial explicada</h2></div>
+    <p class="lead">Tudo começa aqui: na tela inicial você pergunta ao barco, usa os atalhos, abre o console ou aciona o SOS.</p>
+    <h3><svg><use href="#i-phone"/></svg>No celular (app), de cima para baixo</h3>
+    <div class="row">
+      <figure style="width:41mm;flex:none">
+        <div class="shot phone">
+          <img src="img/inicio-app.jpg" alt="Tela inicial do app com números">
+          <span class="mk" style="left:33%;top:2.6%">1</span>
+          <span class="mk" style="left:4%;top:12%">2</span>
+          <span class="mk" style="left:4%;top:28.6%">3</span>
+          <span class="mk" style="left:4%;top:37%">4</span>
+          <span class="mk" style="left:4%;top:50%">5</span>
+          <span class="mk" style="left:4%;top:71.4%">6</span>
+          <span class="mk" style="left:4%;top:83%">7</span>
+          <span class="mk" style="left:4%;top:94.4%">8</span>
+        </div>
+        <div class="shot" style="margin-top:1.4mm"><img src="img/rodape-app.jpg" alt="Rodapé do app"><span class="mk" style="left:4%;top:50%">9</span></div>
+      </figure>
+      <ol class="legend dense" style="flex:1">
+        <li><span class="m">1</span><b>Barra de cima:</b> hora do barco, máxima e mínima de hoje (sol) e maré agora (ondinhas). O botão sol/lua troca o tema claro/escuro. O círculo com as suas iniciais (ex.: OL) abre a Equipe. Tocar no clima ou na maré abre o windy.com. Sem internet e sem leitura salva: “—”.</li>
+        <li><span class="m">2</span><b>AVANTI VESSEL AI</b> e uma saudação sorteada com o seu nome.</li>
+        <li><span class="m">3</span>Campo <b>“Pergunte ao barco…”</b> e a seta azul para enviar.</li>
+        <li><span class="m">4</span><b>Barra de modos:</b> TEXTO, VOZ→TEXTO, CONVERSA (círculo com o barco, no centro), FOTO e VÍDEO.</li>
+        <li><span class="m">5</span><b>Atalhos:</b> 6 perguntas prontas. Um toque envia. Logo abaixo fica EDITAR ATALHOS.</li>
+        <li><span class="m">6</span><b>CONSOLE:</b> abre o painel completo. O selo vermelho mostra as manutenções atrasadas (hoje, 3).</li>
+        <li><span class="m">7</span><b>GERADOR, CLIMA</b> (ar-condicionado), <b>SEAKEEPER</b> (estabilizador) e <b>LEME</b> (eletrônicos). O pontinho mostra o estado: verde = em dia, vermelho = atraso.</li>
+        <li><span class="m">8</span><b>SOS · EMERGÊNCIA:</b> a barra vermelha.</li>
+        <li><span class="m">9</span><b>Rodapé</b> (no fim da tela): versão, o seu nome e Sair.</li>
+        <li style="padding-left:0;margin-top:2.2mm">Quando você faz uma pergunta, a tela vira conversa. No topo aparecem <span class="k">CONSOLE</span> e <span class="k">× NOVA</span>. NOVA limpa a conversa e começa outra.</li>
+      </ol>
+    </div>
+    <div class="gap"></div>
+    <h3><svg><use href="#i-grid"/></svg>No computador (web)</h3>
+    <div class="row">
+      <figure class="shot" style="width:100mm;flex:none">
+        <img src="img/inicio-web.jpg" alt="Tela inicial da versão web com números">
+        <span class="mk" style="left:40%;top:2.8%">1</span>
+        <span class="mk" style="left:25%;top:22%">2</span>
+        <span class="mk" style="left:5%;top:47%">3</span>
+        <span class="mk" style="left:14.5%;top:64%">4</span>
+        <span class="mk" style="left:18%;top:74%">5</span>
+        <span class="mk" style="left:1.6%;top:93.6%">6</span>
+        <span class="mk" style="left:87%;top:77%">7</span>
+        <span class="mk" style="left:28.5%;top:97.8%">8</span>
+      </figure>
+      <ol class="legend dense10" style="flex:1">
+        <li><span class="m">1</span><b>Barra de cima:</b> modelo e nome do barco, selo AO VIVO · 10 S, registro e casco, hora, clima, maré, sol/lua e as suas iniciais.</li>
+        <li><span class="m">2</span><b>AVANTI VESSEL AI</b> e a saudação.</li>
+        <li><span class="m">3</span><b>Cinco botões fixos:</b> CONSOLE, GERADOR, CLIMATIZAÇÃO, ESTABILIZADOR e ELETRÔNICOS, com selo de estado (ex.: 3 ATRASADAS, PRONTO).</li>
+        <li><span class="m">4</span><b>Campo de pergunta</b> com FOTO, VÍDEO, VOZ, CONVERSA e a seta.</li>
+        <li><span class="m">5</span><b>Atalhos</b> e o lápis para editar.</li>
+        <li><span class="m">6</span><b>Faixa de baixo:</b> velocidade (SOG), proa, vento, bateria 24 V, água doce, diesel e situação.</li>
+        <li><span class="m">7</span><b>SOS:</b> botão redondo vermelho, em todas as telas.</li>
+        <li><span class="m">8</span><b>Rodapé:</b> versão, o seu nome e Sair.</li>
+      </ol>
+    </div>
+    <div class="box atencao" style="margin:auto 0 0"><svg class="ic"><use href="#i-warn"/></svg><span class="t">Atenção · “Ao vivo”</span>O selo “Ao vivo” faz parte do desenho da tela. Hoje os números vêm da leitura fixa de <b>25/09/2026 às 13:40</b>, porque a telemetria ao vivo está desligada. Olhe sempre a data e a hora ao lado do número.</div>
+  </div>
+  <div class="run bot"><span>Capturas reais do app v1.4.3. Nelas, clima e maré aparecem “—”; a saudação muda a cada abertura.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 4 · 5. PERGUNTAR (1/2) ===================== -->
+<section class="page" id="p4">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>5 · Perguntar ao barco</span></div>
+  <div class="body">
+    <div class="sec"><div class="n">5</div><h2>Perguntar ao barco</h2></div>
+    <p class="lead">Escreva ou fale do seu jeito. O app responde em segundos e sempre mostra a fonte.</p>
+    <div class="cols">
+      <div>
+        <h3><svg><use href="#i-kb"/></svg>Digitar</h3>
+        <ol class="steps">
+          <li>Toque em “Pergunte ao barco…” (ou em TEXTO).</li>
+          <li>Escreva a pergunta. Exemplo: <span class="q">“Quantas horas tem o gerador?”</span></li>
+          <li>Toque na seta azul. No computador, também serve a tecla Enter.</li>
+        </ol>
+        <figure class="shot" style="width:80mm"><img src="img/resposta-gerador-app.jpg" alt="Pergunta digitada e resposta do gerador com a fonte">
+          <figcaption>Exemplo real: “Como ligo o gerador?” → horas, como ligar e desligar, a Fonte e o botão “Passo a passo ›”.</figcaption></figure>
+        <div class="gap"></div>
+        <h3><svg><use href="#i-mic"/></svg>Voz→texto <span class="h3n">(você fala, o app escreve)</span></h3>
+        <ol class="steps">
+          <li>Toque em <span class="k">VOZ→TEXTO</span> (na web, o botão se chama VOZ). Ele passa a mostrar OUVINDO…</li>
+          <li>Fale a pergunta. Quando você faz uma pausa, o app envia sozinho. Para enviar antes, toque de novo.</li>
+          <li>A resposta aparece por escrito.</li>
+        </ol>
+      </div>
+      <div>
+        <h3><svg><use href="#i-wave"/></svg>Conversa por voz <span class="h3n">(mãos livres)</span></h3>
+        <ol class="steps">
+          <li>Toque em <span class="k">CONVERSA</span>, o círculo com o barco no centro. O app diz “Pode falar.” e abre o núcleo de IA em tela cheia.</li>
+          <li>Fale. Em <b>ESCUTA ATIVA</b> (azul-claro), a tela mostra o que ele entendeu. Toque no círculo para enviar na hora.</li>
+          <li>Em <b>PROCESSANDO</b>, ele monta a resposta. Em <b>RESPOSTA</b> (azul), fala só o essencial, a primeira linha; o texto completo fica no chat. Emergências (SOS, pressão de óleo, EPIRB) são lidas inteiras.</li>
+          <li>Quer interromper? Toque no círculo durante a resposta e fale de novo.</li>
+          <li>Toque em <span class="k">ENCERRAR</span> para desligar (no computador, também a tecla Esc). O botão SOS continua no canto.</li>
+        </ol>
+        <div class="row" style="gap:3mm">
+          <figure class="shot" style="flex:1"><img src="img/voz-escuta-app.jpg" alt="Núcleo de IA em escuta ativa"><figcaption>ESCUTA ATIVA</figcaption></figure>
+          <figure class="shot" style="flex:1"><img src="img/voz-resposta-app.jpg" alt="Núcleo de IA respondendo"><figcaption>RESPOSTA</figcaption></figure>
+        </div>
+        <p class="dense" style="margin:1.4mm 0 0"><svg class="ico" style="color:var(--blue-d)"><use href="#i-mic"/></svg> O microfone só liga quando você toca.</p>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <h3><svg><use href="#i-cam"/></svg>Foto ou vídeo</h3>
+    <div class="cols">
+      <ol class="steps">
+        <li>Toque em <span class="k">FOTO</span> (etiqueta, tela de alarme, nota ou página de manual) ou em <span class="k">VÍDEO</span> (clipe de 10 s de um som ou comportamento estranho).</li>
+        <li>Escolha o arquivo. Aparece ANEXO PRONTO · DESCREVA E ENVIE.</li>
+        <li>Escreva em uma frase o que é (por exemplo, o modelo ou o código que aparece) e envie.</li>
+      </ol>
+      <div class="box nota" style="margin:0;align-self:start"><svg class="ic"><use href="#i-info"/></svg><span class="t">Bom saber</span>Neste protótipo, o app não lê a imagem sozinho. Ele guarda o anexo no diário como <b>A CONFIRMAR</b> e pede a sua descrição. O arquivo não sai do seu aparelho.</div>
+    </div>
+  </div>
+  <div class="run bot"><span>O microfone só liga com o seu toque.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 5 · 5. ATALHOS + 6. LER RESPOSTAS ===================== -->
+<section class="page" id="p5">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>5 · Atalhos · 6 · Como ler as respostas</span></div>
+  <div class="body">
+    <h3><svg><use href="#i-star"/></svg>Atalhos: perguntas prontas, um toque envia</h3>
+    <div class="row">
+      <figure class="shot phone" style="width:34mm;flex:none">
+        <img src="img/editar-atalhos-app.jpg" alt="Tela Editar atalhos">
+        <span class="mk" style="left:4%;top:21.4%">1</span>
+        <span class="mk" style="left:98%;top:20.6%">2</span>
+        <span class="mk" style="left:56%;top:20.6%">3</span>
+        <span class="mk" style="left:4%;top:67.4%">4</span>
+      </figure>
+      <div style="flex:1" class="dense">
+        <p>Os 6 de fábrica: <span class="k">DIÁRIO DE BORDO</span> (registra no diário um resumo do momento), <span class="k">SEGURO PARA SAIR?</span>, <span class="k">PARA ONDE VAMOS HOJE?</span>, <span class="k">PRÓXIMAS MANUTENÇÕES</span>, <span class="k">AUTONOMIA</span> e <span class="k">MARÉ AGORA</span>. Para mudar, toque em <span class="k">EDITAR ATALHOS</span>:</p>
+        <ol class="legend">
+          <li><span class="m">1</span>As setas mudam a ordem.</li>
+          <li><span class="m">2</span>O − tira o atalho (ele volta para o banco).</li>
+          <li><span class="m">3</span>Toque no nome para trocar o texto ou a pergunta.</li>
+          <li><span class="m">4</span>O + adiciona um atalho do banco: CLIMA, CANAL 16, CHECKLIST DE SAÍDA, CONSUMO, TANQUES, CONTATOS, ANOMALIAS ABERTAS, PORÃO, GERADOR, POSIÇÃO AGORA, DOCUMENTOS VENCENDO, HORÍMETROS.</li>
+          <li><span class="m">5</span><span class="k">CRIAR ATALHO</span> faz um novo (nome + pergunta). <span class="k">RESTAURAR PADRÃO</span> volta aos 6.</li>
+        </ol>
+        <p style="margin:1.4mm 0 0">Cabem até 8 atalhos na tela inicial. Tudo é salvo na hora, neste aparelho. O SOS, os botões fixos e a barra de modos não mudam.</p>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <h3><svg><use href="#i-check"/></svg>Perguntas que já têm resposta pronta (testadas)</h3>
+    <ul class="qs">
+      <li>Quantas horas tem o gerador?</li><li>Como ligo o gerador?</li><li>Nível dos tanques</li>
+      <li>Horímetros</li><li>Próxima revisão dos motores</li><li>Seguro para sair?</li>
+      <li>Autonomia</li><li>Quanto diesel tem?</li><li>Como está o vento?</li>
+      <li>Maré agora</li><li>Canal 16</li><li>EPIRB</li>
+      <li>Bombas de porão</li><li>Documentos vencendo</li><li>Checklist de saída</li>
+      <li>Checklist de chegada</li><li>Como ligo o estabilizador?</li><li>Como funciona o ar-condicionado?</li>
+      <li>Piloto automático</li><li>Pressão do óleo</li><li>Pressão do óleo baixa</li>
+      <li>Últimos registros do diário</li>
+    </ul>
+    <ul class="dots dense" style="margin-top:1.6mm">
+      <li>“Como está o vento?”: leitura de bordo; previsão do tempo = SEM DADOS. “Maré agora”: SEM DADOS (não há tábua de marés a bordo).</li>
+      <li>Perguntas técnicas (ex.: “Como trocar o impeller do gerador?”) trazem o trecho do manual com fonte e página (alguns em inglês). Sem nada: SEM DADOS e o botão “Base de conhecimento”.</li>
+      <li>Palavras de emergência (“homem ao mar”, “incêndio”, “fogo”, “socorro”, “MAYDAY”, “entrando água”): o app responde com a ordem de ação e o botão <b>Abrir SOS</b>.</li>
+    </ul>
+    <div class="box dica" style="margin:0"><svg class="ic"><use href="#i-book"/></svg><span class="t">Registrar no diário pelo chat</span>Comece com <span class="q">“Registre no diário:”</span> e escreva o fato. Ex.: <span class="q">“Registre no diário: saída da marina às 10h”</span>. Vira uma linha nova, com o seu nome e a hora. Nada se apaga.</div>
+
+    <div class="gap"></div>
+    <div class="sec"><div class="n">6</div><h2>Como ler as respostas e as cores</h2></div>
+    <p class="lead">Leia primeiro a primeira linha: ela traz o essencial. Depois confira a linha “Fonte”.</p>
+    <div class="row">
+      <figure class="shot" style="width:60mm;flex:none">
+        <img src="img/resposta-porao-app.jpg" alt="Resposta sobre as bombas de porão com fonte e botão">
+        <span class="mk" style="left:3.6%;top:40%">1</span>
+        <span class="mk" style="left:3.6%;top:76.6%">2</span>
+        <span class="mk" style="left:35%;top:88%">3</span>
+      </figure>
+      <div style="flex:1" class="dense">
+        <p style="margin-bottom:1.4mm">Cada resposta tem três partes:</p>
+        <ol class="legend">
+          <li><span class="m">1</span><b>O texto.</b> A primeira linha é a resposta; as outras trazem o detalhe.</li>
+          <li><span class="m">2</span><b>A linha “Fonte:”</b>, em letra cinza pequena: de onde veio o dado (telemetria, manual com a página, agenda, diário…). Sem fonte, ela diz “Fonte: nenhuma”.</li>
+          <li><span class="m">3</span><b>Botões para o próximo passo</b>, como “Manutenção ›”, “Passo a passo ›” ou “Registrar pendência ›”.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="run bot"><span>As cores e as palavras do app: próxima página.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 6 · 6 (cores) + 7. CONSOLE ===================== -->
+<section class="page" id="p6">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>6 · Cores e palavras · 7 · Console</span></div>
+  <div class="body">
+    <h3>As cores (iguais em todo o app)</h3>
+    <div class="cores dense">
+      <div><span class="chip ok">PRONTO</span><span><b>Verde:</b> em dia ou pronto (ex.: PRONTO, OK).</span></div>
+      <div><span class="chip am">D-19</span><span><b>Âmbar:</b> atenção. Vence em breve ou precisa conferir (ex.: D-28, Conferir, 7 MANUAIS).</span></div>
+      <div><span class="chip rd">3 ATRASADAS</span><span><b>Vermelho:</b> atrasado, vencido ou emergência (ex.: 186 dias atrás, Teste vencido, SOS).</span></div>
+      <div><span class="chip gy">SEM DADOS</span><span><b>Cinza:</b> não há dado. (As palavras do app estão na p. 7.)</span></div>
+    </div>
+    <p class="dense" style="margin:2.2mm 0 0">Quando duas fontes discordam, vale esta ordem: <b>manual oficial › registro oficial › laudo › diário › foto › nota informal.</b> Lembre: hoje os números são da leitura fixa de 25/09/2026 às 13:40.</p>
+
+    <div class="gap"></div>
+    <div class="sec"><div class="n">7</div><h2>O console em uma página</h2></div>
+    <p class="lead">O console é o painel completo do barco. Abra pelo botão CONSOLE da tela inicial.</p>
+    <div class="row">
+      <div class="shot phone" style="width:38mm;flex:none">
+        <img src="img/console-app.jpg" alt="Console no celular com 8 blocos">
+        <span class="mk" style="left:99%;top:9%">1</span>
+        <span class="mk" style="left:2%;top:30%">2</span>
+        <span class="mk" style="left:2%;top:84.4%">3</span>
+        <span class="mk" style="left:2%;top:94%">4</span>
+      </div>
+      <div style="flex:1" class="dense">
+        <p>Na web, as seções ficam no menu da esquerda. No app, aparecem em blocos <span class="mi">2</span> (Motores, Manutenção, Telemetria, Documentos, Equipamentos, Navegação, Abastecer e Diário). O lápis <span class="mi">1</span> abre “Editar blocos”: − tira, + adiciona do banco. Embaixo ficam o SOS <span class="mi">3</span> e a barra de voz, foto, vídeo e texto <span class="mi">4</span>.</p>
+        <ul class="dots">
+          <li><b>Telemetria:</b> vento, barômetro, GPS, bateria 24 V, motores, tanques (água, esgoto e diesel) e gráfico da bateria em 7 dias. Hoje: leitura de 25/09, 13:40.</li>
+          <li><b>Gestão</b> (web): resumo da semana: manutenções, motores, documentos, abastecimento e diário.</li>
+          <li><b>Manutenção:</b> 35 tarefas; filtros Todas, Atrasadas, D-30 e Em dia. Hoje 3 atrasadas: filtros do chiller, bombas de porão e tensões elétricas.</li>
+          <li><b>Documentos:</b> registro, licenças, certificados e garantias, com prazo e fonte. Foto ou PDF enviado entra como A CONFERIR.</li>
+          <li><b>Abastecer:</b> diesel (2 × 750 L = 1.500 L), histórico e consumo. Abasteça antes de um tanque chegar a 15 %. Foto da nota fiscal: A CONFIRMAR.</li>
+          <li><b>Diário:</b> livro de bordo por texto, voz ou foto; cada linha guarda quem, quando e a fonte.</li>
+          <li><b>FAQ:</b> passo a passo por equipamento; PRONTO = passo a passo confirmado.</li>
+          <li><b>Equipe:</b> quem tem acesso e contatos de apoio; telefone cadastrado vira LIGAR; convite por WhatsApp ou e-mail.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gap-s"></div>
+    <h3><svg><use href="#i-check"/></svg>Botão Executado (Manutenção, web) · números = passos</h3>
+    <div class="shot">
+      <img src="img/manutencao-web.jpg" alt="Manutenção na web filtrada em Atrasadas, com botões Executado">
+      <span class="mk" style="left:73.6%;top:13.5%">1</span>
+      <span class="mk" style="left:93%;top:36%">2</span>
+    </div>
+    <div class="gap-s"></div>
+    <ol class="steps small dense" style="margin:0">
+      <li>Abra Console › Manutenção (filtro Atrasadas, se quiser).</li>
+      <li>Na tarefa feita de verdade, toque em <span class="k">Executado</span>: o app grava uma linha nova no diário (“Executado: …”, com o seu nome) e mostra “Registrado no diário”.</li>
+      <li>Marcou por engano? Toque em Desfazer. A tarefa volta para a agenda e o diário ganha outra linha explicando.</li>
+      <li><b>Importante:</b> o que você marca ou registra fica salvo só neste aparelho, no navegador. Não aparece sozinho no aparelho de outra pessoa.</li>
+    </ol>
+  </div>
+  <div class="run bot"><span>Diesel: 2 tanques de 750 L = 1.500 L.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 7 · 8. PROBLEMAS + GLOSSÁRIO ===================== -->
+<section class="page" id="p7">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span>8 · Problemas comuns · Palavras do mar</span></div>
+  <div class="body">
+    <div class="sec"><div class="n">8</div><h2>Problemas comuns</h2></div>
+    <p class="lead">Quase tudo se resolve com internet na 1ª visita, o navegador certo e o microfone liberado.</p>
+    <div class="flow2 dense">
+      <div><h3><svg><use href="#i-wifi"/></svg>Sem internet</h3>
+        <ul class="dots"><li>Depois da primeira visita com internet, todas as telas abrem sem internet, inclusive o SOS e a base de manuais.</li>
+        <li>A hora continua certa; clima e maré mostram a última leitura salva ou “—”.</li></ul></div>
+      <div><h3><svg><use href="#i-mic"/></svg>A voz não funciona</h3>
+        <ul class="dots"><li>Use Chrome, Edge ou Safari (o Firefox não reconhece voz) e permita o microfone quando o navegador pedir.</li>
+        <li>“Permissão de microfone negada…”: libere o microfone para o site nas configurações. “Microfone indisponível…”: troque de navegador. “Não ouvi nada…”: toque e fale logo em seguida.</li>
+        <li>Voz robótica? Instale uma voz melhor, de graça. <b>Computador:</b> Edge, voz “Antonio (Natural)”. <b>iPhone:</b> Ajustes › Acessibilidade › Conteúdo Falado › Vozes › “Felipe”. <b>Android:</b> Conversão de texto em voz › Google › Português (Brasil).</li></ul></div>
+      <div><h3><svg><use href="#i-clock"/></svg>Dado “antigo” na tela</h3>
+        <p>É normal. Hoje todas as telas e o chat usam a leitura fixa de 25/09/2026 às 13:40 (motores em marcha lenta, gerador e estabilizador ligados). A telemetria ao vivo está pronta, mas desligada. Para saber como o barco está agora, olhe os instrumentos de bordo.</p></div>
+      <div><h3><svg><use href="#i-save"/></svg>Sumiram atalhos, diário ou tarefas</h3>
+        <p style="margin-bottom:1mm">Tudo o que você muda (atalhos, diário, tarefas, documentos enviados, equipe, tema e login) fica salvo só no navegador daquele aparelho. Limpar os dados do navegador apaga tudo. Em aba anônima ou em outro aparelho, você não vê. Nada sincroniza entre aparelhos nem entre pessoas.</p></div>
+      <div><h3><svg><use href="#i-info"/></svg>Outros</h3>
+        <ul class="dots"><li>Login travou: espere o contador zerar (p. 2).</li>
+        <li>Versão antiga, ou web no celular (ou o contrário): veja a p. 2.</li></ul></div>
+    </div>
+
+    <div class="gap-s"></div>
+    <h2 class="gl-h"><svg><use href="#i-book"/></svg>Palavras do mar e do app</h2>
+    <div class="gl">
+      <p><b>BB (bombordo):</b> o lado esquerdo do barco, para quem olha para a frente. Ex.: “motor BB”.</p>
+      <p><b>BE (boreste):</b> o lado direito do barco, para quem olha para a frente.</p>
+      <p><b>Nó:</b> velocidade no mar: 1 nó = 1 milha náutica (1.852&nbsp;m) por hora.</p>
+      <p><b>SOG:</b> velocidade real, medida pelo GPS. Parado = 0,0 nós.</p>
+      <p><b>Proa:</b> a frente do barco. “Proa 048°” é a direção para onde ele aponta, em graus de bússola.</p>
+      <p><b>Plotter:</b> a tela de navegação com mapa e GPS (Garmin GPSMAP 8x16). Nela se lê a posição para o MAYDAY e se marca o homem ao mar.</p>
+      <p><b>VHF e canal 16:</b> VHF é o rádio de bordo. O canal 16 (156,800 MHz) é o de socorro, urgência e chamada.</p>
+      <p><b>MAYDAY:</b> pedido de socorro pelo rádio, só para perigo grave e iminente. Diga 3 vezes.</p>
+      <p><b>PAN-PAN:</b> chamada de urgência quando não há risco de vida. Diga 3 vezes.</p>
+      <p><b>MMSI:</b> o número que identifica o barco no rádio e no EPIRB: 710400328.</p>
+      <p><b>Indicativo:</b> o “nome de rádio” do barco: PV4476.</p>
+      <p><b>DSC:</b> chamada digital de socorro do rádio VHF, pelo botão DISTRESS. Usa o MMSI programado no rádio.</p>
+      <p><b>EPIRB:</b> radiobaliza de emergência: transmite MMSI, indicativo e posição do GPS. Leve junto se abandonar o barco.</p>
+      <p><b>MOB:</b> homem ao mar: alguém caiu na água.</p>
+      <p><b>STBY:</b> standby: o piloto automático fica solto, e o barco é manobrado à mão.</p>
+      <p><b>Flybridge:</b> área na parte de cima do barco. Segundo o app, é onde fica o EPIRB.</p>
+      <p><b>Praça de máquinas:</b> o compartimento dos motores, protegido pelo sistema Sea-Fire.</p>
+      <p><b>Sea-Fire:</b> combate a incêndio da praça de máquinas. Painel no salão e cabo de descarga manual de reserva.</p>
+      <p><b>Horímetro:</b> contador de horas de uso. Ex.: motor BB 110,0 h, gerador 285,6 h.</p>
+      <p><b>Seakeeper (estabilizador):</b> reduz o balanço. Só liga com energia AC (gerador ou cais) e leva 24 minutos para estabilizar.</p>
+      <p><b>Chiller:</b> o aparelho central do ar-condicionado (Dometic).</p>
+      <p class="app"><b>SEM DADOS:</b> não existe fonte a bordo para isso (ex.: maré, previsão do tempo). O app não chuta.</p>
+      <p class="app"><b>SEM LEITURA:</b> o sensor não manda leitura agora (ex.: motores desligados) ou não há sensor na rede (ex.: porão).</p>
+      <p class="app"><b>MANUAL NO DRIVE:</b> o manual existe na pasta do barco, mas o passo a passo ainda não foi conferido.</p>
+      <p class="app"><b>A CONFERIR / A CONFIRMAR:</b> entrou por foto, arquivo enviado ou anotação informal e espera alguém conferir.</p>
+      <p class="app"><b>VENCIDO · D-19 · ≈:</b> passou do prazo (“186 dias atrás” = venceu há 186 dias) · faltam 19 dias · valor aproximado.</p>
+    </div>
+  </div>
+  <div class="run bot"><span>Antes de sair, peça à equipe para mostrar o rádio VHF, o plotter, o painel Sea-Fire e o EPIRB.</span><span class="pg"></span></div>
+</section>
+
+<!-- ===================== PÁGINA 8 · SOS / EMERGÊNCIA ===================== -->
+<section class="page sos" id="p8">
+  <div class="run top"><span><b>Avanti Vessel AI</b> · Guia rápido · v1.4.3 · 25/09/2026</span><span><b>EMERGÊNCIA · pode imprimir e colar a bordo</b></span></div>
+  <div class="body">
+    <div class="sos-band"><svg><use href="#i-siren"/></svg>
+      <div><h2>EMERGÊNCIA · SOS</h2><p>Toque no SOS vermelho (está em todas as telas) e siga os passos do app.</p>
+        <ul class="onde"><li><b>App:</b> barra “SOS · EMERGÊNCIA” (fora da vista, botão redondo no canto)</li><li><b>Web:</b> botão redondo, canto de baixo à direita</li><li><b>Conversa por voz:</b> canto de cima</li><li><b>Android:</b> segure o ícone › SOS</li><li><b>Chat:</b> “homem ao mar”, “incêndio”, “MAYDAY” → Abrir SOS</li></ul></div></div>
+
+    <div class="script">
+      <div>
+        <div class="h">Roteiro do rádio · VHF canal 16 · 156,800 MHz</div>
+        <ol>
+          <li>MAYDAY, MAYDAY, MAYDAY</li>
+          <li>AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL</li>
+          <li>MMSI 710400328 · INDICATIVO PV4476</li>
+          <li>POSIÇÃO — LEIA NO PLOTTER AGORA</li>
+          <li>NATUREZA DO PERIGO: ______________</li>
+          <li>PESSOAS A BORDO: ______________</li>
+          <li>AUXÍLIO NECESSÁRIO: ______________</li>
+          <li>CÂMBIO</li>
+        </ol>
+      </div>
+      <div class="notes">
+        <p><b>No app:</b> CANAL 16 · MAYDAY. Leia devagar; repita até responderem.</p>
+        <p><b>Posição:</b> leia na hora, no plotter. A do app é a última salva (25/09, 13:40): não serve para a chamada.</p>
+        <p style="margin:0"><b>Sem perigo de vida:</b> <span class="nw">PAN-PAN ×3</span>. Marina: canal 67 (24 h).</p>
+      </div>
+    </div>
+
+    <div class="proto">
+      <div class="pc"><h4><span class="L">A</span><span>VHF canal 16 — MAYDAY<small>pedido de socorro pelo rádio</small></span></h4>
+        <ol class="steps small">
+          <li>Canal 16 · 156,800 MHz. MAYDAY só em perigo grave e iminente; urgência sem risco de vida é <span class="nw">PAN-PAN ×3</span>.</li>
+          <li>Leia o roteiro acima, devagar: nome ×3, MMSI, posição, perigo, pessoas a bordo, auxílio.</li>
+          <li>Repita a cada 2 minutos até resposta. Sem resposta no 16: DSC (botão DISTRESS do rádio VHF) e a marina no canal 67.</li>
+        </ol></div>
+      <div class="pc"><h4><span class="L">B</span><span>MOB — homem ao mar<small>alguém caiu na água</small></span></h4>
+        <ol class="steps small">
+          <li>Segure SOS/MOB na barra superior do plotter GPSMAP 8x16: a posição é marcada e vai para o diário com a hora.</li>
+          <li>Piloto em STBY (nunca manobrar engatado). Não tire os olhos da pessoa. Volte até a marca MOB no plotter.</li>
+          <li>Se perder de vista: MAYDAY no canal 16 com a posição da marca MOB.</li>
+        </ol></div>
+      <div class="pc"><h4><span class="L">C</span><span>Incêndio na praça de máquinas<small>Sea-Fire · onde ficam os motores</small></span></h4>
+        <ol class="steps small">
+          <li>Alarme no painel Sea-Fire do salão: corta motores e ventilação e descarrega o agente.</li>
+          <li>Reserva: cabo de descarga manual SMAC. Não abra a praça de máquinas até esfriar — reabastece o fogo.</li>
+          <li>Sequência completa: manual Sea-Fire SMAC (MANUAL NO DRIVE · A CONFIRMAR).</li>
+        </ol></div>
+      <div class="pc"><h4><span class="L">D</span><span>EPIRB<small>radiobaliza de emergência</small></span></h4>
+        <ol class="steps small">
+          <li>ACR GlobalFix V5 (RLB-44), no flybridge. Acionamento manual, conforme o manual ACR (MANUAL NO DRIVE).</li>
+          <li>Transmite MMSI 710400328, indicativo PV4476 e posição GPS. Abandonar só com o EPIRB junto.</li>
+          <li>Certificado 67827-001 · SBM até jan/2031 · bateria até abr/2036.</li>
+        </ol></div>
+    </div>
+
+    <div class="box nota" style="margin:0"><svg class="ic"><use href="#i-info"/></svg><span class="t">Na mesma tela · e antes de sair</span>O SOS grava a hora no diário. <b>Dealer</b> e <b>Giovanni</b> ligam se o telefone estiver cadastrado na Equipe. <b>Pausar sirene 60 s</b> (app) apaga a luz vermelha da borda (não há som). <b>✕</b> fecha o SOS. <b>Antes de sair,</b> peça à equipe para mostrar o rádio VHF, o plotter, o painel Sea-Fire do salão e o EPIRB.</div>
+  </div>
+  <div class="run bot"><span>MMSI 710400328 · Indicativo PV4476 · Canal 16 = 156,800 MHz · Marina: canal 67 (24 h)</span><span class="pg"></span></div>
+</section>
+
+<script>
+  // Numeração "Página N de T" no rodapé.
+  (function () {
+    var p = document.querySelectorAll('.page'), t = p.length;
+    p.forEach(function (el, i) { var s = el.querySelector('.pg'); if (s) s.textContent = 'Página ' + (i + 1) + ' de ' + t; });
+  })();
+</script>
+</body>
+</html>
