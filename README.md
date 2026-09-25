@@ -5,8 +5,9 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Abrir:** https://avantivesselai.github.io/AvantiVessel_AI/
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
+- **Guia rápido (PDF, para quem nunca usou):** https://avantivesselai.github.io/AvantiVessel_AI/Guia-Rapido-Avanti-Vessel-AI.pdf
 
-> **Versão 1.4.2 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.3 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 13:40 (motores em marcha lenta, gerador e Seakeeper ligados). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -72,8 +73,12 @@ Todos os arquivos terminam em `.dc.html`.
 
 Também há duas pranchetas de apoio:
 
-- `Manual-Avanti-Vessel-AI`: apresentação de uso, com 19 slides.
+- `Manual-Avanti-Vessel-AI`: apresentação de uso, com 24 slides (v17 · 25/09/2026).
 - `D-Botoes`: especificação dos botões.
+
+E um guia à parte, para imprimir ou mandar a quem nunca usou o app:
+
+- `Guia-Rapido-Avanti-Vessel-AI.pdf`: guia rápido em 9 páginas A4 (entrar, instalar, perguntar ao barco, cores, console, problemas comuns e a página de EMERGÊNCIA para colar a bordo). A fonte é `guia-rapido/Guia-Rapido-Avanti-Vessel-AI.html`.
 
 ## Dados e privacidade
 
@@ -147,6 +152,8 @@ avanti-voz.js           núcleo de IA da conversa por voz
 base-conhecimento.json  trechos técnicos dos manuais (busca do chat e da voz)
 avanti-telemetria.js    telemetria ao vivo do coletor (desligada até configurar)
 deck-stage.js           apresentação do manual
+Guia-Rapido-Avanti-Vessel-AI.pdf  guia rápido para leigo (PDF A4)
+guia-rapido/            fonte HTML e imagens do guia rápido
 manifest.webmanifest    app instalável
 sw.js                   cache offline
 telemetria-worker/      intermediário protegido da telemetria (Cloudflare Worker + conta de serviço Google)
@@ -161,6 +168,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.3 | 25/09/2026 | Manual de uso atualizado (24 slides, dados de 25/09 13:40, login, voz, cabeçalho ao vivo e base de conhecimento) · Guia rápido em PDF para leigo · tanques de diesel 2 × 750 L também na base · homologação ANATEL do VHF 315 (nº 07897-25-01493) · SOS com MMSI/DSC no VHF 315 e no VHF 215 |
 | 1.4.2 | 25/09/2026 | CLAUDE.md com o guia do projeto para novas sessões · README revisado |
 | 1.4.1 | 25/09/2026 | Dados atualizados com a leitura do coletor de 25/09 13:40 (diesel 27,6/28,8 % ≈ 423 L, horímetros 110/106 h, gerador 285,6 h, tanques, vento, barômetro) · prazos recalculados para 25/09 (3 atrasadas) · cumprimento pelo horário · telemetria ao vivo preparada e desligada |
 | 1.4.0 | 25/09/2026 | Base de conhecimento de bordo: ~1.000 trechos técnicos dos manuais do Drive, com fonte e página, usados pelo chat e pela voz (offline) · sem documentos sensíveis |

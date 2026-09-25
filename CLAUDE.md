@@ -19,6 +19,9 @@ Site estático no GitHub Pages: https://avantivesselai.github.io/AvantiVessel_AI
 - `avanti-telemetria.js` + `telemetria-worker/` — telemetria ao vivo do coletor, **desligada** (`URL_PROXY` vazio).
 - `base-conhecimento.json` — ~1.000 trechos técnicos dos manuais do Drive (sem documentos sensíveis).
 - `sw.js` (cache offline, lista CORE), `avanti-app.js` (ajuste à janela, SOS flutuante), `avanti-theme.js` (tema).
+- `Manual-Avanti-Vessel-AI.dc.html` — apresentação (24 slides, v17). `Guia-Rapido-Avanti-Vessel-AI.pdf` — guia para leigo (9 p. A4),
+  gerado com Playwright (`page.pdf`, A4, printBackground) a partir de `guia-rapido/Guia-Rapido-Avanti-Vessel-AI.html` (imagens em `guia-rapido/img/`, tema claro).
+  Mudou dado no app → atualizar os dois e regerar o PDF.
 
 ## Lançar versão
 Alterar `VERSAO` em `avanti-auth.js`, `CACHE` em `sw.js` e a tabela de versões no `README.md`. Arquivo novo usado offline → adicionar em `CORE` do `sw.js`.
