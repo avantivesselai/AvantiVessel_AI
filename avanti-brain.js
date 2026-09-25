@@ -495,8 +495,17 @@
   function ditado(o) {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return null;
     o = o || {};
-    var pausa = o.pausa || 2500, feito = false, texto = '', interino = '', r = null, t = 0, tMax = 0, ouviu = false, rapidas = 0, ini = 0;
-    function atual() { return (texto + ' ' + interino).replace(/\s+/g, ' ').trim(); }
+    var pausa = o.pausa || 2500, feito = false, texto = '', sessao = '', r = null, t = 0, tMax = 0, ouviu = false, rapidas = 0, ini = 0;
+    function atual() { return (texto + ' ' + sessao).replace(/\s+/g, ' ').trim(); }
+    // O Chrome do Android devolve resultados acumulados ("você", "você tem", "você tem banco"…): somar tudo repetia palavras.
+    // Cada sessão é remontada do zero a partir de todos os resultados, e um trecho que continua o anterior o substitui.
+    function junta(lista, seg) {
+      var n = norm(seg).replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim(); if (!n) return;
+      var ult = lista.length ? norm(lista[lista.length - 1]).replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim() : null;
+      if (ult !== null && n.indexOf(ult) === 0) lista[lista.length - 1] = seg.trim();
+      else if (ult !== null && ult.indexOf(n) === 0) return;
+      else lista.push(seg.trim());
+    }
     function arma() { clearTimeout(t); t = setTimeout(function () { fim(); }, ouviu ? pausa : (o.espera || 8000)); }
     function solta() { clearTimeout(t); clearTimeout(tMax); var x = r; r = null; if (x) { try { x.onresult = x.onend = x.onerror = null; x.abort(); } catch (e) {} } }
     function fim() { if (feito) return; feito = true; var txt = atual(); solta(); solto(); evVoz(txt ? 'pensando' : 'livre', txt); if (o.fim) o.fim(txt); }
@@ -505,15 +514,17 @@
     function liga() {
       var x = r = new SR(); x.lang = 'pt-BR'; x.continuous = true; x.interimResults = true; x.maxAlternatives = 1; ini = Date.now();
       x.onresult = function (ev) {
-        if (x !== r) return; interino = '';
-        for (var i = ev.resultIndex; i < ev.results.length; i++) { var y = ev.results[i]; if (y.isFinal) texto += ' ' + y[0].transcript; else interino += ' ' + y[0].transcript; }
+        if (x !== r) return;
+        var partes = [];
+        for (var i = 0; i < ev.results.length; i++) junta(partes, String(ev.results[i][0].transcript || ''));
+        sessao = partes.join(' ');
         if (atual()) { ouviu = true; rapidas = 0; }
         if (o.parcial) o.parcial(atual()); evVoz('ouvindo', atual()); arma();
       };
       x.onerror = function (ev) { var e = ev && ev.error; if (x === r && (e === 'not-allowed' || e === 'service-not-allowed' || e === 'audio-capture')) falha(e); };
       x.onend = function () { // fim de sessão do navegador (não da pessoa): guarda o que ouviu e religa
         if (x !== r || feito) return;
-        texto = atual(); interino = '';
+        texto = atual(); sessao = '';
         rapidas = Date.now() - ini < 400 ? rapidas + 1 : 0;
         if (rapidas >= 4) { if (ouviu) fim(); else falha('no-speech'); return; }
         try { liga(); } catch (e) { fim(); }
