@@ -37,8 +37,8 @@ Alterar `VERSAO` em `avanti-auth.js`, `CACHE` em `sw.js` e a tabela de versões 
 - Documentos sensíveis + IA (Gemini/NotebookLM) + telemetria ao vivo: só depois de login no servidor (repo privado ou Cloudflare Access).
 
 ## Pendências conhecidas
-- `Manual-Avanti-Vessel-AI.dc.html` (apresentação) ainda cita dados de 20/09 e recursos antigos (diamante, alarme sonoro).
-- Divergências: tanque diesel 2×750 L (checklist/rota) × 2×700 L (inventário); certificado ANATEL é de VHF 315, o app cita VHF 215.
+- Resolvido em 25/09 (definido pelo Otto): tanque diesel 2×750 L = 1.500 L em todo o app e na base; homologação ANATEL = VHF 315 nº 07897-25-01493 (série 7007957, até 11/11/2028), uma linha só em Documentos (5 válidos).
+- A confirmar: SOS (S1/S2) e FAQ de eletrônicos citam o VHF 215 como rádio do MMSI/DSC; a estação principal do console é o VHF 315i.
 - Base de conhecimento incompleta: fim do manual Azimut, plano de manutenção D8, falhas do Onan, alarmes do Glass Cockpit; PDFs escaneados sem texto.
 - Consumo "≈ 186 L desde 14/08" marcado "até 20/09" (não recalculado).
 
