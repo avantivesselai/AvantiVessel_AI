@@ -41,6 +41,7 @@ Alterar `VERSAO` em `avanti-auth.js`, `CACHE` em `sw.js` e a tabela de versões 
 
 ## Pendências conhecidas
 - Resolvido em 25/09 (definido pelo Otto): tanque diesel 2×750 L = 1.500 L em todo o app e na base; homologação ANATEL = VHF 315 nº 07897-25-01493 (série 7007957, até 11/11/2028), uma linha só em Documentos (5 válidos).
+- EPIRB no cockpit principal, à direita (não há flybridge na Atlantis 51); Sea-Fire conforme o inventário (automático por temperatura, alavanca manual no console à direita do piloto); não há VHF 115 a bordo; barra SOS em todas as telas do app (definido pelo Otto em 25/09).
 - SOS e FAQ de eletrônicos: MMSI/DSC (botão DISTRESS) no VHF 315 e no VHF 215 — qualquer um dos dois serve (definido pelo Otto em 25/09).
 - Base de conhecimento incompleta: fim do manual Azimut, plano de manutenção D8, falhas do Onan, alarmes do Glass Cockpit; PDFs escaneados sem texto.
 - Consumo "≈ 186 L desde 14/08" marcado "até 20/09" (não recalculado).
