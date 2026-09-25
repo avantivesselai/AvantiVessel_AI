@@ -109,6 +109,22 @@ Uma voz só: a melhor voz **masculina** pt-BR do aparelho, gratuita, em velocida
 - **Lacunas conhecidas:** o Drive entregou só parte de alguns PDFs grandes. Faltam, entre outros, o fim do manual do proprietário Azimut (a partir de Sistemas), a parte final do manual do operador D8/IPS15 (partida em diante vem dos capítulos IPS avulsos), o plano de manutenção D8, a lista de falhas do gerador Onan e as telas de motor/alarmes do Glass Cockpit. O Memorial Descritivo, o “Azimut – Português” e o capítulo de manutenção IPS são digitalizados (sem texto).
 - A base completa continua no [NotebookLM](https://notebook.google.com/notebook/f8238fa6-ff5e-4cc8-b0f1-e664927a42a6) (botão no chat quando nada é encontrado).
 
+## Telemetria ao vivo (preparada, desligada)
+
+O coletor YDWG-02 já grava no Drive a cada ~10 s (`snapshot_live_latest.json`, pasta de telemetria). O app está pronto para ler essa leitura, mas **vem desligado**: sem configuração, continua com o snapshot de 20/09.
+
+**Como fica quando ligado:** posição, tanques (água, cinzas, negras), vento/barômetro/temperaturas, baterias e estado do Seakeeper passam a vir da leitura real (“ao vivo 10:34”), atualizada a cada 30 s. Leitura com mais de 10 min volta ao snapshot. Diesel e horímetros seguem do último registro com motores ligados.
+
+**Por que um intermediário:** o arquivo tem a posição do barco e continua **privado** no Drive. Quem lê é o intermediário `telemetria-worker/` (Cloudflare, grátis), com uma conta de serviço do Google, e só responde a aparelhos com a chave.
+
+**Para ligar (depois da demonstração):**
+1. Google Cloud › IAM › Contas de serviço: criar uma conta e gerar uma chave JSON. No Drive, compartilhar `snapshot_live_latest.json` com o e-mail dela (Leitor).
+2. Na pasta `telemetria-worker/`: preencher `GOOGLE_SA_EMAIL` no `wrangler.toml`; `npx wrangler secret put GOOGLE_SA_KEY` (a `private_key` do JSON); `npx wrangler secret put CHAVE_APP` (uma chave longa aleatória); `npx wrangler deploy`.
+3. Pôr o endereço gerado em `URL_PROXY` no `avanti-telemetria.js` e publicar.
+4. Em cada aparelho da equipe, abrir uma vez o app com `#tele=<CHAVE_APP>` no fim do endereço (a chave fica só naquele aparelho e sai do endereço na hora). `#tele=sair` apaga.
+
+> O ideal é fazer junto com o login no servidor (repositório privado ou Cloudflare Access), quando os documentos sensíveis também forem conectados.
+
 ## Requisitos
 
 - **Internet na primeira visita:** a biblioteca da interface e a fonte vêm de servidores externos. Depois da primeira visita com internet, todas as telas abrem sem internet (inclusive o SOS).
@@ -129,9 +145,11 @@ avanti-app.js           configuração de app, ajuste à janela, cache offline
 avanti-clima.js         hora local, previsão do dia e maré no cabeçalho
 avanti-voz.js           núcleo de IA da conversa por voz
 base-conhecimento.json  trechos técnicos dos manuais (busca do chat e da voz)
+avanti-telemetria.js    telemetria ao vivo do coletor (desligada até configurar)
 deck-stage.js           apresentação do manual
 manifest.webmanifest    app instalável
 sw.js                   cache offline
+telemetria-worker/      intermediário protegido da telemetria (Cloudflare Worker + conta de serviço Google)
 assets/                 logo e ícones
 .nojekyll               publica os arquivos exatamente como estão
 ```

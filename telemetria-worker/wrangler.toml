@@ -1,0 +1,10 @@
+# Publicar: npx wrangler deploy   (dentro desta pasta)
+# Segredos: npx wrangler secret put GOOGLE_SA_KEY   e   npx wrangler secret put CHAVE_APP
+name = "avanti-telemetria"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+GOOGLE_SA_EMAIL = ""
+DRIVE_FILE_ID = "121HD_KA7kYyAUUqrkJtUAscIco885dOy"
+ORIGENS = "https://avantivesselai.github.io"

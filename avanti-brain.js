@@ -217,6 +217,28 @@
     fallback: function (p) { return { text: 'Não encontrei esse dado nas fontes de bordo — telemetria, agenda, notas, documentos e manuais catalogados. SEM DADOS.\nA base de conhecimento completa está no NotebookLM (botão abaixo). Posso também registrar como pendência no diário, ou você envia uma foto (etiqueta, tela, nota) para eu identificar.', src: 'Fonte: nenhuma — hierarquia: manual › registro › laudo › diário › foto › nota informal · base completa: NotebookLM', actions: [BASE].concat(act(p, [['Registrar pendência', 'diario'], ['FAQ de bordo', 'faq']])) }; }
   };
 
+  // ——— Telemetria ao vivo (avanti-telemetria.js) ———
+  // Com o coletor conectado e a leitura com menos de 10 min, posição, tanques, tempo, baterias e Seakeeper saem da leitura real;
+  // sem isso (padrão de hoje), as respostas continuam com o snapshot de 20/09.
+  function vivo() { var T = window.AvantiTelemetria; return T && T.atual ? T.atual() : null; }
+  function nb(x, d) { return typeof x === 'number' && isFinite(x) ? x.toFixed(d == null ? 1 : d).replace('.', ',') : '—'; }
+  function grau3(x) { return typeof x === 'number' ? ('00' + Math.round(((x % 360) + 360) % 360)).slice(-3) + '°' : '—'; }
+  var VIVO = {
+    posicao: function (v) { var T = window.AvantiTelemetria; return { text: T.posicao(v) + (v.sog_nos < 0.5 ? ' · parado' : '') + '\nSOG ' + nb(v.sog_nos) + ' nós · proa ' + grau3(v.proa_graus) + ' · ' + nb(v.gps_satelites, 0) + ' satélites · profundidade ' + nb(v.profundidade_m) + ' m · ao vivo ' + T.hora(v) + '.' }; },
+    tanques: function (v) { return { text: 'Tanques agora:\n• água doce ' + nb(v.tanque_agua_pct) + ' %\n• águas cinzas ' + nb(v.tanque_cinzas_pct) + ' %' + (v.tanque_cinzas_pct > 70 ? ' — atenção: programar esgoto' : '') + '\n• águas negras ' + nb(v.tanque_negras_pct) + ' %' + (v.tanque_negras_pct > 70 ? ' — atenção: programar esgoto' : '') + '\n• diesel: ' + SNAP.diesel + ' — ' + SNAP.dieselHora + '.' }; },
+    clima: function (v) { return { text: 'Agora a bordo (ao vivo ' + window.AvantiTelemetria.hora(v) + '):\n• vento verdadeiro ' + nb(v.vento_verdadeiro_nos) + ' nós de ' + grau3(v.vento_verdadeiro_angulo) + '\n• barômetro ' + nb(v.pressao_barometrica_hpa, 0) + ' hPa\n• ar ' + nb(v.temp_ar_externo_c) + ' °C · água ' + nb(v.temp_agua_c) + ' °C\nPrevisão oficial: Marinha do Brasil — Meteoromarinha (DHN).' }; },
+    eletrico: function (v, base) { return { text: 'Baterias agora: banco 2 ' + nb(v.bateria_2_tensao_v, 2) + ' V · banco 0 ' + nb(v.bateria_0_tensao_v, 2) + ' V (ao vivo ' + window.AvantiTelemetria.hora(v) + ').\n' + base.text.split('\n').slice(1).join('\n') }; },
+    estabilizador: function (v, base) { return { text: 'Seakeeper 6 agora: ' + (v.seakeeper_ativo ? 'LIGADO · volante ' + nb(v.seakeeper_volante_rpm, 0) + ' rpm (' + nb(v.seakeeper_volante_pct, 0) + ' %)' : 'desligado') + ' · ao vivo ' + window.AvantiTelemetria.hora(v) + '.\n' + base.text }; }
+  };
+  Object.keys(VIVO).forEach(function (k) {
+    var pronta = ANSWERS[k]; if (!pronta) return;
+    ANSWERS[k] = function (p, ctx, q) {
+      var base = pronta(p, ctx, q), v = vivo(); if (!v) return base;
+      var r = VIVO[k](v, base);
+      return { text: r.text, src: 'Fonte: coletor YDWG-02 · ao vivo ' + window.AvantiTelemetria.hora(v), actions: base.actions };
+    };
+  });
+
   var EQUIP = ['seakeeper', 'estabilizador', 'chiller', 'climatiza', 'ar condicionado', 'ar-condicionado', 'dometic', 'mcgx', 'gerador', 'onan', 'piloto', 'plotter', 'radar', 'reactor', 'gpsmap', 'fantom', ' vhf', ' ais ', 'epirb', 'fusion', 'audio', 'dessaliniz', 'bomba', 'porao', 'casco', 'anodo', 'zinco', 'isolador', 'bateria', 'tensao', 'tensoes'];
   function route(qRaw) {
     var q = pad(qRaw);
