@@ -6,7 +6,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.3.3 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.3.4 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -45,7 +45,7 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Console:** telemetria ao vivo e histórico, gestão, manutenção (com o botão Executado), documentos, abastecimento, diário de bordo e equipe.
 - **FAQ de bordo:** passo a passo por equipamento: gerador, climatização, estabilizador e eletrônicos.
 - **SOS:** canal 16 com roteiro MAYDAY, homem ao mar (MOB), incêndio e EPIRB. Está em todas as telas.
-- **Conversa por voz:** botão CONVERSA (núcleo AI com anel girando) em destaque no centro da barra do app. Durante a conversa abre o **núcleo de IA** em tela cheia: anéis graduados girando devagar, espectro discreto que acompanha a voz, hora e posição do barco. Ciano na ESCUTA (mostra a transcrição), acelera no PROCESSANDO e fica azul-elétrico na RESPOSTA (mostra a frase dita). Tocar no núcleo envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga. O SOS continua no canto. A voz fala só o essencial; o detalhe fica na tela.
+- **Conversa por voz:** botão CONVERSA (ícone do barco com anel girando devagar) em destaque no centro da barra do app. Durante a conversa abre o **núcleo de IA** em tela cheia: anéis graduados girando devagar, espectro discreto que acompanha a voz, hora e posição do barco. Ciano na ESCUTA (mostra a transcrição), acelera no PROCESSANDO e fica azul-elétrico na RESPOSTA (mostra a frase dita). Tocar no núcleo envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga. O SOS continua no canto. A voz fala só o essencial; o detalhe fica na tela.
 - **Cabeçalho ao vivo (início e SOS):** hora local do barco atualizada sozinha · máxima/mínima do dia (modelo ECMWF, o padrão do windy.com) · maré agora (ex.: +0,6m). Tocar abre o windy.com na posição do barco.
 - **Saudação:** uma frase marinheira sorteada a cada vez que a página abre (“Terra à vista!”, “À frente e AVANTI!”…).
 - **Base de conhecimento:** quando o chat não tem o dado, oferece o botão para abrir a base completa no NotebookLM.
@@ -135,6 +135,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.3.4 | 25/09/2026 | Ícone do barco Avanti no botão CONVERSA e no centro do núcleo de voz (no lugar do “AI”) · botão CONVERSA com brilho e giro mais suaves |
 | 1.3.3 | 25/09/2026 | Núcleo de voz mais discreto (sem varredura nem grade, giros lentos, espectro menor) · tela da voz se ajusta a celulares pequenos (sem o núcleo sobre o texto) · transcrição sem palavras repetidas no Android |
 | 1.3.2 | 25/09/2026 | Voz única, masculina e gratuita do aparelho · fala só o essencial (resposta completa na tela; emergências lidas inteiras) · abertura “Pode falar.” · sem ⚙ VOZ, sem ElevenLabs e sem proxy de voz |
 | 1.3.1 | 25/09/2026 | Núcleo de IA high-tech no lugar do diamante (tela da conversa e botão central) · ⚙ VOZ: voz carioca do ElevenLabs direto do aparelho · abertura da conversa no jeito carioca · SOS mais sóbrio: só a borda da tela pulsa, botões sólidos e legíveis |

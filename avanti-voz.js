@@ -1,6 +1,6 @@
 /* Avanti Vessel AI — núcleo de voz (HUD do cérebro da embarcação).
    Escuta os eventos 'avanti-voz' que o avanti-brain.js emite e mostra, por cima da tela, o núcleo da IA:
-   anéis graduados girando devagar, espectro radial discreto que acompanha a voz e a marca AI no centro.
+   anéis graduados girando devagar, espectro radial discreto que acompanha a voz e o barco Avanti no centro.
    - ESCUTA (pergunta): ciano; o espectro sobe a cada trecho reconhecido; mostra a transcrição.
    - PROCESSANDO: anéis aceleram e a varredura gira rápido enquanto a resposta é montada.
    - RESPOSTA: azul-elétrico com núcleo branco; o espectro acompanha a fala; mostra a frase dita.
@@ -52,8 +52,6 @@
     '@media (prefers-reduced-motion: reduce){.avz-r1,.avz-r2,.avz-r3{animation:none}}'
   ].join('\n');
 
-  // Marca "AI" da Avanti (mesmo desenho do logotipo) no centro do núcleo.
-  var AI = 'M0 100 L46 0 L69 0 L115 100 L89 100 L58 27 L36 76 L58 76 L58 100 Z M129 0 L156 0 L156 100 L129 100 Z';
   function arco(r, a0, a1) {
     var p = function (a) { var t = (a - 90) * Math.PI / 180; return (150 + r * Math.cos(t)).toFixed(2) + ' ' + (150 + r * Math.sin(t)).toFixed(2); };
     return 'M' + p(a0) + ' A' + r + ' ' + r + ' 0 ' + (a1 - a0 > 180 ? 1 : 0) + ' 1 ' + p(a1);
@@ -80,7 +78,7 @@
     s += '<g class="avz-nucleo"><circle cx="150" cy="150" r="70" fill="url(#avzNuc)" opacity="0.55"/>' +
       '<circle cx="150" cy="150" r="54" fill="rgba(3,8,14,0.85)" style="stroke:rgb(var(--avz-g))" stroke-width="1.6"/>' +
       '<circle cx="150" cy="150" r="47" fill="none" style="stroke:rgba(var(--avz-g),0.35)" stroke-width="0.8"/>' +
-      '<path d="' + AI + '" transform="translate(119.2 130) scale(0.395)" fill="#fff" style="filter:drop-shadow(0 0 6px rgb(var(--avz-g)))"/></g>';
+      '<image href="assets/logo_white.png" x="106" y="140" width="88" height="20" preserveAspectRatio="xMidYMid meet" style="filter:drop-shadow(0 0 4px rgba(var(--avz-g),0.8))"/></g>';
     return s + '</svg>';
   }
 
