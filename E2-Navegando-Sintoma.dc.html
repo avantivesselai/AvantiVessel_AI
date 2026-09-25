@@ -152,9 +152,9 @@ class Component extends DCLogic {
         { n: '2', t: 'Cheiro de combustível ou óleo: confira vazamento na praça de máquinas. Vazamento: não dê nova partida.' },
         { n: '3', t: 'Persistindo: escale ao dealer com estes dados.' }
       ] },
-      'Fumaça': { titulo: 'Fumaça fora do escapamento: trate como incêndio.', sistema: '', fonte: 'Fonte: manual Sea-Fire SMAC (Drive) · protocolo de emergência Avanti', fala: '"Não abra a praça de máquinas. Abra o SOS."', steps: [
-        { n: '1', t: 'Alarme no painel Sea-Fire do salão: o sistema corta motores e ventilação e descarrega o agente na praça de máquinas.' },
-        { n: '2', t: 'Reserva: cabo de descarga manual SMAC. Não abra a praça de máquinas até esfriar — reabastece o fogo.' },
+      'Fumaça': { titulo: 'Fumaça fora do escapamento: trate como incêndio.', sistema: '', fonte: 'Fonte: inventário de segurança (Sea-Fire NFD 1000M) · checklist de partida', fala: '"Não abra a praça de máquinas. Abra o SOS."', steps: [
+        { n: '1', t: 'Desligue motores e ventilação. O Sea-Fire dispara sozinho por temperatura; se não disparar, puxe a alavanca manual no console, à direita do piloto.' },
+        { n: '2', t: 'Não abra a praça de máquinas: aguarde pelo menos 15 min, depois ventile.' },
         { n: '3', t: 'Emergência — abra o SOS: VHF canal 16 · MAYDAY (roteiro com MMSI e posição).' },
         { n: '4', t: 'Só no escapamento (preta, branca ou azul) não é incêndio: reduza, volte à triagem e acione o dealer.' }
       ] }
