@@ -155,7 +155,7 @@ class Component extends DCLogic {
     if (this.inputRef.current) this.inputRef.current.value = '';
     this.setState({ extra: B.loadDiario(), filter: 'Todos', listening: false }); this.toast('Linha nova no diário — nada se apaga');
   }
-  calarVoz() { clearTimeout(this._vt); const r = this.rec; this.rec = null; if (!r) return; r.onresult = r.onend = r.onerror = null; try { r.abort(); } catch (e) {} }
+  calarVoz() { const d = this.rec; this.rec = null; if (d) d.cancelar(); }
   onFoto(e) {
     const f = e.target.files && e.target.files[0]; if (!f) return; e.target.value = '';
     const B = window.AvantiBrain; if (!B) return;
@@ -164,19 +164,18 @@ class Component extends DCLogic {
     if (this.inputRef.current) this.inputRef.current.value = '';
     this.setState({ extra: B.loadDiario(), filter: 'Todos' }); this.toast('Foto anexada ao diário como A CONFIRMAR');
   }
+  // Ditado contínuo (avanti-brain ditado): grava depois de uma pausa real (3 s) ou ao tocar de novo — não corta no meio da frase.
   toggleVoz() {
     const B = window.AvantiBrain;
-    // Parar à mão: o stop() ainda entrega o resultado final — quem grava é o fim(), uma vez só (timer se o onend não vier).
-    // Toque enquanto para é ignorado: gravar agora salvaria o texto parcial.
-    if (this.rec) { const r = this.rec; if (r.parando) return; r.parando = true; this.setState({ listening: false }); clearTimeout(this._vt); this._vt = setTimeout(r.fim, 3000); try { r.stop(); } catch (e) { r.fim(); } return; }
-    const r = B && B.recognizer({ continuous: false });
-    if (!r) return this.toast('Microfone indisponível neste navegador — digite o registro', 'var(--av-warn, #f0a63a)');
-    this.rec = r; let finalText = '';
-    r.onresult = (ev) => { let interim = ''; for (let i = ev.resultIndex; i < ev.results.length; i++) { const res = ev.results[i]; if (res.isFinal) finalText += res[0].transcript; else interim += res[0].transcript; } if (this.inputRef.current) this.inputRef.current.value = (finalText || interim).trim(); };
-    r.fim = () => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); const t = this.inputRef.current ? this.inputRef.current.value.trim() : ''; if (t) this.registrar(t, 'console · voz'); };
-    r.onend = r.fim;
-    r.onerror = (ev) => { if (this.rec !== r) return; clearTimeout(this._vt); this.rec = null; r.onresult = null; this.setState({ listening: false }); this.toast(ev && ev.error === 'not-allowed' ? 'Permissão de microfone negada — digite o registro' : 'Voz indisponível agora — digite o registro', 'var(--av-warn, #f0a63a)'); };
-    try { r.start(); this.setState({ listening: true }); } catch (e) { this.rec = null; }
+    if (this.rec) { this.rec.parar(); return; }
+    const d = B && B.ditado && B.ditado({
+      pausa: 3000,
+      parcial: (t) => { if (this.rec === d && this.inputRef.current) this.inputRef.current.value = t; },
+      fim: (t) => { if (this.rec !== d) return; this.rec = null; this.setState({ listening: false }); if (t) this.registrar(t, 'console · voz'); else this.toast('Não ouvi nada — toque no microfone e fale de novo', 'var(--av-warn, #f0a63a)'); },
+      erro: () => { if (this.rec !== d) return; this.rec = null; this.setState({ listening: false }); this.toast('Permissão de microfone negada — digite o registro', 'var(--av-warn, #f0a63a)'); }
+    });
+    if (!d) return this.toast('Microfone indisponível neste navegador — digite o registro', 'var(--av-warn, #f0a63a)');
+    this.rec = d; this.setState({ listening: true });
   }
   renderVals() {
     const s = this.state;

@@ -65,7 +65,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
       <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
         <div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0;">
           <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em;">Equipe e acessos</h1>
-          <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">Otto · Giovanni · Lucas com acesso total · 7 contatos de apoio</span>
+          <span style="font-size: 13px; color: var(--av-ink2, #aeb6c2);">Otto · Giovanni · Lucas · Amanda com acesso total · 7 contatos de apoio</span>
         </div>
         <span style="font-size: 12.5px; font-weight: 600; color: {{noteTone}}; max-width: 420px; text-align: right;">{{note}}</span>
         <button type="button" onClick="{{toggleInvite}}" aria-pressed="{{inviteOpen}}" style="height: 44px; padding: 0 18px; border-radius: 999px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 12.5px; font-weight: 800; letter-spacing: 0.06em; cursor: pointer; display: flex; align-items: center; gap: 8px; flex-shrink: 0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14 M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg>{{inviteLabel}}</button>
@@ -75,7 +75,8 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--av-card, #0f131a); border: 1px solid rgba(var(--av-accent-rgb, 64,156,255), 0.35); border-radius: 16px; flex-shrink: 0;">
           <span style="font-size: 11px; letter-spacing: 0.14em; font-weight: 700; color: var(--av-accent, #409cff); flex-shrink: 0;">CONVIDAR</span>
           <input ref="{{nomeRef}}" placeholder="Nome" aria-label="Nome" autocomplete="off" style="flex-grow: 1; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
-          <input ref="{{funcRef}}" onKeyDown="{{onInviteKey}}" placeholder="Função a bordo · ex.: marinheiro, técnico" aria-label="Função" autocomplete="off" style="flex-grow: 1.4; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+          <input ref="{{funcRef}}" placeholder="Função a bordo · ex.: marinheiro, técnico" aria-label="Função" autocomplete="off" style="flex-grow: 1.4; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
+          <input ref="{{contatoRef}}" onKeyDown="{{onInviteKey}}" inputmode="email" placeholder="WhatsApp com DDD ou e-mail" aria-label="WhatsApp ou e-mail" autocomplete="off" style="flex-grow: 1.4; height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; border: 1px solid var(--av-line2, #2a3240); background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); font-family: inherit; font-size: 13px; outline: none; min-width: 0;">
           <span style="display: flex; gap: 2px; padding: 3px; background: var(--av-bar, #0b0e13); border: 1px solid var(--av-line, #1d2229); border-radius: 10px; flex-shrink: 0;">
             <sc-for list="{{acessos}}" as="a" hint-placeholder-count="2">
               <button type="button" onClick="{{a.onClick}}" aria-pressed="{{a.active}}" style="height: 32px; padding: 0 12px; border-radius: 8px; border: none; background: {{a.bg}}; color: {{a.tone}}; font-size: 11px; letter-spacing: 0.08em; font-weight: 800; cursor: pointer;">{{a.l}}</button>
@@ -84,7 +85,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           <button type="button" onClick="{{convidar}}" style="height: 40px; padding: 0 16px; border-radius: 10px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 12px; font-weight: 800; letter-spacing: 0.06em; cursor: pointer; flex-shrink: 0;">ENVIAR CONVITE</button>
         </div>
       </sc-if>
-      <section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; flex-shrink: 0;">
+      <section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; flex-shrink: 0;">
         <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
           <div style="box-sizing: border-box; padding: 14px 16px; background: var(--av-card, #0f131a); border: 1px solid {{p.line}}; border-radius: 18px; display: flex; flex-direction: column; gap: 10px;">
             <span style="display: flex; align-items: center; gap: 12px;">
@@ -92,8 +93,8 @@ input::placeholder { color: var(--av-ph, #4c5666); }
               <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
                 <span style="font-size: 15px; font-weight: 700;">{{p.n}}</span>
                 <span style="font-size: 12px; color: var(--av-ink3, #9aa3af);">{{p.role}}</span>
+                <span style="align-self: flex-start; margin-top: 4px; padding: 3px 7px; border-radius: 5px; border: 1px solid {{p.chipLine}}; background: {{p.chipWash}}; color: {{p.chipTone}}; font-size: 9.5px; letter-spacing: 0.14em; font-weight: 700; white-space: nowrap;">{{p.chip}}</span>
               </span>
-              <span style="flex-shrink: 0; padding: 4px 8px; border-radius: 5px; border: 1px solid {{p.chipLine}}; background: {{p.chipWash}}; color: {{p.chipTone}}; font-size: 9.5px; letter-spacing: 0.14em; font-weight: 700; white-space: nowrap;">{{p.chip}}</span>
             </span>
             <span style="font-size: 12px; color: var(--av-ink2, #aeb6c2); line-height: 1.45; min-height: 34px;">{{p.s}}</span>
             <sc-if value="{{p.hasFone}}" hint-placeholder-val="{{false}}">
@@ -151,7 +152,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
         </section>
         <section style="width: 380px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
           <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-size: 15px; font-weight: 700;">Permissões · Otto, Giovanni e Lucas</span>
+            <span style="font-size: 15px; font-weight: 700;">Permissões · Otto, Giovanni, Lucas e Amanda</span>
             <sc-for list="{{perms}}" as="x" hint-placeholder-count="5">
               <a href="{{x.href}}" style="display: flex; align-items: center; gap: 10px; min-height: 34px; text-decoration: none; color: var(--av-ink, #e9edf2);">
                 <span style="width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ok, var(--av-ok, #34c77a));"></path></svg></span>
@@ -160,12 +161,13 @@ input::placeholder { color: var(--av-ph, #4c5666); }
               </a>
             </sc-for>
           </div>
-          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-height: 0; overflow: hidden;">
+          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; min-height: 0; overflow-y: auto;">
             <span style="font-size: 15px; font-weight: 700;">{{convTitle}}</span>
             <sc-for list="{{convites}}" as="c" hint-placeholder-count="0">
               <span style="display: flex; align-items: center; gap: 10px; padding: 8px 11px; background: var(--av-row, #12161e); border-radius: 12px;">
-                <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 12.5px; font-weight: 600;">{{c.nome}}</span><span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">{{c.func}} · acesso {{c.acesso}} · convidado {{c.d}}</span></span>
+                <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;"><span style="font-size: 12.5px; font-weight: 600;">{{c.nome}}</span><span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">{{c.func}} · acesso {{c.acesso}} · convidado {{c.d}}{{c.via}}</span></span>
                 <span style="flex-shrink: 0; padding: 4px 8px; border-radius: 5px; border: 1px solid rgba(var(--av-warn-rgb, 240,166,58), 0.45); background: rgba(var(--av-warn-rgb, 240,166,58), 0.10); color: var(--av-warn, #f0a63a); font-size: 9.5px; letter-spacing: 0.12em; font-weight: 700;">PENDENTE</span>
+                <sc-if value="{{c.temReenvio}}" hint-placeholder-val="{{false}}"><a href="{{c.reenvio}}" target="_blank" rel="noopener" aria-label="Reenviar convite" style="flex-shrink: 0; padding: 6px 8px; border-radius: 8px; color: var(--av-accent, #409cff); font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-decoration: none;">REENVIAR</a></sc-if>
                 <button type="button" onClick="{{c.remove}}" aria-label="Cancelar convite" style="width: 30px; height: 30px; border-radius: 8px; border: none; background: transparent; color: var(--av-ink4, #7d8796); cursor: pointer; font-size: 14px;">✕</button>
               </span>
             </sc-for>
@@ -190,7 +192,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   state = { eq: { fones: {}, convites: [] }, fone: null, inviteOpen: false, acesso: 'Total', atalhos: 6, note: '', noteTone: 'var(--av-ok, #34c77a)' };
-  foneRef = React.createRef(); nomeRef = React.createRef(); funcRef = React.createRef();
+  foneRef = React.createRef(); nomeRef = React.createRef(); funcRef = React.createRef(); contatoRef = React.createRef();
   componentDidMount() {
     this.whenBrain(() => this.load());
     // Outra aba/tela salvou: recarrega do armazenamento
@@ -226,11 +228,15 @@ class Component extends DCLogic {
   }
   convidar() {
     const nome = (this.nomeRef.current ? this.nomeRef.current.value : '').trim(); const func = (this.funcRef.current ? this.funcRef.current.value : '').trim();
+    const contato = (this.contatoRef.current ? this.contatoRef.current.value : '').trim();
     if (!nome) return this.toast('Digite o nome de quem vai receber o convite', 'var(--av-warn, #f0a63a)');
     const B = window.AvantiBrain; const n = B ? B.now() : { d: 'hoje' };
-    const eq = this.fresh(); eq.convites.push({ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d });
-    this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite registrado como PENDENTE · ' + nome);
-    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' — pendente de confirmação.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · equipe' });
+    const lk = B && B.linkConvite ? B.linkConvite(nome, contato, this.state.acesso.toLowerCase()) : null;
+    if (!lk) return this.toast('Informe o WhatsApp com DDD ou o e-mail para enviar o convite', 'var(--av-warn, #f0a63a)');
+    try { window.open(lk.href, '_blank', 'noopener'); } catch (e) {}
+    const eq = this.fresh(); eq.convites.push({ nome: nome, func: func || 'função a confirmar', acesso: this.state.acesso.toLowerCase(), d: n.d, contato: lk.contato, canal: lk.canal });
+    this.save(eq); this.setState({ inviteOpen: false }); this.toast('Convite aberto no ' + lk.canal + ' · PENDENTE até o cadastro');
+    if (B) B.addDiario({ sys: 'Sistema', tone: 'var(--av-ink3, #9aa3af)', t: 'Convite de acesso (' + this.state.acesso.toLowerCase() + ') enviado a ' + nome + (func ? ' · ' + func : '') + ' por ' + lk.canal + ' (' + lk.contato + ') — pendente de cadastro do acesso.', who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'console · equipe' });
   }
   cancelConvite(c) {
     const eq = this.fresh(); const k = eq.convites.findIndex((x) => x.nome === c.nome && x.d === c.d && x.func === c.func && x.acesso === c.acesso);
@@ -256,11 +262,12 @@ class Component extends DCLogic {
       note: s.note, noteTone: s.noteTone,
       inviteOpen: s.inviteOpen, inviteLabel: s.inviteOpen ? 'FECHAR' : 'CONVIDAR', toggleInvite: () => this.setState({ inviteOpen: !s.inviteOpen }),
       acessos: ['Total', 'Leitura'].map((a) => ({ l: a.toUpperCase(), onClick: () => this.setState({ acesso: a }), active: s.acesso === a, bg: s.acesso === a ? 'rgba(var(--av-accent-rgb, 64,156,255), 0.18)' : 'transparent', tone: s.acesso === a ? 'var(--av-accent, #409cff)' : 'var(--av-ink4, #7d8796)' })),
-      nomeRef: this.nomeRef, funcRef: this.funcRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
+      nomeRef: this.nomeRef, funcRef: this.funcRef, contatoRef: this.contatoRef, convidar: () => this.convidar(), onInviteKey: (e) => { if (e.key === 'Enter') this.convidar(); },
       foneRef: this.foneRef, saveFone: () => this.saveFone(), cancelFone: () => this.setState({ fone: null }), onFoneKey: (e) => { if (e.key === 'Enter') this.saveFone(); if (e.key === 'Escape') this.setState({ fone: null }); },
       people: [
         Object.assign({ n: 'Otto Licks', ini: 'OL', role: 'proprietário' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'otto' ? ' · perfil ativo neste console' : ''), s: s.atalhos + ' atalhos na tela inicial · alertas das 09:00 · recebe SOS, anomalias e vencimentos', chip: 'ACESSO TOTAL', tone: 'var(--av-accent, #409cff)', line: 'rgba(var(--av-accent-rgb, 64,156,255), 0.45)', chipLine: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', chipWash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.10)', chipTone: 'var(--av-ok, #34c77a)' }, fone('Otto')),
         Object.assign({ n: 'Giovanni', ini: 'G', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'giovanni' ? ' · perfil ativo neste console' : ''), s: 'Acionado pelo SOS e pelo modo navegação ("Chamar Giovanni") · alertas das 09:00 desde 14/08', chip: 'ACESSO TOTAL', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)', chipLine: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', chipWash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.10)', chipTone: 'var(--av-ok, #34c77a)' }, fone('Giovanni')),
+        Object.assign({ n: 'Amanda', ini: 'A', role: 'função a bordo · A CONFIRMAR' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'amanda' ? ' · perfil ativo neste console' : ''), s: 'Acesso ao app e ao console · perfil criado em 25/09', chip: 'ACESSO TOTAL', tone: 'var(--av-tele, #5ac8fa)', line: 'var(--av-line, #1d2229)', chipLine: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', chipWash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.10)', chipTone: 'var(--av-ok, #34c77a)' }, fone('Amanda')),
         Object.assign({ n: 'Lucas', ini: 'L', role: 'técnico · responsável por 3 tarefas' + (((window.AvantiAuth && window.AvantiAuth.usuario()) || {}).id === 'lucas' ? ' · perfil ativo neste console' : ''), s: 'D-4 tensões e conexões Quick VRS / SBC NRG+ · D-24 revisão do sistema (com Avanti) · D-33 isolador galvânico', chip: 'ACESSO TOTAL', tone: 'var(--av-warn, #f0a63a)', line: 'var(--av-line, #1d2229)', chipLine: 'rgba(var(--av-ok-rgb, 52,199,122), 0.45)', chipWash: 'rgba(var(--av-ok-rgb, 52,199,122), 0.10)', chipTone: 'var(--av-ok, #34c77a)' }, fone('Lucas'))
       ],
       vendors: [
@@ -280,7 +287,7 @@ class Component extends DCLogic {
         { l: 'SOS e alarme sonoro', href: 'S1-SOS-Web.dc.html' }
       ],
       convTitle: convites.length ? 'Convites pendentes · ' + convites.length : 'Convites pendentes',
-      convites: convites.map((c) => Object.assign({}, c, { remove: () => this.cancelConvite(c) })),
+      convites: convites.map((c) => { const lk = c.contato && window.AvantiBrain && window.AvantiBrain.linkConvite ? window.AvantiBrain.linkConvite(c.nome, c.contato, c.acesso) : null; return Object.assign({}, c, { remove: () => this.cancelConvite(c), via: c.contato ? ' · ' + c.contato : '', reenvio: lk ? lk.href : '', temReenvio: !!lk }); }),
       noConvites: convites.length === 0
     };
   }

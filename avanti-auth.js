@@ -6,7 +6,7 @@
 (function () {
   if (window.AvantiAuth) return;
 
-  var VERSAO = { v: '1.1.0', data: '24/09/2026' };
+  var VERSAO = { v: '1.2.0', data: '25/09/2026' };
   var CREDITO = 'designed by Wonder BOAT | Wonder HUB.AI';
 
   // Senha verificada por PBKDF2 (210.000 iterações, SHA-256, 32 bytes). Trocar senha = gerar sal e hash novos.
@@ -14,7 +14,8 @@
   var USUARIOS = {
     otto: { nome: 'Otto', completo: 'Otto Licks', ini: 'OL', papel: 'proprietário', sal: 'FaD8rlXPdhM6zWq7+cMPTw==', hash: '+a2v7DgeH1/mqTHh73ouqH3z1YQRT0vpJdicMJjEvqA=' },
     lucas: { nome: 'Lucas', completo: 'Lucas', ini: 'L', papel: 'técnico', sal: 'TDzNP+o1MsUMO1PdpT7XCw==', hash: 'LvbUA9CwYWno6pLBzpkcv72ylSAt3nBHFPkKsACY7WA=' },
-    giovanni: { nome: 'Giovanni', completo: 'Giovanni', ini: 'G', papel: 'tripulação', sal: 'ShxeR3lJpBXvwZWQkeiPLw==', hash: '+zROgo3EvFAm/XhDhl3mulWpgokudUtE1CdWzSbO9PU=' }
+    giovanni: { nome: 'Giovanni', completo: 'Giovanni', ini: 'G', papel: 'tripulação', sal: 'ShxeR3lJpBXvwZWQkeiPLw==', hash: '+zROgo3EvFAm/XhDhl3mulWpgokudUtE1CdWzSbO9PU=' },
+    amanda: { nome: 'Amanda', completo: 'Amanda', ini: 'A', papel: 'equipe', sal: 'rA1O//fATwBtikv1ful9uQ==', hash: '1mbWyYfwfUsdmInjJzPYhUFzA5ssR+Fjxecow2T/dfI=' }
   };
 
   var K = 'avanti.sessao.v1', KT = 'avanti.login.tentativas.v1';

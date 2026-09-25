@@ -61,7 +61,8 @@
       var mobileUA = uad && typeof uad.mobile === 'boolean' ? uad.mobile : /Android.+Mobile|iPhone|iPod|Windows Phone|IEMobile|Opera Mini/i.test(ua);
       var shortSide = Math.min(screen.width || 9999, screen.height || 9999);
       var coarse = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
-      if (!(mobileUA || (coarse && shortSide < 600))) return;
+      var estreita = Math.min(window.innerWidth || 9999, d.documentElement.clientWidth || 9999) < 900; // tablet em pé / janela pequena
+      if (!(mobileUA || (coarse && shortSide < 600) || estreita)) return;
     }
     location.replace(alvo + '.dc.html' + location.hash);
     function safe(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
@@ -106,6 +107,22 @@
     if (el.style.marginTop !== mts) el.style.marginTop = mts;
     if (el.style.marginLeft !== 'auto') { el.style.marginLeft = 'auto'; el.style.marginRight = 'auto'; }
     if (olhaEstilo) olhaEstilo.takeRecords(); // o que este fit() escreveu não chama outro fit() (senão oscila com barra de rolagem)
+    if (phone) sosFixo(el);
+  }
+  // Celular: a prancheta tem altura fixa e, com a barra do navegador, o SOS da tela pode ficar abaixo da dobra.
+  // Enquanto o SOS da página não estiver à vista, um SOS fixo no canto leva à mesma tela de emergência.
+  var sosEl = null, sosVisto = null, sosObs = null;
+  function sosFixo(el) {
+    var alvo = el.querySelector('a[href*="SOS-"]');
+    if (!alvo || !window.IntersectionObserver) return;
+    if (!sosEl) {
+      sosEl = d.createElement('a'); sosEl.textContent = 'SOS'; sosEl.setAttribute('aria-label', 'SOS — emergência');
+      sosEl.style.cssText = 'position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));z-index:50;width:64px;height:64px;border-radius:50%;background:var(--av-crit-fill, #d32f27);color:#fff;display:none;align-items:center;justify-content:center;text-decoration:none;font:800 16px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.08em;box-shadow:0 0 0 4px rgba(255,59,48,.3),0 10px 28px rgba(211,47,39,.5);';
+      d.body.appendChild(sosEl);
+      sosObs = new IntersectionObserver(function (es) { var v = es[es.length - 1].isIntersecting; sosEl.style.display = v ? 'none' : 'flex'; });
+    }
+    sosEl.href = alvo.getAttribute('href');
+    if (sosVisto !== alvo) { if (sosVisto) sosObs.unobserve(sosVisto); sosVisto = alvo; sosObs.observe(alvo); }
   }
   function schedule() { if (!raf) raf = requestAnimationFrame(fit); }
   window.addEventListener('resize', schedule);

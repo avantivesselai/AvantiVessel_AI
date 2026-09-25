@@ -6,13 +6,13 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.1.0 · 24/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.2.0 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm do snapshot de 20/09/2026 às 23:01 (a telemetria é das 13:23). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
 ## Acesso
 
-Toda tela pede login. Usuários: **Otto**, **Lucas** e **Giovanni** (a senha é combinada com a equipe; não fica neste repositório).
+Toda tela pede login. Usuários: **Otto**, **Lucas**, **Giovanni** e **Amanda** (a senha é combinada com a equipe; não fica neste repositório).
 
 - **Manter conectado:** o acesso vale 30 dias no aparelho. Sem essa opção, vale 12 horas. Vale para todas as abas; ao vencer com uma tela aberta, ela volta para o login.
 - **Sair:** no rodapé de qualquer tela. Encerra a sessão em todas as abas.
@@ -45,7 +45,7 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Console:** telemetria ao vivo e histórico, gestão, manutenção (com o botão Executado), documentos, abastecimento, diário de bordo e equipe.
 - **FAQ de bordo:** passo a passo por equipamento: gerador, climatização, estabilizador e eletrônicos.
 - **SOS:** canal 16 com roteiro MAYDAY, homem ao mar (MOB), incêndio e EPIRB. Está em todas as telas.
-- **Conversa por voz:** voz natural do aparelho, em velocidade 1,25×. Unidades e siglas são lidas por extenso (L/h → litros por hora, kt → nós, BB → bombordo).
+- **Conversa por voz:** voz natural do aparelho, em velocidade normal (1×). Só responde depois que você termina de falar (pausa de 2,5 s); no voz→texto, pausa de 3 s ou toque de novo para enviar. Unidades e siglas são lidas por extenso (L/h → litros por hora, kt → nós, BB → bombordo).
 - **Tema claro/escuro:** botão sol/lua ao lado do avatar.
 
 ## Telas
@@ -110,6 +110,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.2.0 | 25/09/2026 | Voz a 1× · voz→texto e conversa esperam a pessoa terminar de falar · usuária Amanda · convite pela Equipe envia por WhatsApp ou e-mail · tablet em pé e janelas estreitas abrem o app · SOS flutuante no celular quando o SOS da tela fica fora da vista · Equipe web com 4 perfis sem sobreposição |
 | 1.1.0 | 24/09/2026 | Login (Otto, Lucas, Giovanni) e nome do usuário no chat e no diário · rodapé com versão e crédito · voz natural a 1,25× lendo unidades e siglas por extenso · celular abre o app mesmo por link direto de tela web · correções da auditoria |
 | 1.0.0 | 24/09/2026 | Primeira publicação: 37 telas web e app, chat, console, FAQ e SOS |
 
