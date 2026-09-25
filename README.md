@@ -6,7 +6,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Todas as telas:** https://avantivesselai.github.io/AvantiVessel_AI/?v=lista
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 
-> **Versão 1.4.1 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.2 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 13:40 (motores em marcha lenta, gerador e Seakeeper ligados). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -48,7 +48,7 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Conversa por voz:** botão CONVERSA (ícone do barco com anel girando devagar) em destaque no centro da barra do app. Durante a conversa abre o **núcleo de IA** em tela cheia: anéis graduados girando devagar, espectro discreto que acompanha a voz, hora e posição do barco. Ciano na ESCUTA (mostra a transcrição), acelera no PROCESSANDO e fica azul-elétrico na RESPOSTA (mostra a frase dita). Tocar no núcleo envia a pergunta na hora ou interrompe a resposta; ENCERRAR desliga. O SOS continua no canto. A voz fala só o essencial; o detalhe fica na tela.
 - **Cabeçalho ao vivo (início e SOS):** hora local do barco atualizada sozinha · máxima/mínima do dia (modelo ECMWF, o padrão do windy.com) · maré agora (ex.: +0,6m). Tocar abre o windy.com na posição do barco.
 - **Saudação:** uma frase marinheira sorteada a cada vez que a página abre (“Terra à vista!”, “À frente e AVANTI!”…).
-- **Base de conhecimento:** quando o chat não tem o dado, oferece o botão para abrir a base completa no NotebookLM.
+- **Base de conhecimento:** perguntas técnicas são respondidas com trechos dos manuais (fonte e página); sem resultado, o chat oferece o botão para a base completa no NotebookLM.
 - **Tema claro/escuro:** botão sol/lua ao lado do avatar.
 
 ## Telas
@@ -77,7 +77,7 @@ Também há duas pranchetas de apoio:
 
 ## Dados e privacidade
 
-- **O site é público.** Quem tiver o link vê todas as telas, incluindo registro, MMSI e posição do snapshot.
+- **O site é público.** Quem tiver o link vê todas as telas, incluindo registro, MMSI e a posição do snapshot fixo.
 - **O que você edita fica salvo no navegador** (localStorage): atalhos, diário, tarefas executadas, documentos enviados, equipe, blocos, tema e sessão de login.
   - Não sincroniza entre aparelhos nem entre pessoas.
   - Limpar os dados do navegador apaga tudo isso.
@@ -111,7 +111,7 @@ Uma voz só: a melhor voz **masculina** pt-BR do aparelho, gratuita, em velocida
 
 ## Telemetria ao vivo (preparada, desligada)
 
-O coletor YDWG-02 já grava no Drive a cada ~10 s (`snapshot_live_latest.json`, pasta de telemetria). O app está pronto para ler essa leitura, mas **vem desligado**: sem configuração, continua com o snapshot de 20/09.
+O coletor YDWG-02 já grava no Drive a cada ~10 s (`snapshot_live_latest.json`, pasta de telemetria). O app está pronto para ler essa leitura, mas **vem desligado**: sem configuração, continua com o snapshot fixo (hoje, a leitura de 25/09 13:40).
 
 **Como fica quando ligado:** posição, tanques (água, cinzas, negras), vento/barômetro/temperaturas, baterias e estado do Seakeeper passam a vir da leitura real (“ao vivo 10:34”), atualizada a cada 30 s. Leitura com mais de 10 min volta ao snapshot. Diesel e horímetros seguem do último registro com motores ligados.
 
@@ -138,7 +138,7 @@ index.html              entrada: detecta o aparelho e lista as telas
 login.html              login da equipe
 *.dc.html               37 telas (web e app)
 support.js              motor que monta as telas
-avanti-auth.js          login, usuário logado, versão e rodapé
+avanti-auth.js          login, usuário logado, versão, rodapé, saudação e cumprimento
 avanti-brain.js         respostas do chat, atalhos, diário e voz
 avanti-theme.js         tema claro/escuro e botão sol/lua
 avanti-app.js           configuração de app, ajuste à janela, cache offline
@@ -152,6 +152,7 @@ sw.js                   cache offline
 telemetria-worker/      intermediário protegido da telemetria (Cloudflare Worker + conta de serviço Google)
 assets/                 logo e ícones
 .nojekyll               publica os arquivos exatamente como estão
+CLAUDE.md               guia do projeto para o Claude (contexto, dados atuais, privacidade)
 ```
 
 ## Versões
@@ -160,6 +161,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.2 | 25/09/2026 | CLAUDE.md com o guia do projeto para novas sessões · README revisado |
 | 1.4.1 | 25/09/2026 | Dados atualizados com a leitura do coletor de 25/09 13:40 (diesel 27,6/28,8 % ≈ 423 L, horímetros 110/106 h, gerador 285,6 h, tanques, vento, barômetro) · prazos recalculados para 25/09 (3 atrasadas) · cumprimento pelo horário · telemetria ao vivo preparada e desligada |
 | 1.4.0 | 25/09/2026 | Base de conhecimento de bordo: ~1.000 trechos técnicos dos manuais do Drive, com fonte e página, usados pelo chat e pela voz (offline) · sem documentos sensíveis |
 | 1.3.4 | 25/09/2026 | Ícone do barco Avanti no botão CONVERSA e no centro do núcleo de voz (no lugar do “AI”) · botão CONVERSA com brilho e giro mais suaves |
