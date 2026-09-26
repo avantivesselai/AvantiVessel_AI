@@ -12,7 +12,7 @@ const TELAS = [
   'G3-Diario-Web', 'G3-Diario-Mobile', 'G4-Equipe-Web', 'G4-Equipe-Mobile', 'H3-Atalhos-Editar-Web', 'H3-Atalhos-Editar'
 ];
 const CORE = [
-  './', './index.html', './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './avanti-clima.js', './avanti-voz.js', './avanti-telemetria.js', './base-conhecimento.json',
+  './', './index.html', './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './avanti-clima.js', './avanti-voz.js', './avanti-barra.js', './avanti-telemetria.js', './base-conhecimento.json',
   './deck-stage.js', './manifest.webmanifest', './Guia-Rapido-Avanti-Vessel-AI.pdf',
   './assets/logo_white.png', './assets/icon-192.png', './assets/favicon_64.png', './assets/apple-touch-icon.png', './assets/app_icon_1024.png'
 ].concat(TELAS.map((t) => './' + t + '.dc.html'));
