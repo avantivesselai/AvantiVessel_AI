@@ -7,7 +7,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 - **Guia rápido (PDF, para quem nunca usou):** https://avantivesselai.github.io/AvantiVessel_AI/Guia-Rapido-Avanti-Vessel-AI.pdf
 
-> **Versão 1.4.5 · 26/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.6 · 26/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 17:43 (atracado; Seakeeper ligado; motores em marcha lenta até 14:03 e gerador até 14:07, desligados depois; diesel da última leitura com motores ligados, 13:59). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -171,6 +171,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.6 | 26/09/2026 | Telemetria ao vivo com cadência automática: navegando, 30 s até 5 nós, 10 s até 12 nós, 5 s acima; atracado, 2 min nos primeiros 30 min, 5 min até 1 h e 10 min depois · cache do proxy cai de 15 s para 4 s (continua desligada até configurar o proxy) |
 | 1.4.5 | 26/09/2026 | Barra do assistente igual em todas as telas do app (a mesma da tela inicial: campo “Pergunte ao barco…” + enviar; TEXTO · VOZ→TEXTO · CONVERSA · FOTO · VÍDEO), na base, abaixo do SOS; fora do início, leva a pergunta ou o modo para a conversa da tela inicial; no Diário grava direto · saem a navegação inferior de Sistemas e Equipe, “Falar · mãos no leme”, “Conversa contínua ligada” e os botões soltos de voz/foto · login com os 4 nomes numa linha e sem espaço vazio · manual v19 e guia atualizados |
 | 1.4.4 | 26/09/2026 | Dados da leitura do coletor de 25/09 17:43 (atracado; motores 14:03; diesel 28,0/28,8 % ≈ 426 L; gerador 286,1 h; negras 11,9 %) · EPIRB no cockpit principal e Sea-Fire conforme o inventário · sem VHF 115 · barra SOS em todas as telas do app · alerta crítico sem “alarme sonoro” · ícone “Guia” no rodapé do início (web e app) baixa o Guia rápido · ícones que não encolhem · verificação de responsividade e tema em 36 telas × 2 temas × 4 tamanhos |
 | 1.4.3 | 25/09/2026 | Manual de uso atualizado (24 slides, dados de 25/09 13:40, login, voz, cabeçalho ao vivo e base de conhecimento) · Guia rápido em PDF para leigo · tanques de diesel 2 × 750 L também na base · homologação ANATEL do VHF 315 (nº 07897-25-01493) · SOS com MMSI/DSC no VHF 315 e no VHF 215 |

@@ -47,7 +47,7 @@ export default {
     if (req.method !== 'GET') return resp(405, { erro: 'use GET' }, h);
     if (!env.CHAVE_APP || !iguais(req.headers.get('X-Avanti-Chave'), env.CHAVE_APP)) return resp(401, { erro: 'chave inválida' }, h);
     // o coletor grava a cada ~10 s: guarda 15 s para não martelar o Drive
-    if (cache && Date.now() - cacheEm < 15000) return resp(200, cache, h);
+    if (cache && Date.now() - cacheEm < 4000) return resp(200, cache, h);
     try {
       const t = await tokenGoogle(env);
       const r = await fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(env.DRIVE_FILE_ID) + '?alt=media', { headers: { Authorization: 'Bearer ' + t } });
