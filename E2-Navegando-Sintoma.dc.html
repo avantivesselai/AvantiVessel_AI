@@ -36,7 +36,7 @@ button { font: inherit; }
     </span>
   </header>
 
-  <div style="flex-grow: 1; box-sizing: border-box; padding: 6px 16px 12px; display: flex; flex-direction: column; gap: 12px; min-height: 0;">
+  <div style="flex-grow: 1; box-sizing: border-box; padding: 6px 16px 12px; display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto;">
 
     <div style="display: flex; gap: 7px;">
       <sc-for list="{{kinds}}" as="k" hint-placeholder-count="4">
@@ -104,14 +104,8 @@ button { font: inherit; }
     </div>
   </div>
 
-  <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; border-top: 1px solid var(--av-line, #1d2229); display: flex; align-items: center; gap: 12px;">
-    <a href="H2-Home-Mobile.dc.html#mode=voz" onClick="{{armaVoz}}" aria-label="Continuar por voz" style="width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    </a>
-    <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px;">
-      <span style="font-size: 13px; font-weight: 700;">Respondendo em voz</span>
-      <span style="font-size: 11px; color: var(--av-ink3, #9aa3af);">{{fala}}</span>
-    </span>
+  <div style="flex-shrink: 0; box-sizing: border-box; padding: 26px 16px 12px; border-top: 1px solid var(--av-line, #1d2229);">
+    <x-import component-from-global-scope="avanti-barra-chat" from="./avanti-barra.js" hint-size="358px,108px"></x-import>
   </div>
 
 </div>
@@ -160,11 +154,10 @@ class Component extends DCLogic {
       ] }
     }[k];
     return {
-      titulo: T.titulo, steps: T.steps, fonte: T.fonte, fala: T.fala, sistema: T.sistema,
+      titulo: T.titulo, steps: T.steps, fonte: T.fonte, sistema: T.sistema,
       triagem: !fogo, fogo: fogo, sos: true, sosAria: fogo ? 'SOS — protocolo de incêndio' : 'SOS — emergência',
       acc: fogo ? 'var(--av-crit, #ff3b30)' : 'var(--av-warn, #f0a63a)', accWash: fogo ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' : 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)',
       dealer: fd ? { n: 'Ligar para o dealer', href: 'tel:' + String(fd).replace(/[^+\d]/g, ''), aria: 'Ligar para o dealer Volvo Penta · ' + fd } : { n: 'Cadastrar tel. do dealer', href: 'G4-Equipe-Mobile.dc.html', aria: 'Telefone do dealer não cadastrado — abrir Equipe para cadastrar' },
-      armaVoz: () => { try { sessionStorage.setItem('avanti.modo', 'voz'); } catch (e) {} },
       kinds: ['Vibração', 'Barulho', 'Cheiro', 'Fumaça'].map((n) => ({ n: n, active: k === n, onClick: () => this.setState({ kind: n }), bg: k === n ? 'var(--av-warn, #f0a63a)' : 'var(--av-card, #0f131a)', line: k === n ? 'var(--av-warn, #f0a63a)' : 'var(--av-line, #1d2229)', ink: k === n ? 'var(--av-bg, #05070b)' : 'var(--av-ink, #e9edf2)' })),
       kindsOld: [
         { n: 'Vibração', bg: 'var(--av-warn, #f0a63a)', line: 'var(--av-warn, #f0a63a)', ink: 'var(--av-on-accent, #05070b)' },
