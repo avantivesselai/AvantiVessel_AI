@@ -42,7 +42,7 @@ button { font: inherit; }
         <sc-for list="{{tiles}}" as="t" hint-placeholder-count="8">
           <div style="box-sizing: border-box; display: flex; gap: 14px; padding: 16px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px;">
             <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 16px; background: {{t.wash}}; display: flex; align-items: center; justify-content: center;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{t.d}}" stroke="{{t.tone}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{t.d}}" stroke="{{t.tone}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </span>
             <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px;">
               <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em;">{{t.label}}</span>
@@ -61,7 +61,7 @@ button { font: inherit; }
         <span style="width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; background: #d32f27; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; box-shadow: 0 0 0 4px rgba(255,59,48,0.28);">SOS</span>
         <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px;">
           <span style="font-size: 20px; font-weight: 800; color: #ff3b30;">SOS · Emergência</span>
-          <span style="font-size: 13px; line-height: 1.45; color: #aeb6c2;">Botão vermelho sólido, sempre visível — na home, no console e no web (canto inferior direito). Abre o agente de Segurança, que ignora o limite de concisão. Alarme sonoro local mesmo com o app fechado.</span>
+          <span style="font-size: 13px; line-height: 1.45; color: #aeb6c2;">Botão vermelho sólido, sempre visível — na home, no console e no web (canto inferior direito). Abre o agente de Segurança, que ignora o limite de concisão.</span>
         </span>
       </div>
 
@@ -69,7 +69,7 @@ button { font: inherit; }
         <sc-for list="{{inputs}}" as="i" hint-placeholder-count="5">
           <div style="box-sizing: border-box; padding: 16px; background: #0f131a; border: 1px solid #1d2229; border-radius: 18px; display: flex; flex-direction: column; gap: 10px;">
             <span style="width: 46px; height: 46px; border-radius: 14px; background: rgba(64,156,255,0.14); display: flex; align-items: center; justify-content: center;">
-              <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{i.d}}" stroke="#409cff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <svg width="25" height="25" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{i.d}}" stroke="#409cff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </span>
             <span style="font-size: 16px; font-weight: 800;">{{i.n}}</span>
             <span style="font-size: 12.5px; line-height: 1.45; color: #aeb6c2;">{{i.s}}</span>
@@ -112,22 +112,22 @@ button { font: inherit; }
         </div>
         <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #aeb6c2;">A telemetria já sabe se o barco está parado ou andando. Quando a velocidade passa de 1 nó por 60 s, o app troca o conjunto de botões para o de navegação — e volta ao de porto quando atraca. Fonte: coletor NMEA a bordo.</p>
         <div style="display: flex; gap: 14px; flex-grow: 1;">
-          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
             <span style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
               <span style="font-size: 15px; font-weight: 800;">Atracado</span>
             </span>
             <sc-for list="{{atracado}}" as="p" hint-placeholder-count="6">
-              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.4;">{{p}}</span>
             </sc-for>
           </div>
-          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border: 1px solid rgba(64,156,255,0.4); border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border: 1px solid rgba(64,156,255,0.4); border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
             <span style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
               <span style="font-size: 15px; font-weight: 800; color: #409cff;">Navegando</span>
             </span>
             <sc-for list="{{navegando}}" as="p" hint-placeholder-count="6">
-              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.4;">{{p}}</span>
             </sc-for>
           </div>
         </div>
