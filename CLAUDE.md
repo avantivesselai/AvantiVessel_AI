@@ -15,11 +15,14 @@ Site estático no GitHub Pages: https://avantivesselai.github.io/AvantiVessel_AI
   busca na base (`buscaBase`, BM25 PT/EN) e telemetria ao vivo (`VIVO`, desligada).
 - `avanti-auth.js` — login (hash PBKDF2), `VERSAO`, rodapé, `<avanti-usuario>`, `<avanti-saudacao>` (frase sorteada), `<avanti-periodo>` (Bom dia/tarde/noite).
 - `avanti-clima.js` — `<avanti-hora-clima>`: hora America/Sao_Paulo, máx/mín ECMWF e maré (Open-Meteo).
+- `avanti-barra.js` — `<avanti-barra-chat>`: barra do assistente padrão do app (igual ao cartão de chat da H2). Usada em todas as telas do app, abaixo do SOS,
+  via `<x-import component-from-global-scope="avanti-barra-chat" from="./avanti-barra.js" hint-size="358px,108px">` num bloco `padding: 26px 16px 12px`.
+  Enviar → `H2#q=`; modos → `H2#mode=` (voz/conversa armam `avanti.modo`); evento cancelável `avanti-barra` (o Diário grava direto). Tela nova do app = usar este componente.
 - `avanti-voz.js` — overlay "núcleo de IA" da conversa por voz (eventos `avanti-voz`); ícone do barco no centro.
 - `avanti-telemetria.js` + `telemetria-worker/` — telemetria ao vivo do coletor, **desligada** (`URL_PROXY` vazio).
 - `base-conhecimento.json` — ~1.000 trechos técnicos dos manuais do Drive (sem documentos sensíveis).
 - `sw.js` (cache offline, lista CORE), `avanti-app.js` (ajuste à janela, SOS flutuante), `avanti-theme.js` (tema).
-- `Manual-Avanti-Vessel-AI.dc.html` — apresentação (24 slides, v18). `Guia-Rapido-Avanti-Vessel-AI.pdf` — guia para leigo (9 p. A4),
+- `Manual-Avanti-Vessel-AI.dc.html` — apresentação (24 slides, v19). `Guia-Rapido-Avanti-Vessel-AI.pdf` — guia para leigo (9 p. A4),
   gerado com Playwright (`page.pdf`, A4, printBackground) a partir de `guia-rapido/Guia-Rapido-Avanti-Vessel-AI.html` (imagens em `guia-rapido/img/`, tema claro).
   Mudou dado no app → atualizar os dois e regerar o PDF.
 
