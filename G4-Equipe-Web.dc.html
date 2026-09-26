@@ -284,7 +284,7 @@ class Component extends DCLogic {
         { l: 'Registrar no diário de bordo', href: 'G3-Diario-Web.dc.html' },
         { l: 'Marcar tarefa como executada', href: 'C1-Leme-Web.dc.html' },
         { l: 'Enviar documentos e notas', href: 'G1-Documentos-Web.dc.html' },
-        { l: 'SOS e alarme sonoro', href: 'S1-SOS-Web.dc.html' }
+        { l: 'SOS e emergência', href: 'S1-SOS-Web.dc.html' }
       ],
       convTitle: convites.length ? 'Convites pendentes · ' + convites.length : 'Convites pendentes',
       convites: convites.map((c) => { const lk = c.contato && window.AvantiBrain && window.AvantiBrain.linkConvite ? window.AvantiBrain.linkConvite(c.nome, c.contato, c.acesso) : null; return Object.assign({}, c, { remove: () => this.cancelConvite(c), via: c.contato ? ' · ' + c.contato : '', reenvio: lk ? lk.href : '', temReenvio: !!lk }); }),

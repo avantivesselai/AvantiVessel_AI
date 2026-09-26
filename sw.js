@@ -13,7 +13,7 @@ const TELAS = [
 ];
 const CORE = [
   './', './index.html', './login.html', './support.js', './avanti-auth.js', './avanti-app.js', './avanti-theme.js', './avanti-brain.js', './avanti-clima.js', './avanti-voz.js', './avanti-telemetria.js', './base-conhecimento.json',
-  './deck-stage.js', './manifest.webmanifest',
+  './deck-stage.js', './manifest.webmanifest', './Guia-Rapido-Avanti-Vessel-AI.pdf',
   './assets/logo_white.png', './assets/icon-192.png', './assets/favicon_64.png', './assets/apple-touch-icon.png', './assets/app_icon_1024.png'
 ].concat(TELAS.map((t) => './' + t + '.dc.html'));
 // React (unpkg, versão fixa): sem ele nenhuma tela abre offline. Melhor esforço — se falhar aqui, entra no cache no próximo uso online.
