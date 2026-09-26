@@ -19,7 +19,7 @@ Site estático no GitHub Pages: https://avantivesselai.github.io/AvantiVessel_AI
 - `avanti-telemetria.js` + `telemetria-worker/` — telemetria ao vivo do coletor, **desligada** (`URL_PROXY` vazio).
 - `base-conhecimento.json` — ~1.000 trechos técnicos dos manuais do Drive (sem documentos sensíveis).
 - `sw.js` (cache offline, lista CORE), `avanti-app.js` (ajuste à janela, SOS flutuante), `avanti-theme.js` (tema).
-- `Manual-Avanti-Vessel-AI.dc.html` — apresentação (24 slides, v17). `Guia-Rapido-Avanti-Vessel-AI.pdf` — guia para leigo (9 p. A4),
+- `Manual-Avanti-Vessel-AI.dc.html` — apresentação (24 slides, v18). `Guia-Rapido-Avanti-Vessel-AI.pdf` — guia para leigo (9 p. A4),
   gerado com Playwright (`page.pdf`, A4, printBackground) a partir de `guia-rapido/Guia-Rapido-Avanti-Vessel-AI.html` (imagens em `guia-rapido/img/`, tema claro).
   Mudou dado no app → atualizar os dois e regerar o PDF.
 
@@ -50,5 +50,7 @@ Alterar `VERSAO` em `avanti-auth.js`, `CACHE` em `sw.js` e a tabela de versões 
 - Consumo "≈ 186 L desde 14/08" marcado "até 20/09" (não recalculado).
 
 ## Testes locais
+- Matriz de verificação (usada na 1.4.4): cada tela em tema escuro e claro, web 1440×900/1280×720/1920×1080/1024×768 e app 390×844/360×640/430×932/844×390;
+  conferir erro de script, rolagem lateral, imagem/ícone deformado (ícones pequenos levam `flex-shrink: 0`) e tema. Rodapé do início (Main e H2) tem o link “↓ Guia” (em `avanti-auth.js`).
 Sem internet para CDN: baixar react/react-dom 18.3.1 e @babel/standalone 7.29.0 com `npm pack` e servir via rota do Playwright
 (Chromium em /opt/pw-browsers). Injetar sessão: localStorage `avanti.sessao.v1 = {u:'otto', em, exp}`. Verificar as 37 telas sem erro de script.

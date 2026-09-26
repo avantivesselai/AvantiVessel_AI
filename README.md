@@ -7,7 +7,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 - **Manual de uso:** https://avantivesselai.github.io/AvantiVessel_AI/Manual-Avanti-Vessel-AI.dc.html
 - **Guia rápido (PDF, para quem nunca usou):** https://avantivesselai.github.io/AvantiVessel_AI/Guia-Rapido-Avanti-Vessel-AI.pdf
 
-> **Versão 1.4.3 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
+> **Versão 1.4.4 · 26/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
 > É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 17:43 (atracado; Seakeeper ligado; motores em marcha lenta até 14:03 e gerador até 14:07, desligados depois; diesel da última leitura com motores ligados, 13:59). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
@@ -50,7 +50,8 @@ O app abre em tela cheia, com o ícone Avanti. No Android, segurar o ícone most
 - **Cabeçalho ao vivo (início e SOS):** hora local do barco atualizada sozinha · máxima/mínima do dia (modelo ECMWF, o padrão do windy.com) · maré agora (ex.: +0,6m). Tocar abre o windy.com na posição do barco.
 - **Saudação:** uma frase marinheira sorteada a cada vez que a página abre (“Terra à vista!”, “À frente e AVANTI!”…).
 - **Base de conhecimento:** perguntas técnicas são respondidas com trechos dos manuais (fonte e página); sem resultado, o chat oferece o botão para a base completa no NotebookLM.
-- **Tema claro/escuro:** botão sol/lua ao lado do avatar.
+- **Tema claro/escuro:** botão sol/lua ao lado do avatar. O SOS do app e o alerta crítico ficam sempre escuros.
+- **Guia rápido:** ícone “↓ Guia” no rodapé do início (web e app) baixa o PDF para quem nunca usou; funciona sem internet depois da primeira visita.
 
 ## Telas
 
@@ -73,7 +74,7 @@ Todos os arquivos terminam em `.dc.html`.
 
 Também há duas pranchetas de apoio:
 
-- `Manual-Avanti-Vessel-AI`: apresentação de uso, com 24 slides (v17 · 25/09/2026).
+- `Manual-Avanti-Vessel-AI`: apresentação de uso, com 24 slides (v18 · 26/09/2026).
 - `D-Botoes`: especificação dos botões.
 
 E um guia à parte, para imprimir ou mandar a quem nunca usou o app:
@@ -168,6 +169,7 @@ A versão aparece no rodapé de todas as telas. Para lançar uma nova, altere `V
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 1.4.4 | 26/09/2026 | Dados da leitura do coletor de 25/09 17:43 (atracado; motores 14:03; diesel 28,0/28,8 % ≈ 426 L; gerador 286,1 h; negras 11,9 %) · EPIRB no cockpit principal e Sea-Fire conforme o inventário · sem VHF 115 · barra SOS em todas as telas do app · alerta crítico sem “alarme sonoro” · ícone “Guia” no rodapé do início (web e app) baixa o Guia rápido · ícones que não encolhem · verificação de responsividade e tema em 36 telas × 2 temas × 4 tamanhos |
 | 1.4.3 | 25/09/2026 | Manual de uso atualizado (24 slides, dados de 25/09 13:40, login, voz, cabeçalho ao vivo e base de conhecimento) · Guia rápido em PDF para leigo · tanques de diesel 2 × 750 L também na base · homologação ANATEL do VHF 315 (nº 07897-25-01493) · SOS com MMSI/DSC no VHF 315 e no VHF 215 |
 | 1.4.2 | 25/09/2026 | CLAUDE.md com o guia do projeto para novas sessões · README revisado |
 | 1.4.1 | 25/09/2026 | Dados atualizados com a leitura do coletor de 25/09 13:40 (diesel 27,6/28,8 % ≈ 423 L, horímetros 110/106 h, gerador 285,6 h, tanques, vento, barômetro) · prazos recalculados para 25/09 (3 atrasadas) · cumprimento pelo horário · telemetria ao vivo preparada e desligada |
