@@ -112,22 +112,22 @@ button { font: inherit; }
         </div>
         <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #aeb6c2;">A telemetria já sabe se o barco está parado ou andando. Quando a velocidade passa de 1 nó por 60 s, o app troca o conjunto de botões para o de navegação — e volta ao de porto quando atraca. Fonte: coletor NMEA a bordo.</p>
         <div style="display: flex; gap: 14px; flex-grow: 1;">
-          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
             <span style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
               <span style="font-size: 15px; font-weight: 800;">Atracado</span>
             </span>
             <sc-for list="{{atracado}}" as="p" hint-placeholder-count="6">
-              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.4;">{{p}}</span>
             </sc-for>
           </div>
-          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border: 1px solid rgba(64,156,255,0.4); border-radius: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="flex-grow: 1; box-sizing: border-box; padding: 16px; background: #151a23; border: 1px solid rgba(64,156,255,0.4); border-radius: 16px; display: flex; flex-direction: column; gap: 6px;">
             <span style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 9px; height: 9px; border-radius: 50%; background: #409cff;"></span>
               <span style="font-size: 15px; font-weight: 800; color: #409cff;">Navegando</span>
             </span>
             <sc-for list="{{navegando}}" as="p" hint-placeholder-count="6">
-              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.5;">{{p}}</span>
+              <span style="font-size: 13.5px; color: #e9edf2; line-height: 1.4;">{{p}}</span>
             </sc-for>
           </div>
         </div>
