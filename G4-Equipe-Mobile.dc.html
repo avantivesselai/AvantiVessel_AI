@@ -24,7 +24,7 @@ input::placeholder { color: var(--av-ph, #4c5666); }
     <a href="A2-Ponte-Mobile.dc.html" aria-label="Voltar" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--av-card, #0f131a); color: var(--av-ink, #e9edf2); text-decoration: none; flex-shrink: 0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
     <span style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 4px; min-width: 0;">
       <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.01em;">Equipe e acessos</span>
-      <span style="font-size: 11.5px; color: {{noteTone}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{subtitle}}</span>
+      <span style="font-size: 11.5px; line-height: 1.3; color: {{noteTone}};">{{subtitle}}</span>
     </span>
     <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
     <button type="button" onClick="{{toggleInvite}}" aria-pressed="{{inviteOpen}}" style="height: 40px; padding: 0 12px; border-radius: 999px; border: none; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); font-size: 10.5px; letter-spacing: 0.10em; font-weight: 800; cursor: pointer; flex-shrink: 0;">{{inviteLabel}}</button>
