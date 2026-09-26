@@ -161,7 +161,7 @@ class Component extends DCLogic {
     }[k];
     return {
       titulo: T.titulo, steps: T.steps, fonte: T.fonte, fala: T.fala, sistema: T.sistema,
-      triagem: !fogo, fogo: fogo, sos: fogo || k === 'Cheiro', sosAria: fogo ? 'SOS — protocolo de incêndio' : 'SOS — emergência',
+      triagem: !fogo, fogo: fogo, sos: true, sosAria: fogo ? 'SOS — protocolo de incêndio' : 'SOS — emergência',
       acc: fogo ? 'var(--av-crit, #ff3b30)' : 'var(--av-warn, #f0a63a)', accWash: fogo ? 'rgba(var(--av-crit-rgb, 255,59,48), 0.14)' : 'rgba(var(--av-warn-rgb, 240,166,58), 0.14)',
       dealer: fd ? { n: 'Ligar para o dealer', href: 'tel:' + String(fd).replace(/[^+\d]/g, ''), aria: 'Ligar para o dealer Volvo Penta · ' + fd } : { n: 'Cadastrar tel. do dealer', href: 'G4-Equipe-Mobile.dc.html', aria: 'Telefone do dealer não cadastrado — abrir Equipe para cadastrar' },
       armaVoz: () => { try { sessionStorage.setItem('avanti.modo', 'voz'); } catch (e) {} },
