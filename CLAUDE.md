@@ -27,8 +27,11 @@ Site estático no GitHub Pages: https://avantivesselai.github.io/AvantiVessel_AI
 Alterar `VERSAO` em `avanti-auth.js`, `CACHE` em `sw.js` e a tabela de versões no `README.md`. Arquivo novo usado offline → adicionar em `CORE` do `sw.js`.
 
 ## Dados atuais
-- Snapshot fixo nas telas e no chat: **coletor YDWG-02 · 25/09/2026 13:40** (motores em marcha lenta, gerador e Seakeeper ligados).
-  Diesel 27,6/28,8 % (≈ 423 L de 1.500; tanque 0 = BB, 1 = BE — a confirmar), horímetros 110/106 h, gerador 285,6 h.
+- Snapshot fixo nas telas e no chat: **coletor YDWG-02 · 25/09/2026 17:43** (sessão auto_20260925_1407; atracado o tempo todo; Seakeeper ligado;
+  motores em marcha lenta até 14:03 e gerador até 14:07, desligados depois — motor mostra a última leitura com hora, nunca zero).
+  Ambiente 17:43: SOG 0,1 nó · proa 050° · vento 1,8 nó de 044° · 1012 hPa · ar 22,5 °C · mar 21,8 °C · praça 21,8 °C · 30 satélites ·
+  banco 24 V 27,88 V (instância 0) · água 65,1 % · cinzas 0,0 % · negras 11,9 %. Motores 14:03: 599 rpm, óleo 2,7/2,8 bar, 63/61 °C, arrefec. 76/74 °C.
+  Diesel 28,0/28,8 % às 13:59 (≈ 426 L de 1.500; tanque 0 = BB, 1 = BE — a confirmar), horímetros 110/106 h, gerador 286,1 h (14:07).
 - Prazos contados a partir de 25/09: 3 atrasadas (filtros chiller 186 d, bombas de porão 100 d, tensões Quick VRS/SBC NRG+ 1 d).
 - Para atualizar de novo: ler no Drive `snapshot_live_latest.json` (id 121HD_KA7kYyAUUqrkJtUAscIco885dOy) e `nmea_AAAAMMDD.jsonl`
   (pasta 1fNzGteLcutM6Rmh9i-lKQmAHRs9CVSnj); status da sessão em `auto_*.status.json` (pasta 1PckSdHu5k9DRSSoZh5nZYpk3QQVAR8fL).

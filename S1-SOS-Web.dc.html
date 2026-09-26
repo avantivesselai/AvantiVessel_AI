@@ -95,7 +95,7 @@ button { font: inherit; }
       <span style="text-align: center; font-size: 11px; letter-spacing: 0.10em; color: var(--av-ink4, #7d8796);">ATALHOS · UM TOQUE ENVIA · EDITÁVEIS</span>
     </div>
   </main>
-<footer style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 26px; border-top: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.05); font-size: 11px; letter-spacing: 0.16em; color: var(--av-ink4, #7d8796); white-space: nowrap;"><span>SOG <b style="color: var(--av-ink3, #9aa3af);">0,0 NÓS</b></span><span>PROA <b style="color: var(--av-ink3, #9aa3af);">048°</b></span><span>VENTO <b style="color: var(--av-ink3, #9aa3af);">12,6 NÓS</b></span><span>24 V <b style="color: var(--av-ink3, #9aa3af);">27,49 V</b></span><span>ÁGUA DOCE <b style="color: var(--av-ink3, #9aa3af);">65%</b></span><span>DIESEL <b style="color: var(--av-ink3, #9aa3af);">28% · 25/09 13:40</b></span><span>ATRACADO · RIO DE JANEIRO · 13:40</span><span style="flex-grow: 1;"></span><a href="A1-Ponte-Web.dc.html" style="color: var(--av-ink3, #9aa3af); font-weight: 700; display: flex; align-items: center; gap: 8px; text-decoration: none; min-height: 44px; letter-spacing: 0.16em;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> CONSOLE COMPLETO ›</a></footer>
+<footer style="height: 44px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; gap: 18px; padding: 0 26px; border-top: 1px solid rgba(var(--av-hl-rgb, 255,255,255), 0.05); font-size: 11px; letter-spacing: 0.16em; color: var(--av-ink4, #7d8796); white-space: nowrap;"><span>SOG <b style="color: var(--av-ink3, #9aa3af);">0,1 NÓS</b></span><span>PROA <b style="color: var(--av-ink3, #9aa3af);">050°</b></span><span>VENTO <b style="color: var(--av-ink3, #9aa3af);">1,8 NÓS</b></span><span>24 V <b style="color: var(--av-ink3, #9aa3af);">27,88 V</b></span><span>ÁGUA DOCE <b style="color: var(--av-ink3, #9aa3af);">65%</b></span><span>DIESEL <b style="color: var(--av-ink3, #9aa3af);">28% · 25/09 13:59</b></span><span>ATRACADO · RIO DE JANEIRO · 17:43</span><span style="flex-grow: 1;"></span><a href="A1-Ponte-Web.dc.html" style="color: var(--av-ink3, #9aa3af); font-weight: 700; display: flex; align-items: center; gap: 8px; text-decoration: none; min-height: 44px; letter-spacing: 0.16em;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M12 7.5V21 M4 13a8 8 0 0 0 16 0 M2.5 13H6 M18 13h3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-accent, var(--av-accent, #409cff));"></path></svg> CONSOLE COMPLETO ›</a></footer>
 <a href="S1-SOS-Web.dc.html" aria-label="SOS — emergência" style="position: absolute; right: 26px; bottom: 62px; width: 78px; height: 78px; border-radius: 50%; background: var(--av-crit-fill, #d32f27); color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 0 0 4px rgba(var(--av-crit-rgb, 255,59,48), 0.30), 0 0 0 10px rgba(var(--av-crit-rgb, 255,59,48), 0.10), 0 12px 32px rgba(var(--av-critfill-rgb, 211,47,39), 0.45); z-index: 30;"><span style="font-size: 18px; font-weight: 800; letter-spacing: 0.10em; line-height: 1;">SOS</span></a>
 
   <div style="position: absolute; inset: 0; background: rgba(var(--av-bg-rgb, 5,7,11), 0.86); backdrop-filter: blur(10px); z-index: 40; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto;">
@@ -171,7 +171,7 @@ class Component extends DCLogic {
     try { prev = JSON.parse(sessionStorage.getItem(K) || 'null'); } catch (e) {}
     if (prev && prev.t && Date.now() - prev.em < 600e3) return prev;
     const n = B.now(); let e = null;
-    try { e = B.addDiario({ sys: 'Segurança', tone: 'var(--av-crit, #ff3b30)', t: 'SOS acionado no app às ' + n.t + " · última posição 22°57,09'S 043°10,23'W (GPS 25/09 13:40).", who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · SOS' }); } catch (x) {}
+    try { e = B.addDiario({ sys: 'Segurança', tone: 'var(--av-crit, #ff3b30)', t: 'SOS acionado no app às ' + n.t + " · última posição 22°57,09'S 043°10,23'W (GPS 25/09 17:43).", who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · SOS' }); } catch (x) {}
     if (!e || !B.loadDiario().some((x) => x.iso === e.iso && x.src === 'app · SOS')) return { falhou: true };
     const r = { em: Date.now(), t: n.t };
     try { sessionStorage.setItem(K, JSON.stringify(r)); } catch (x) {}
@@ -188,8 +188,8 @@ class Component extends DCLogic {
     return {
       proto: P.map((p, i) => Object.assign({}, p, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), chev: s.open === i ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6' })),
       mayday: s.mayday, toggleMayday: () => this.setState({ mayday: !s.mayday }), maydayLabel: s.mayday ? 'FECHAR ROTEIRO' : 'CANAL 16 · MAYDAY',
-      // Roteiro lido no canal 16: a posição salva é o último fix (25/09 13:40), não a atual — manda ler o plotter
-      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 25/09 13:40)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO']
+      // Roteiro lido no canal 16: a posição salva é o último fix (25/09 17:43), não a atual — manda ler o plotter
+      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 25/09 17:43)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO']
     };
   }
 
@@ -197,8 +197,8 @@ class Component extends DCLogic {
     const s = this.state; const r = s.reg; const eq = 'G4-Equipe-Web.dc.html';
     const liga = (id, n, curto, d, quem) => { const f = s.fones[id]; return f ? { n: n, sub: '', href: 'tel:' + String(f).replace(/[^+\d]/g, ''), aria: 'Ligar para ' + quem + ' · ' + f, d: d } : { n: curto, sub: 'cadastrar tel.', href: eq, aria: 'Telefone ' + (id === 'Giovanni' ? 'do Giovanni' : 'do dealer') + ' não cadastrado — abrir Equipe para cadastrar', d: d }; };
     return Object.assign(this.protoVals(), {
-      // Posição é o último fix (25/09 13:40), não a hora do SOS: a hora do acionamento vem rotulada à parte
-      marca: "22°57,09'S 043°10,23'W (GPS 25/09 13:40) · " + (!r ? 'gravando no diário de bordo…' : r.falhou ? 'não gravado — registre posição e hora no diário' : 'SOS ' + r.t + ' · posição e hora gravadas no diário de bordo'),
+      // Posição é o último fix (25/09 17:43), não a hora do SOS: a hora do acionamento vem rotulada à parte
+      marca: "22°57,09'S 043°10,23'W (GPS 25/09 17:43) · " + (!r ? 'gravando no diário de bordo…' : r.falhou ? 'não gravado — registre posição e hora no diário' : 'SOS ' + r.t + ' · posição e hora gravadas no diário de bordo'),
       chamar: [
         liga('Dealer Volvo Penta', 'Ligar para o dealer', 'Dealer', 'M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z', 'o dealer Volvo Penta'),
         liga('Giovanni', 'Chamar Giovanni', 'Giovanni', 'M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M5 20a7 7 0 0 1 14 0', 'Giovanni')

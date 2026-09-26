@@ -9,7 +9,7 @@ Cérebro operacional da **Azimut Atlantis 51 · Avanti Vessel**: chat com a emba
 
 > **Versão 1.4.3 · 25/09/2026** · designed by Wonder BOAT | Wonder HUB.AI
 
-> É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 13:40 (motores em marcha lenta, gerador e Seakeeper ligados). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
+> É um protótipo navegável. Os números vêm da leitura do coletor YDWG-02 de 25/09/2026 às 17:43 (atracado; Seakeeper ligado; motores em marcha lenta até 14:03 e gerador até 14:07, desligados depois; diesel da última leitura com motores ligados, 13:59). Nada é inventado: quando falta o dado, a tela mostra **SEM DADOS**.
 
 ## Acesso
 
@@ -116,7 +116,7 @@ Uma voz só: a melhor voz **masculina** pt-BR do aparelho, gratuita, em velocida
 
 ## Telemetria ao vivo (preparada, desligada)
 
-O coletor YDWG-02 já grava no Drive a cada ~10 s (`snapshot_live_latest.json`, pasta de telemetria). O app está pronto para ler essa leitura, mas **vem desligado**: sem configuração, continua com o snapshot fixo (hoje, a leitura de 25/09 13:40).
+O coletor YDWG-02 já grava no Drive a cada ~10 s (`snapshot_live_latest.json`, pasta de telemetria). O app está pronto para ler essa leitura, mas **vem desligado**: sem configuração, continua com o snapshot fixo (hoje, a leitura de 25/09 17:43).
 
 **Como fica quando ligado:** posição, tanques (água, cinzas, negras), vento/barômetro/temperaturas, baterias e estado do Seakeeper passam a vir da leitura real (“ao vivo 10:34”), atualizada a cada 30 s. Leitura com mais de 10 min volta ao snapshot. Diesel e horímetros seguem do último registro com motores ligados.
 

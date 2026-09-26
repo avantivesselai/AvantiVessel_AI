@@ -109,7 +109,7 @@ class Component extends DCLogic {
     try { prev = JSON.parse(sessionStorage.getItem(K) || 'null'); } catch (e) {}
     if (prev && prev.t && Date.now() - prev.em < 600e3) return prev;
     const n = B.now(); let e = null;
-    try { e = B.addDiario({ sys: 'Segurança', tone: 'var(--av-crit, #ff3b30)', t: 'SOS acionado no app às ' + n.t + " · última posição 22°57,09'S 043°10,23'W (GPS 25/09 13:40).", who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · SOS' }); } catch (x) {}
+    try { e = B.addDiario({ sys: 'Segurança', tone: 'var(--av-crit, #ff3b30)', t: 'SOS acionado no app às ' + n.t + " · última posição 22°57,09'S 043°10,23'W (GPS 25/09 17:43).", who: (window.AvantiAuth ? window.AvantiAuth.nome() : 'Otto'), src: 'app · SOS' }); } catch (x) {}
     if (!e || !B.loadDiario().some((x) => x.iso === e.iso && x.src === 'app · SOS')) return { falhou: true };
     const r = { em: Date.now(), t: n.t };
     try { sessionStorage.setItem(K, JSON.stringify(r)); } catch (x) {}
@@ -131,16 +131,16 @@ class Component extends DCLogic {
     const pos = "22°57,09'S 043°10,23'W"; const r = s.reg; const eq = 'G4-Equipe-Mobile.dc.html';
     const liga = (id, n, d, quem) => { const f = s.fones[id]; return f ? { n: n, sub: 'ligar', subTone: '#34c77a', href: 'tel:' + String(f).replace(/[^+\d]/g, ''), aria: 'Ligar para ' + quem + ' · ' + f, d: d } : { n: n, sub: 'cadastrar tel.', subTone: '#9aa3af', href: eq, aria: 'Telefone ' + (id === 'Giovanni' ? 'do Giovanni' : 'do dealer') + ' não cadastrado — abrir Equipe para cadastrar', d: d }; };
     return {
-      // Posição é o último fix (25/09 13:40), não a hora do SOS: a hora do acionamento vem rotulada à parte
-      marca: pos + ' (GPS 25/09 13:40) · ' + (!r ? 'gravando no diário de bordo…' : r.falhou ? 'não gravado — registre posição e hora no diário' : 'SOS ' + r.t + ' · gravado no diário de bordo'),
+      // Posição é o último fix (25/09 17:43), não a hora do SOS: a hora do acionamento vem rotulada à parte
+      marca: pos + ' (GPS 25/09 17:43) · ' + (!r ? 'gravando no diário de bordo…' : r.falhou ? 'não gravado — registre posição e hora no diário' : 'SOS ' + r.t + ' · gravado no diário de bordo'),
       chamar: [
         liga('Dealer Volvo Penta', 'Dealer', 'M6.5 4h4l1.5 4-2.2 1.6a12 12 0 0 0 4.6 4.6L16 12l4 1.5v4a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 6.2 2 2 0 0 1 6.5 4z', 'o dealer Volvo Penta'),
         liga('Giovanni', 'Giovanni', 'M12 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M5 20a7 7 0 0 1 14 0', 'Giovanni')
       ],
       proto: P.map((p, i) => Object.assign({}, p, { open: s.open === i, toggle: () => this.setState({ open: s.open === i ? -1 : i }), chev: s.open === i ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6' })),
       mayday: s.mayday, toggleMayday: () => this.setState({ mayday: !s.mayday }), maydayLabel: s.mayday ? 'FECHAR ROTEIRO' : 'CANAL 16 · MAYDAY',
-      // Roteiro lido no canal 16: a posição salva é o último fix (25/09 13:40), não a atual — manda ler o plotter
-      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 25/09 13:40)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
+      // Roteiro lido no canal 16: a posição salva é o último fix (25/09 17:43), não a atual — manda ler o plotter
+      roteiro: ['MAYDAY, MAYDAY, MAYDAY', 'AQUI É AVANTI VESSEL, AVANTI VESSEL, AVANTI VESSEL', 'MMSI 710400328 · INDICATIVO PV4476', "POSIÇÃO — LEIA NO PLOTTER AGORA (último fix 22°57,09'S 043°10,23'W · GPS 25/09 17:43)", 'NATUREZA DO PERIGO: ________', 'PESSOAS A BORDO: ________', 'AUXÍLIO NECESSÁRIO: ________', 'CÂMBIO'],
       silence: () => this.silence(), muted: s.left > 0, silenceLabel: s.left > 0 ? 'Sirene pausada · ' + s.left + ' s' : 'Pausar sirene 60 s', sireneOp: s.left > 0 ? 0 : 1, silenceLine: s.left > 0 ? 'rgba(240,166,58,0.55)' : '#2a3240', silenceTone: s.left > 0 ? '#f0a63a' : '#e9edf2'
     };
   }
