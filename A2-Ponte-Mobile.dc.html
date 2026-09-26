@@ -22,16 +22,16 @@ button { font: inherit; }
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
 
   <header style="flex-shrink: 0; box-sizing: border-box; padding: 16px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="H2-Home-Mobile.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 26px; width: 116px; object-fit: contain; filter: var(--av-logo-filter, none);"></a>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <a href="H2-Home-Mobile.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 22px; width: 96px; object-fit: contain; filter: var(--av-logo-filter, none);"></a>
       <span style="width: 1px; height: 24px; background: var(--av-line2, #2a3240);"></span>
       <span style="flex-grow: 1; font-size: 16px; font-weight: 700; letter-spacing: -0.01em;">Console</span>
-      <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); border-radius: 999px;">
+      <span style="display: flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 6px; padding: 6px 9px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); border-radius: 999px;">
         <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--av-accent, #409cff); box-shadow: 0 0 0 3px rgba(var(--av-accent-rgb, 64,156,255), 0.22);"></span>
         <span style="font-size: 11.5px; font-weight: 700; color: var(--av-accent, #409cff);">Ao vivo</span>
       </span>
-      <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="A3-Ponte-Editar.dc.html" aria-label="Editar blocos do console" title="Editar blocos" style="width: 40px; height: 40px; border-radius: 50%; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); display: flex; align-items: center; justify-content: center; color: var(--av-ink2, #aeb6c2); text-decoration: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
+      <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="36" hint-size="36px,36px"></x-import>
+      <a href="A3-Ponte-Editar.dc.html" aria-label="Editar blocos do console" title="Editar blocos" style="width: 36px; height: 36px; flex-shrink: 0; box-sizing: border-box; border-radius: 50%; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); display: flex; align-items: center; justify-content: center; color: var(--av-ink2, #aeb6c2); text-decoration: none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M4 20h4l10-10-4-4L4 16z M14 6l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></a>
     </div>
     <div style="display: flex; align-items: baseline; justify-content: space-between;">
       <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em;"><x-import component-from-global-scope="avanti-periodo"></x-import>, <x-import component-from-global-scope="avanti-usuario" campo="nome"></x-import></span>

@@ -21,18 +21,20 @@ button { font: inherit; }
 
 <div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--av-bg, #05070b); color: var(--av-ink, #e9edf2); overflow: hidden;">
 
-  <header style="flex-shrink: 0; box-sizing: border-box; padding: 20px 20px 8px; display: flex; align-items: center; gap: 12px;">
-    <a href="H2-Home-Mobile.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 30px; width: 134px; object-fit: contain; object-position: left; filter: var(--av-logo-filter, none);"></a>
-    <div style="flex-grow: 1; display: flex; flex-direction: column; padding-left: 2px;">
-      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;">Avanti Vessel AI</span>
-      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af);">Atracado · Rio · 17:43</span>
-    </div>
-    <span style="display: flex; align-items: center; gap: 6px; padding: 7px 11px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); border-radius: 999px;">
+  <header style="flex-shrink: 0; box-sizing: border-box; padding: 16px 20px 8px; display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+    <a href="H2-Home-Mobile.dc.html" aria-label="Início" style="display: flex; align-items: center; text-decoration: none; flex-grow: 1; min-width: 0;"><img src="assets/logo_white.png" alt="Avanti Vessel" style="height: 26px; width: 116px; object-fit: contain; object-position: left; filter: var(--av-logo-filter, none);"></a>
+    <span style="display: flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 6px; padding: 7px 11px; background: rgba(var(--av-accent-rgb, 64,156,255), 0.10); border-radius: 999px;">
       <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--av-accent, #409cff);"></span>
       <span style="font-size: 11.5px; font-weight: 700; color: var(--av-accent, #409cff);">Ao vivo</span>
     </span>
     <x-import component-from-global-scope="avanti-theme-toggle" from="./avanti-theme.js" size="40" hint-size="40px,40px"></x-import>
-      <a href="G4-Equipe-Mobile.dc.html" aria-label="Equipe e acessos" style="width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
+      <a href="G4-Equipe-Mobile.dc.html" aria-label="Equipe e acessos" style="width: 40px; height: 40px; flex-shrink: 0; box-sizing: border-box; border-radius: 50%; border: 1.5px solid var(--av-accent, #409cff); background: var(--av-card, #0f131a); color: var(--av-accent, #409cff); font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none;"><x-import component-from-global-scope="avanti-usuario" campo="ini"></x-import></a>
+    </div>
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-left: 2px;">
+      <span style="font-size: 17px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; white-space: nowrap;">Avanti Vessel AI</span>
+      <span style="font-size: 11.5px; color: var(--av-ink3, #9aa3af); white-space: nowrap;">Atracado · Rio · 17:43</span>
+    </div>
   </header>
 
   <div style="flex-grow: 1; box-sizing: border-box; padding: 8px 16px 10px; display: flex; flex-direction: column; gap: 12px; min-height: 0;">

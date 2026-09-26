@@ -151,10 +151,10 @@ input::placeholder { color: var(--av-ph, #4c5666); }
           </div>
         </section>
         <section style="width: 380px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; min-height: 0;">
-          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="box-sizing: border-box; padding: 14px 18px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; display: flex; flex-direction: column; gap: 3px; flex-shrink: 0;">
             <span style="font-size: 15px; font-weight: 700;">Permissões · Otto, Giovanni, Lucas e Amanda</span>
             <sc-for list="{{perms}}" as="x" hint-placeholder-count="5">
-              <a href="{{x.href}}" style="display: flex; align-items: center; gap: 10px; min-height: 34px; text-decoration: none; color: var(--av-ink, #e9edf2);">
+              <a href="{{x.href}}" style="display: flex; align-items: center; gap: 10px; min-height: 30px; text-decoration: none; color: var(--av-ink, #e9edf2);">
                 <span style="width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%; background: rgba(var(--av-ok-rgb, 52,199,122), 0.14); display: flex; align-items: center; justify-content: center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ok, var(--av-ok, #34c77a));"></path></svg></span>
                 <span style="flex-grow: 1; font-size: 12.5px; font-weight: 500;">{{x.l}}</span>
                 <span style="font-size: 11px; font-weight: 700; color: var(--av-accent, #409cff);">abrir ›</span>
