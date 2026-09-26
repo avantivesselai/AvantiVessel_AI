@@ -40,7 +40,7 @@ button { font: inherit; }
     <a href="C2-Leme-Mobile.dc.html" style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 18px; text-decoration: none; color: var(--av-ink, #e9edf2);">
       <span style="display: flex; align-items: center; gap: 10px;">
         <span style="width: 34px; height: 34px; border-radius: 11px; background: rgba(var(--av-crit-rgb, 255,59,48), 0.14); display: flex; align-items: center; justify-content: center;">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4 21 20H3z M12 10v4 M12 17h.01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-crit, var(--av-crit, #ff3b30));"></path></svg>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 4 21 20H3z M12 10v4 M12 17h.01" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-crit, var(--av-crit, #ff3b30));"></path></svg>
         </span>
         <span style="flex-grow: 1; font-size: 15px; font-weight: 700;">Precisa de você</span>
         <span style="min-width: 22px; height: 22px; padding: 0 7px; box-sizing: border-box; border-radius: 999px; background: var(--av-crit, #ff3b30); color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;">3</span>
@@ -56,14 +56,14 @@ button { font: inherit; }
       <sc-for list="{{quick}}" as="q" hint-placeholder-count="4">
         <a href="{{q.href}}" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: var(--av-ink, #e9edf2);">
           <span style="width: 56px; height: 56px; border-radius: 18px; background: {{q.wash}}; display: flex; align-items: center; justify-content: center;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{q.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{q.tone}};"></path></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{q.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{q.tone}};"></path></svg>
           </span>
           <span style="font-size: 11.5px; font-weight: 600;">{{q.n}}</span>
         </a>
       </sc-for>
       <a href="A3-Ponte-Editar.dc.html" aria-label="Editar atalhos" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: none; color: var(--av-ink3, #9aa3af); text-decoration: none; padding: 0;">
         <span style="width: 56px; height: 56px; border-radius: 18px; border: 1.5px dashed var(--av-dash, #3a4454); display: flex; align-items: center; justify-content: center;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14 M5 12h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 5v14 M5 12h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
         </span>
         <span style="font-size: 11.5px; font-weight: 600;">Editar</span>
       </a>
@@ -75,7 +75,7 @@ button { font: inherit; }
         <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
           <a href="{{r.href}}" style="flex-grow: 1; display: flex; align-items: center; gap: 12px; padding: 0 14px; text-decoration: none; color: var(--av-ink, #e9edf2); border-bottom: 1px solid var(--av-line, #1d2229); min-height: 44px;">
             <span style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 11px; background: {{r.wash}}; display: flex; align-items: center; justify-content: center;">
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{r.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{r.tone}};"></path></svg>
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{r.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{r.tone}};"></path></svg>
             </span>
             <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
               <span style="font-size: 14px; font-weight: 600;">{{r.n}}</span>
@@ -98,16 +98,16 @@ button { font: inherit; }
   <nav aria-label="Abas" style="flex-shrink: 0; box-sizing: border-box; padding: 10px 12px 18px; border-top: 1px solid var(--av-line, #1d2229); background: var(--av-bg, #05070b); display: flex; align-items: flex-end; justify-content: space-between;">
     <sc-for list="{{tabsL}}" as="t" hint-placeholder-count="3">
       <a href="{{t.href}}" style="width: 60px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; text-decoration: none; color: {{t.tone}};">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{t.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{t.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         <span style="font-size: 10.5px; font-weight: 700;">{{t.l}}</span>
       </a>
     </sc-for>
     <a href="B3-Carta-Resposta.dc.html" aria-label="Falar com o barco" style="width: 68px; height: 68px; margin-top: -30px; border-radius: 50%; border: 5px solid var(--av-bg, #05070b); background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; text-decoration: none;">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
     <sc-for list="{{tabsR}}" as="t" hint-placeholder-count="2">
       <a href="{{t.href}}" style="width: 60px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; text-decoration: none; color: {{t.tone}};">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{t.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{t.d}}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         <span style="font-size: 10.5px; font-weight: 700;">{{t.l}}</span>
       </a>
     </sc-for>

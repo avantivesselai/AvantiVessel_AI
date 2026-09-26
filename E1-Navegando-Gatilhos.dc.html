@@ -62,7 +62,7 @@ button { font: inherit; }
         <a href="{{t.href}}" style="box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; padding: 13px; background: {{t.bg}}; border: 1px solid {{t.line}}; border-radius: 18px; text-decoration: none; color: {{t.ink}};">
           <span style="display: flex; align-items: flex-start; justify-content: space-between;">
             <span style="width: 40px; height: 40px; border-radius: 12px; background: {{t.wash}}; display: flex; align-items: center; justify-content: center;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{t.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{t.tone}};"></path></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{t.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: {{t.tone}};"></path></svg>
             </span>
             <sc-if value="{{t.badge}}" hint-placeholder-val="{{true}}">
               <span style="padding: 4px 8px; border-radius: 999px; background: {{t.wash}}; color: {{t.tone}}; font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;">{{t.badge}}</span>
@@ -79,7 +79,7 @@ button { font: inherit; }
     <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex-shrink: 0;">
       <sc-for list="{{quick}}" as="q" hint-placeholder-count="4">
         <a href="{{q.href}}" aria-label="{{q.aria}}" style="box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 4px; background: var(--av-card, #0f131a); border: 1px solid var(--av-line, #1d2229); border-radius: 14px; text-decoration: none; color: var(--av-ink, #e9edf2); min-height: 60px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="{{q.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink2, var(--av-ink2, #aeb6c2));"></path></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="{{q.d}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--av-ink2, var(--av-ink2, #aeb6c2));"></path></svg>
           <span style="font-size: 10.5px; font-weight: 700; text-align: center; line-height: 1.15;">{{q.n}}</span>
         </a>
       </sc-for>
@@ -94,17 +94,17 @@ button { font: inherit; }
 
   <div style="flex-shrink: 0; box-sizing: border-box; padding: 10px 16px 18px; border-top: 1px solid var(--av-line, #1d2229); display: flex; align-items: center; gap: 10px;">
     <a href="H2-Home-Mobile.dc.html#mode=foto" aria-label="Enviar foto" style="width: 56px; height: 56px; border-radius: 16px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M4 8h3l2-2h6l2 2h3v11H4z M12 16a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
     </a>
     <a href="B3-Carta-Resposta.dc.html" style="flex-grow: 1; height: 56px; border-radius: 16px; background: var(--av-accent, #409cff); color: var(--av-on-accent, #05070b); display: flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none;">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5 11a7 7 0 0 0 14 0 M12 18v3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       <span style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
         <span style="font-size: 15px; font-weight: 800;">Falar</span>
         <span style="font-size: 10.5px; font-weight: 600; color: var(--av-on-accent2, #0a2c52);">mãos no leme, sem olhar</span>
       </span>
     </a>
     <a href="H2-Home-Mobile.dc.html#mode=texto" aria-label="Digitar" style="width: 56px; height: 56px; border-radius: 16px; border: 1px solid var(--av-line, #1d2229); background: var(--av-card, #0f131a); color: var(--av-ink2, #aeb6c2); display: flex; align-items: center; justify-content: center; text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18v12H3z M7 10h.01 M11 10h.01 M15 10h.01 M8 14h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M3 6h18v12H3z M7 10h.01 M11 10h.01 M15 10h.01 M8 14h8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </a>
   </div>
 
