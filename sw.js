@@ -1,7 +1,7 @@
 /* Avanti Vessel AI — service worker (rede primeiro; cache só como reserva offline).
    Instala já com todas as telas: a 1ª tela aberta carrega antes do SW e nunca entraria no cache.
    Offline sem a página no cache → aviso fixo (nunca o index.html, que redireciona e podia entrar em laço). */
-const CACHE = 'avanti-site-v1.4.5';
+const CACHE = 'avanti-site-v1.4.6';
 const TELAS = [
   'Main', 'H2-Home-Mobile', 'S1-SOS-Web', 'S2-SOS-Mobile', 'C3-Leme-Alerta', 'Manual-Avanti-Vessel-AI', 'D-Botoes',
   'A1-Ponte-Web', 'A2-Ponte-Mobile', 'A3-Ponte-Editar', 'B1-Carta-Web', 'B2-Carta-Mobile', 'B3-Carta-Resposta',

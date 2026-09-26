@@ -10,7 +10,17 @@
   try { URL_PROXY = localStorage.getItem('avanti.telemetria.url.v1') || URL_PROXY; } catch (e) {}
   if (!/^https:\/\/[^\s]+$/.test(URL_PROXY)) URL_PROXY = '';
   var KC = 'avanti.telemetria.chave.v1', KD = 'avanti.telemetria.ultima.v1';
-  var INTERVALO = 30000, VELHA = 10 * 60000; // busca a cada 30 s; leitura com mais de 10 min não conta como "ao vivo"
+  var VELHA = 10 * 60000; // leitura com mais de 10 min não conta como "ao vivo"
+  // Cadência (definida pelo Otto em 26/09): navegando (SOG ≥ 1 nó) 30 s até 5 nós, 10 s até 12 nós, 5 s acima;
+  // atracado 2 min nos primeiros 30 min, 5 min até 1 h, 10 min depois disso.
+  var NAVEGA = 1, atracadoDesde = 0;
+  function intervalo() {
+    var s = ultima && idade() < VELHA ? +ultima.sog_nos : NaN;
+    if (s >= NAVEGA) { atracadoDesde = 0; return s > 12 ? 5000 : s > 5 ? 10000 : 30000; }
+    if (!atracadoDesde) atracadoDesde = Date.now();
+    var t = Date.now() - atracadoDesde;
+    return t < 30 * 60000 ? 120000 : t < 60 * 60000 ? 300000 : 600000;
+  }
 
   // #tele=<chave> no endereço: guarda a chave neste aparelho e limpa o endereço (não fica no histórico).
   try {
@@ -33,7 +43,7 @@
   var busy = false, tempo = 0;
   function busca() {
     clearTimeout(tempo);
-    if (!ativa() || busy || document.hidden || (navigator && navigator.onLine === false)) { tempo = setTimeout(busca, INTERVALO); return; }
+    if (!ativa() || busy || document.hidden || (navigator && navigator.onLine === false)) { tempo = setTimeout(busca, intervalo()); return; }
     busy = true;
     fetch(URL_PROXY, { headers: { 'X-Avanti-Chave': chave() }, cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
@@ -43,7 +53,7 @@
         avisa();
       })
       .catch(function () {})
-      .then(function () { busy = false; tempo = setTimeout(busca, INTERVALO); });
+      .then(function () { busy = false; tempo = setTimeout(busca, intervalo()); });
   }
   if (ativa()) { busca(); document.addEventListener('visibilitychange', function () { if (!document.hidden) busca(); }); }
 
